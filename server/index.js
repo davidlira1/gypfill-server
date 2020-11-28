@@ -6,14 +6,37 @@ const mongoQuery = require('../db/mongoQueries.js');
 
 app.use(express.json());
 
-app.post('/insertProjectDocument', (req, res) => {
-    var projectObj = req.body;
-    console.log('projectObj', projectObj)
+app.get('/getProjectDoc/:dealName', (req, res) => {
+    console.log('ABOUT TO GET========')
+    const { dealName } = req.params;
     
-    mongoQuery.insertProjectDoc(projectObj)
+    console.log('dealName', dealName);
+    
+    mongoQuery.getProjectDoc(dealName)
     .then(result => {
+        
+        console.log('result', result[0].projectInfo);
+        res.status(200).send(JSON.stringify(result));
+        console.log('DONE GETTING========')
+    })
+    .catch(err => {
+        if(err) console.error(err);
+    })
+})
+
+app.post('/replaceOneUpsertProjectDoc', (req, res) => {
+    console.log('ABOUT TO UPSERT=========')
+    var projectData = req.body;
+    var { dealName } =projectData.projectInfo;
+    
+    console.log('projectDealName:', dealName)
+    
+    mongoQuery.replaceOneUpsertProjectDoc(projectData, dealName)
+    .then(result => {
+        
         console.log('result', result);
         res.status(200).send('good job');
+        console.log('DONE UPSERTING=========')
     })
     .catch(err => {
         if(err) console.error(err);
