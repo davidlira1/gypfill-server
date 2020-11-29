@@ -13,11 +13,17 @@ app.get('/getProjectDoc/:dealName', (req, res) => {
     console.log('dealName', dealName);
     
     mongoQuery.getProjectDoc(dealName)
-    .then(result => {
+    .then(result => { //result RETURNS AN ARRAY
         
-        console.log('result', result[0].projectInfo);
-        res.status(200).send(JSON.stringify(result));
-        console.log('DONE GETTING========')
+        //IF ARRAY IS EMPTY(MEANING NOTHING WAS FOUND IN DB, SEND 404)
+        if(result.length === 0) {
+            res.status(404).send();
+        } else {
+            console.log('result', result[0].projectInfo);
+            res.status(200).send(JSON.stringify(result));
+            console.log('DONE GETTING========')
+        }
+
     })
     .catch(err => {
         if(err) console.error(err);
