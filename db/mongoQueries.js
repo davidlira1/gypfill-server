@@ -1,23 +1,22 @@
 const db = require('./index');
 
-const getProjectDoc = (dealName) => {
+const getProjectDoc = (street, companyName) => {
     const projectsCollect = db.get().collection('projects');
 
     return projectsCollect.find(
         {
-            "projectInfo.dealName": dealName
+            "projectInfo.street": street,
+            "companyInfo.companyName": companyName
         }).toArray();
 }
 
-const replaceOneUpsertProjectDoc = (projectData, dealName) => {
+const replaceOneUpsertProjectDoc = (projectData, street, companyName) => {
     const projectsCollect = db.get().collection('projects');
     
     return projectsCollect.replaceOne(
         {
-            // projectInfo: {
-            //     dealName: dealName
-            // }
-            "projectInfo.dealName": dealName
+            "projectInfo.street": street,
+            "companyInfo.companyName": companyName
         }, 
         projectData,
         {

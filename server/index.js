@@ -6,15 +6,13 @@ const mongoQuery = require('../db/mongoQueries.js');
 
 app.use(express.json());
 
-app.get('/getProjectDoc/:dealName', (req, res) => {
+app.get('/getProjectDoc/:street/:companyName', (req, res) => {
     console.log('ABOUT TO GET========')
-    const { dealName } = req.params;
+    const { street, companyName } = req.params;
+    console.log('street - companyName:', `${street} - ${companyName}`)
     
-    console.log('dealName', dealName);
-    
-    mongoQuery.getProjectDoc(dealName)
+    mongoQuery.getProjectDoc(street, companyName)
     .then(result => { //result RETURNS AN ARRAY
-        
         //IF ARRAY IS EMPTY(MEANING NOTHING WAS FOUND IN DB, SEND 404)
         if(result.length === 0) {
             res.status(404).send();
@@ -33,14 +31,13 @@ app.get('/getProjectDoc/:dealName', (req, res) => {
 app.post('/replaceOneUpsertProjectDoc', (req, res) => {
     console.log('ABOUT TO UPSERT=========')
     var projectData = req.body;
-    var { dealName } =projectData.projectInfo;
+    var { street } =projectData.projectInfo;
+    var { companyName } = projectData.companyInfo;
+    console.log('street - companyName:', `${street} - ${companyName}`)
     
-    console.log('projectDealName:', dealName)
-    
-    mongoQuery.replaceOneUpsertProjectDoc(projectData, dealName)
+    mongoQuery.replaceOneUpsertProjectDoc(projectData, street, companyName)
     .then(result => {
-        
-        console.log('result', result);
+        console.log('result', result.result, result.upsertedId);
         res.status(200).send('good job');
         console.log('DONE UPSERTING=========')
     })
