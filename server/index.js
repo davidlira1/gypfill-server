@@ -6,6 +6,10 @@ const mongoQuery = require('../db/mongoQueries.js');
 
 app.use(express.json());
 
+app.get('/testConnection', (req, res) => {
+    res.status(200).send('able to connect to server');
+})
+
 app.get('/getProjectDoc/:street/:companyName', (req, res) => {
     console.log('ABOUT TO GET========')
     const { street, companyName } = req.params;
