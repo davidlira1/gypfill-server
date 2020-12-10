@@ -7,15 +7,15 @@ const mongoQuery = require('../db/mongoQueries.js');
 app.use(express.json());
 
 app.get('/testConnection', (req, res) => {
-    res.status(200).send('able to connect to server');
+    res.status(200).send('<h1>able to connect to Gyp Fill Server</h1><img src="https://gyp-fill.com/wp-content/uploads/2020/10/Jpg-file-01-01-5-scaled.jpg">');
 })
 
-app.get('/getProjectDoc/:street/:companyName', (req, res) => {
+app.get('/getProjectDoc/:street/:companyName/:phaseOrBuilding', (req, res) => {
     console.log('ABOUT TO GET========')
-    const { street, companyName } = req.params;
-    console.log('street - companyName:', `${street} - ${companyName}`)
+    const { street, companyName, phaseOrBuilding } = req.params;
+    console.log('street - companyName:', `${street} - ${companyName} - ${phaseOrBuilding}`)
     
-    mongoQuery.getProjectDoc(street, companyName)
+    mongoQuery.getProjectDoc(street, companyName, phaseOrBuilding)
     .then(result => { //result RETURNS AN ARRAY
         //IF ARRAY IS EMPTY(MEANING NOTHING WAS FOUND IN DB, SEND 404)
         if(result.length === 0) {
@@ -35,11 +35,12 @@ app.get('/getProjectDoc/:street/:companyName', (req, res) => {
 app.post('/replaceOneUpsertProjectDoc', (req, res) => {
     console.log('ABOUT TO UPSERT=========')
     var projectData = req.body;
-    var { street } =projectData.projectInfo;
+    var { street, phaseOrBuilding } =projectData.projectInfo;
     var { companyName } = projectData.companyInfo;
-    console.log('street - companyName:', `${street} - ${companyName}`)
     
-    mongoQuery.replaceOneUpsertProjectDoc(projectData, street, companyName)
+    console.log('street - companyName - phaseOrBuilding:', `${street} - ${companyName} - ${phaseOrBuilding}`)
+    
+    mongoQuery.replaceOneUpsertProjectDoc(projectData, street, companyName, phaseOrBuilding)
     .then(result => {
         console.log('result', result.result, result.upsertedId);
         res.status(200).send('good job');
