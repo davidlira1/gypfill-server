@@ -10,6 +10,13 @@ app.get('/testConnection', (req, res) => {
     res.status(200).send('<h1>able to connect to Gyp Fill Server</h1><img src="https://gyp-fill.com/wp-content/uploads/2020/10/Jpg-file-01-01-5-scaled.jpg">');
 })
 
+app.get('/testDBConnection', (req, res) => {
+    mongoQuery.getProjectDoc('17331 Muskrat Ave', 'Desert Design Builders', 'empty')
+    .then(data => {
+        res.status(200).json(data);
+    });
+})
+
 app.get('/getProjectDoc/:street/:companyName/:phaseOrBuilding', (req, res) => {
     console.log('ABOUT TO GET========')
     const { street, companyName, phaseOrBuilding } = req.params;

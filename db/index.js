@@ -1,6 +1,6 @@
 const { MongoClient } = require('mongodb');
 
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb://192.168.2.250:27017';
 
 const dbName = 'gypFillEnterprise'
 
