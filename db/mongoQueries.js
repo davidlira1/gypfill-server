@@ -1,5 +1,16 @@
 const db = require('./index');
 
+const getMaxJobNumber = () => {
+    const projectsCollect = db.get().collection('test');
+
+    return projectsCollect.find({"projectInfo.jobNumber":{"$exists":true}}).sort({"projectInfo.jobNumber": -1}).limit(1).toArray()
+    .then(data => {
+        console.log(data);
+        if(data.length === 0) return 0;
+        return data[0].projectInfo.jobNumber;
+    });
+}
+
 const getProjectDoc = (street, companyName, phaseOrBuilding) => {
     const projectsCollect = db.get().collection('projects');
 
@@ -52,5 +63,6 @@ const replaceOneUpsertProjectDoc = (projectData, street, companyName, phaseOrBui
 
 module.exports = {
     getProjectDoc,
-    replaceOneUpsertProjectDoc
+    replaceOneUpsertProjectDoc,
+    getMaxJobNumber
 }

@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
-const { MongoClient } = require('mongodb');
-const port = 3000;
+const port = 4000;
 const mongoQuery = require('../db/mongoQueries.js');
 
 app.use(express.json());
@@ -15,6 +14,13 @@ app.get('/testDBConnection', (req, res) => {
     .then(data => {
         res.status(200).json(data);
     });
+})
+
+app.get('/getMaxJobNumber', (req, res) => {
+    mongoQuery.getMaxJobNumber()
+    .then(maxJobNumber => {
+        res.status(200).json(maxJobNumber);
+    })
 })
 
 app.get('/getProjectDoc/:street/:companyName/:phaseOrBuilding', (req, res) => {
