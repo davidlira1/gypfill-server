@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 4000;
+const port = 3000;
 const mongoQuery = require('../db/mongoQueries.js');
 
 app.use(express.json());

@@ -1,7 +1,7 @@
 const db = require('./index');
 
 const getMaxJobNumber = () => {
-    const projectsCollect = db.get().collection('test');
+    const projectsCollect = db.get().collection('projects');
 
     return projectsCollect.find({"projectInfo.jobNumber":{"$exists":true}}).sort({"projectInfo.jobNumber": -1}).limit(1).toArray()
     .then(data => {
