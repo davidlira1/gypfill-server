@@ -11,6 +11,14 @@ const getMaxJobNumber = () => {
     });
 }
 
+
+const getAllProjects = () => {
+    const projectsCollect = db.get().collection('projects');
+
+    return projectsCollect.find({}).toArray();
+}
+
+
 const getProjectDoc = (street, companyName, phaseOrBuilding) => {
     const projectsCollect = db.get().collection('projects');
 
@@ -62,7 +70,8 @@ const replaceOneUpsertProjectDoc = (projectData, street, companyName, phaseOrBui
 }
 
 module.exports = {
+    getMaxJobNumber,
+    getAllProjects,
     getProjectDoc,
     replaceOneUpsertProjectDoc,
-    getMaxJobNumber
 }

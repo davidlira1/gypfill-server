@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const port = 3000;
 const mongoQuery = require('../db/mongoQueries.js');
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/testConnection', (req, res) => {
@@ -20,6 +22,13 @@ app.get('/getMaxJobNumber', (req, res) => {
     mongoQuery.getMaxJobNumber()
     .then(maxJobNumber => {
         res.status(200).json(maxJobNumber);
+    })
+})
+
+app.get('/getAllProjects', (req, res) => {
+    mongoQuery.getAllProjects()
+    .then(projects => {
+        res.status(200).json(projects);
     })
 })
 
