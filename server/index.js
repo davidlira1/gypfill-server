@@ -12,7 +12,7 @@ app.get('/testConnection', (req, res) => {
 })
 
 app.get('/testDBConnection', (req, res) => {
-    mongoQuery.getProjectDoc('17331 Muskrat Ave', 'Desert Design Builders', 'empty')
+    mongoQuery.getProjectDoc('Job Template', 'GypFill', 'empty')
     .then(data => {
         res.status(200).json(data);
     });
