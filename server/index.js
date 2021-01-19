@@ -5,7 +5,7 @@ const port = 3000;
 const mongoQuery = require('../db/mongoQueries.js');
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({limit:'50mb'}));
 
 app.get('/testConnection', (req, res) => {
     res.status(200).send('<h1>able to connect to Gyp Fill Server</h1><img src="https://gyp-fill.com/wp-content/uploads/2020/10/Jpg-file-01-01-5-scaled.jpg">');
@@ -71,6 +71,18 @@ app.post('/replaceOneUpsertProjectDoc', (req, res) => {
     .catch(err => {
         if(err) console.error(err);
     });
+})
+
+app.post('/updateFormulaTables', (req, res) => {
+    var formulaTables = req.body;
+    console.log(formulaTables);
+    mongoQuery.updateFormulaTables(formulaTables)
+    .then(result => {
+        res.status(200).send('good job');
+    })
+    .catch(err => {
+        if(err) console.error(err);
+    })
 })
 
 app.listen(port, (err) => {

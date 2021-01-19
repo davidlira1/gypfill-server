@@ -69,9 +69,24 @@ const replaceOneUpsertProjectDoc = (projectData, street, companyName, phaseOrBui
     }
 }
 
+const updateFormulaTables = (formulaTables) => {
+    const formulaTablesCollect = db.get().collection('formulaTables');
+
+    return formulaTablesCollect.replaceOne(
+        {
+            "title": "formulaTables"
+        },
+        formulaTables,
+        {
+            upsert: true
+        }
+    )
+}
+
 module.exports = {
     getMaxJobNumber,
     getAllProjects,
     getProjectDoc,
     replaceOneUpsertProjectDoc,
+    updateFormulaTables
 }
