@@ -34,104 +34,88 @@ var calcGyp = function(projData, estimateVersion) {
                   concExists = true;
             }
       }
+
       //==========================================================================================
-      //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      //==========================================================================================
-    
       //DRIVING
-      
       //==========================================================================================
       //1. ADD DISTANCE  DICTIONARY
       estimate.distance = distance(zipCode, city);
-      var miles = estimate.distance("Van Nuys")
+      var miles = estimate.distance["Van Nuys"];
       
       //2. ADD DRIVING TIME TO TRUCK DICTIONARY (ROUND TRIP at 55mph)
-      estimate.trucks.drivingTime = drivingTime((estimate.distance("Van Nuys")))
-      var drivingTimeHrs = estimate.trucks.drivingTime
+      estimate.trucks.drivingTime = drivingTime(miles);
+      var drivingTimeHrs = estimate.trucks.drivingTime;
       
       //3. DETERMINE IF OVERNIGHT
       if (gypExists === true) {
-            dict = getValues("Prices_PerDiem", Array("Per Diem"), Array.Default, Array("Miles Threshold"))
+            dict = getValues("Prices_PerDiem", {"Per Diem": "Default"}, ["Miles Threshold"]);
             //the assumption is it must be a certain minimum distance and must have soundmat
             //what if it is only gyp though? good question for Tamir. but let//s study this first.
-            if (miles > dict("Miles Threshold") && estimate.totals.gypSFWithSoundMat !== 0) {
-                  overnight = true
+            if (miles > dict["Miles Threshold"] && estimate.totals.gypSFWithSoundMat !== 0) {
+                  overnight = true;
             }
       }
       //==========================================================================================
-      //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      //==========================================================================================
-            
       //SIZE
-            
       //==========================================================================================
       if (gypExists === true) {
             if (totalGypSF <= 400) {
-                  estimate.gyp.size = "Small Pour"
+                  estimate.gyp.size = "Small Pour";
             } else {
-                  estimate.gyp.size = "Normal"
+                  estimate.gyp.size = "Normal";
             }
       }
+
       //==========================================================================================
-      //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      //==========================================================================================
-                  
-      //GYPCRETE LABOR
-                  
+      //GYPCRETE LABOR    
       //==========================================================================================
       if (gypExists === true) {
-            var gypThick1stAssem = estimate.structures.structure1.gypAssemblies.gypAssem1.gypThick
-            var difficultyLevel = estimate.gyp.difficultyLevel
-            var gypType = estimate.structures.structure1.gypAssemblies.gypAssem1.gypType
+            var gypThick1stAssem = estimate.structures.structure1.gypAssemblies.gypAssem1.gypThick;
+            var difficultyLevel = estimate.gyp.difficultyLevel;
+            var gypType = estimate.structures.structure1.gypAssemblies.gypAssem1.gypType;
       
             if (estimate.totals.gypSFWithSoundMat > 0 && estimate.totals.gypSFWithSoundMat <= 4000) {
-                  estimate.gyp.sameDay = "Yes"
+                  estimate.gyp.sameDay = "Yes";
             } else {
-                  estimate.gyp.sameDay = "No"
+                  estimate.gyp.sameDay = "No";
             }
             
-            var sameDay = estimate.gyp.sameDay
+            var sameDay = estimate.gyp.sameDay;
       
-            gypLabor wageType, projectType, totalGypSF, totalGypSFWithSoundMat, gypThick1stAssem, difficultyLevel, gypType, miles, overnight, saturdayGyp, estimate, overrideGypBarrelMix
-            estimate.totals.gypCostAfterMilesThreshold = estimate.gyp.labor.costOfAfterMilesThreshold //more will be added later
-            estimate.gyp.labor.mobilizationsSoundMat = gypMobilizations((estimate.totals.gypSFWithSoundMat), "Normal")
-            dict = addMobilsCost((estimate.gyp.labor.addMobils.mobils), (estimate.gyp.labor.addMobils.mobilCost), wageType)
-            estimate.gyp.labor.addMobils.addMobilsCost = dict.addMobilsCostTotal
-            estimate.gyp.labor.addMobils.enabled = false
-            estimate.totals.gypCostAddMobilsProduction = dict.addMobilsCostProduction
-            estimate.totals.gypCostAddMobilsTotal = dict.addMobilsCostTotal
-            estimate.totals.gypCostSaturdayOption = estimate.gyp.labor.costOfGypLaborOption //more will be added later
+            gypLabor (wageType, projectType, totalGypSF, totalGypSFWithSoundMat, gypThick1stAssem, difficultyLevel, gypType, miles, overnight, saturdayGyp, estimate, overrideGypBarrelMix);
+            estimate.totals.gypCostAfterMilesThreshold = estimate.gyp.labor.costOfAfterMilesThreshold; //more will be added later
+            estimate.gyp.labor.mobilizationsSoundMat = gypMobilizations(estimate.totals.gypSFWithSoundMat, "Normal");
+            dict = addMobilsCost(estimate.gyp.labor.addMobils.mobils, estimate.gyp.labor.addMobils.mobilCost, wageType);
+            estimate.gyp.labor.addMobils.addMobilsCost = dict.addMobilsCostTotal;
+            estimate.gyp.labor.addMobils.enabled = false;
+            estimate.totals.gypCostAddMobilsProduction = dict.addMobilsCostProduction;
+            estimate.totals.gypCostAddMobilsTotal = dict.addMobilsCostTotal;
+            estimate.totals.gypCostSaturdayOption = estimate.gyp.labor.costOfGypLaborOption; //more will be added later
       }
-      //==========================================================================================
-      //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      //==========================================================================================
-                                                                                                                                                                                                      
+      //==========================================================================================                                                                                                   
       //CALCULATE MATERIALS AND LABOR FOR GYPCRETE AND CONCRETE
-      
       //==========================================================================================
       //LOOP OVER EACH STRUCTURE
       //==========================================================================================
-      var totals = estimate.totals
+      var totals = estimate.totals;
       for(structure in estimate.structures) {
-            //==========================================================================================
-            //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
             //==========================================================================================
             // LOOP OVER EACH GYP ASSEM
             //==========================================================================================
             for(gypAssem in estimate.structures[structure].gypAssemblies) {
                   
                   //1. SET ASSEM VARIABLE FOR EASIER ACCESS
-                  assem = (estimate.structures[structure].gypAssemblies[gypAssem])
+                  assem = estimate.structures[structure].gypAssemblies[gypAssem];
                   
                   //2. CALCULATE MATERIALS AND LABOR COSTS FOR ASSEMBLY
-                  calculateGypAssembly estimate, assem, mixDesign, wageType, sameDay, overnight, miles, projectType, saturdayGyp
+                  calculateGypAssembly(estimate, assem, mixDesign, wageType, sameDay, overnight, miles, projectType, saturdayGyp);
                   
                   //3. LOOP OVER EACH FLOOR
                   for(Floor in estimate.structures[structure].gypAssemblies[gypAssem].floors) {
                       //1. SET F VARIABLE FOR EASIER ACCESS
                       f = estimate.structures[structure].gypAssemblies[gypAssem].floors[Floor]
                       //2. CALCULATE MATERIALS AND COSTS FOR FLOOR
-                      materialsAndCostsGyp f, assem, mixDesign, wageType, projectType, saturdayGyp
+                      materialsAndCostsGyp (f, assem, mixDesign, wageType, projectType, saturdayGyp);
                   }
                   
                   //4. LOOP OVER EACH OPTION
@@ -139,7 +123,7 @@ var calcGyp = function(projData, estimateVersion) {
                       //1. SET assemOption VARIABLE FOR EASIER ACCESS
                       assemOption = estimate.structures[structure].gypAssemblies[gypAssem].options[opt]
                       //2. CALCULATE MATERIALS AND COSTS FOR FLOOR
-                      calculateGypAssembly estimate, assemOption, mixDesign, wageType, sameDay, overnight, miles, projectType, saturdayGyp
+                      calculateGypAssembly(estimate, assemOption, mixDesign, wageType, sameDay, overnight, miles, projectType, saturdayGyp);
                       //3. CALCULATE DIFFERENCE BETWEEN OPTION ASSEMBLY AND REGULAR ASSEMBLY
                       assemOption.difference = assemOption.gypAssemCost - assem.gypAssemCost
                   }
@@ -161,7 +145,6 @@ var calcGyp = function(projData, estimateVersion) {
                   
                   //SATURDAY COST
                   totals.gypCostSaturdayOption = totals.gypCostSaturdayOption + assem.costOfTonsOption
-                
             }
             //==========================================================================================
             //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||

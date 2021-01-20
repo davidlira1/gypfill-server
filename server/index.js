@@ -73,6 +73,17 @@ app.post('/replaceOneUpsertProjectDoc', (req, res) => {
     });
 })
 
+app.get('/getFormulaTables', (req, res) => {
+    mongoQuery.getFormulaTables()
+    .then(result => {
+        if(result.length === 0) {
+            res.status(404).send();
+        } else {
+            res.status(200).send(JSON.stringify(result[0]));
+        }
+    })
+})
+
 app.post('/updateFormulaTables', (req, res) => {
     var formulaTables = req.body;
     console.log(formulaTables);

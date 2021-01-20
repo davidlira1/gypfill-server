@@ -83,10 +83,17 @@ const updateFormulaTables = (formulaTables) => {
     )
 }
 
+const getFormulaTables = () => {
+    const formulaTablesCollect = db.get().collection('formulaTables');
+
+    return formulaTablesCollect.find({}).toArray();
+}
+
 module.exports = {
     getMaxJobNumber,
     getAllProjects,
     getProjectDoc,
     replaceOneUpsertProjectDoc,
-    updateFormulaTables
+    updateFormulaTables,
+    getFormulaTables
 }

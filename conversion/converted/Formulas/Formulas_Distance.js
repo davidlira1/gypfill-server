@@ -7,27 +7,25 @@ var distance = function(zipCode, city) {
 }
 
 var milesToLocation = function(origin, zipCode, city) {
-      var dict
-      
-      zipCode = CLng[zipCode]
-      
+      var dict;
+          
       if (zipCode !== "") {
-            dict = getValues("Miles_ZipCodes_VanNuys", Array("Zip Code"), Array[zipCode], Array.Miles)
+            dict = getValues("Miles_ZipCodes_VanNuys", {"Zip Code":zipCode}, ["Miles"])
           
             if (dict.Miles === "") {
-                  dict = getValues("Miles_Cities_VanNuys", Array.City, Array[city], Array.Miles)
-                  milesToLocation = dict.Miles
+                  dict = getValues("Miles_Cities_VanNuys", {"City": city}, ["Miles"])
+                  return dict.Miles;
             } else {
-                  milesToLocation = dict.Miles
+                  return dict.Miles;
             }
           
       } else if (city !== "") {
       
-          dict = getValues("Miles_Cities_VanNuys", Array.City, Array[city], Array.Miles)
-          milesToLocation = dict.Miles
+          dict = getValues("Miles_Cities_VanNuys", {"City": city}, ["Miles"])
+          return dict.Miles
       }
       
       if (milesToLocation === "") {
-          milesToLocation = 0
+          return 0;
       }
 }
