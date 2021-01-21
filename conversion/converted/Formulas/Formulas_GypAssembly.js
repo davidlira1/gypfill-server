@@ -1,4 +1,4 @@
-var gypBags = function(SF, gypType, thickness, mixDesign) {
+module.exports.gypBags = function(SF, gypType, thickness, mixDesign) {
       var cuYdPerBag;
       if (mixDesign === 0) {
             if (gypType === "Regular" || gypType === "2010+" || gypType === "3310" || gypType === "Radiant") {
@@ -16,11 +16,11 @@ var gypBags = function(SF, gypType, thickness, mixDesign) {
     
       return Math.ceil(SF * (thickness / 12) / cuYdPerBag);
 }
-var costOfGypBags = function(gypType, gypBags) {
+module.exports.costOfGypBags = function(gypType, gypBags) {
     var dict = getValues("Prices_GypBag", {"Gyp Type": gypType}, ["Price/Bag"]);
     return Math.ceil(gypBags * dict["Price/Bag"]);
 }
-var tons = function(gypType, gypBags, mixDesign) {
+module.exports.tons = function(gypType, gypBags, mixDesign) {
       var poundsOfSand;
       if (mixDesign === 0) {
             if (gypType === "Regular" || gypType === "2010+" || gypType === "3310" || gypType === "Radiant") {
@@ -37,7 +37,7 @@ var tons = function(gypType, gypBags, mixDesign) {
       }
      return Math.ceil(gypBags * (poundsOfSand / 2000));
 }
-var costOfTons = function(tons, saturday) {
+module.exports.costOfTons = function(tons, saturday) {
       var dict = getValues("Prices_Sand", {"Type": "Regular"}, ["Price/Ton", "Freight Cost", "Saturday Extra"]);
       
       var numOfTrucks = Math.ceil(tons / 25);
@@ -58,21 +58,21 @@ var costOfTons = function(tons, saturday) {
       }
       return d;
 }
-var rotoStater = function(bags) {
+module.exports.rotoStater = function(bags) {
     return bags / 3600 + 0.001;
 }
-var costOfRotoStater = function() {
+module.exports.costOfRotoStater = function() {
     costOfRotoStater = getValue("RotoStater", "Roto Stater", "Price")
 }
-var soundMatRolls = function(SF, soundMatType) {
+module.exports.soundMatRolls = function(SF, soundMatType) {
     var dict = getValues("Prices_SoundMat", {"SM Type": soundMatType}, ["SF/Roll"]);
     return Math.ceil(SF / dict["SF/Roll"]);
 }
-var costOfSoundMat = function(SF, soundMatType) {
+module.exports.costOfSoundMat = function(SF, soundMatType) {
     var dict = getValues("Prices_SoundMat", {"SM Type": soundMatType}, ["Price/SF"]);
     return Math.ceil(SF * dict["Price/SF"]);
 }
-var soundMatLaborers = function(SF, overnight, soundMatMobilizations, soundMatType) {
+module.exports.soundMatLaborers = function(SF, overnight, soundMatMobilizations, soundMatType) {
       var dict;
       //CHECK IF SOUND MAT SF IS LESS THAN MINIMUM IN TABLE. IF SO, GET FROM THE SMALL TABLE
       dict = getValues("Labor_SoundMat_Minimum", {"Type": "Minimum"}, ["SF"]);
@@ -102,14 +102,14 @@ var soundMatLaborers = function(SF, overnight, soundMatMobilizations, soundMatTy
             }
       } 
 }
-var costOfSoundMatLabor = function(laborers, wageType) {
+module.exports.costOfSoundMatLabor = function(laborers, wageType) {
       //1. GET PRICE/DAY F|| SOUND MAT LAB||
       var dict = getValues("Wage_" + wageType + "_SM", {"Laborer": "Average"}, ["Price/Day"]);
     
       //2. CALCULATE SOUND MAT LAB||
       return Math.ceil(dict["Price/Day"] * laborers);
 }
-var lFt = function(SF) {
+module.exports.lFt = function(SF) {
       lFt = Math.ceil(SF * 0.31);
 }
 

@@ -1,4 +1,4 @@
-var calculatePerGypFloorTotals = function(estimate) {
+module.exports.calculatePerGypFloorTotals = function(estimate) {
       //1. SETTinG THE DICTIONARY
       var totalsPerGypFloor = {};
       

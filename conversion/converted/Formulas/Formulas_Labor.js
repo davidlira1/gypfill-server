@@ -1,6 +1,6 @@
 var { getValues, getValuesBasedOnNum } = require("../formulaTables.js");
 
-var gypLabor = function(wageType, structureType, SF, SFsm, gypThick, difficultyLevel, gypType, miles, overnight, saturday, estimate, overrideGypBarrelMix) {
+module.exports.gypLabor = function(wageType, structureType, SF, SFsm, gypThick, difficultyLevel, gypType, miles, overnight, saturday, estimate, overrideGypBarrelMix) {
       var labor = estimate.gyp.labor;
       var dict, dict2;
       var tableName;
@@ -91,12 +91,12 @@ var gypLabor = function(wageType, structureType, SF, SFsm, gypThick, difficultyL
           
 }
 
-var gypMobilizations = function(SF, gypType) {
-      var dict = getValues("Mobils_Gyp", {"Type", gypType}, ["SF/Day"]);
+module.exports.gypMobilizations = function(SF, gypType) {
+      var dict = getValues("Mobils_Gyp", {"Type": gypType}, ["SF/Day"]);
       return Round((SF / dict["SF/Day"]) + 0.49);
 }
 
-var addMobilsCost = function(mobils, mobilCost, wageType) {
+module.exports.addMobilsCost = function(mobils, mobilCost, wageType) {
       var dict = getValues("Wage_" + wageType + "_Gyp", {"Laborer": "Average"}, ["Price/Day"]);
       
       return {
@@ -105,7 +105,7 @@ var addMobilsCost = function(mobils, mobilCost, wageType) {
       };
 }
 
-var costOfGypLabor = function(wageType, numOfLaborers, mobilizations, saturday) {
+module.exports.costOfGypLabor = function(wageType, numOfLaborers, mobilizations, saturday) {
       var costOfGypLabor = {};
       var dict = getValues("Wage_" + wageType + "_Gyp", {"Laborer": Average}, ["Price/Day", "Price/Hr [OT]"]);
       var costOfLaborerPerDay;
@@ -135,7 +135,7 @@ var costOfGypLabor = function(wageType, numOfLaborers, mobilizations, saturday) 
       return costOfGypLabor;
 }
 
-var overTimeGypLabor = function(wageType, mobilizations, numOfLaborers, drivingTime, cleanSetTime, equip, structures, totalGypBags, overnight) {
+module.exports.overTimeGypLabor = function(wageType, mobilizations, numOfLaborers, drivingTime, cleanSetTime, equip, structures, totalGypBags, overnight) {
       overTimeGypLabor = {}
       var dict;
       var pump = equip.pump;
@@ -293,7 +293,7 @@ var overTimeGypLabor = function(wageType, mobilizations, numOfLaborers, drivingT
       overTimeGypLabor.costOfOverTimeGypLaborDrivers = costOfOverTimeGypLaborDrivers
     
 }
-var costOfOverTimeGypLaborHelper = function(wageType, overTimeHrs, numOfLaborers) {
+module.exports.costOfOverTimeGypLaborHelper = function(wageType, overTimeHrs, numOfLaborers) {
       if (overTimeHrs > 0) {
             if (overTimeHrs > 4) {
                   costOfOverTimeGypLaborHelper = costOfOverTimeGypLaborHelper + (4 * overTimeRate("Gyp", wageType, 1) * numOfLaborers) //this will be regular OT
@@ -303,23 +303,22 @@ var costOfOverTimeGypLaborHelper = function(wageType, overTimeHrs, numOfLaborers
             }
       }
 }
-var costOfOverTimeSoundMatLabor = function(wageType, mobilizations, drivingTime, overnight) {
+module.exports.costOfOverTimeSoundMatLabor = function(wageType, mobilizations, drivingTime, overnight) {
       //number of sound mat mobilizations is equal to gyp mobilizations
       //only the 1 driver will get overtime
       if (overnight === true) {
-            costOfOverTimeSoundMatLabor = 0
-            Exit Function
+            return 0;
       }
       if (drivingTime > 4) {
-            costOfOverTimeSoundMatLabor = overTimeRate("SM", wageType, 1) * 4
-            costOfOverTimeSoundMatLabor = overTimeRate("SM", wageType, drivingTime) * drivingTime //the hours after 4 hours
+            costOfOverTimeSoundMatLabor = overTimeRate("SM", wageType, 1) * 4;
+            costOfOverTimeSoundMatLabor+= overTimeRate("SM", wageType, drivingTime) * drivingTime; //the hours after 4 hours
       } else {
             costOfOverTimeSoundMatLabor = overTimeRate("SM", wageType, drivingTime)
       }
       
-      costOfOverTimeSoundMatLabor = costOfOverTimeSoundMatLabor * mobilizations
+      return costOfOverTimeSoundMatLabor * mobilizations;
 }
-var overTimeRate = function(material, wageType, overTimeHrs) {
+module.exports.overTimeRate = function(material, wageType, overTimeHrs) {
       var typeOfOverTime;
       if (overTimeHrs <= 4) {
             typeOfOverTime = "Price/Hr [OT]"

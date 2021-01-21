@@ -1,4 +1,4 @@
-var calculateTrucks = function(estimate, gypExists, concExists, overnight, sameDay) {
+module.exports.calculateTrucks = function(estimate, gypExists, concExists, overnight, sameDay) {
       if (gypExists) {
             //==========================================================================================
             //TRUCKS DRIVING - GYPCRETE, PREPOURS, AND SOUNDMAT
@@ -26,11 +26,11 @@ var calculateTrucks = function(estimate, gypExists, concExists, overnight, sameD
                                             estimate.trucks.soundMatMaintenanceCost
       }
 }
-var calculateTrucksConc = function(assem, miles) {
+module.exports.calculateTrucksConc = function(assem, miles) {
       //ADD A TRUCKS OBJECT TO THE ASSEMBLY
       assem.trucks = {
-            costFuel = drivingFuelsCost("Conc", miles, assem.labor.concMobilizations + assem.addMobils),
-            costMaintenance = trucksMaintCost("Conc", miles, assem.labor.concMobilizations + assem.addMobils, false)
+            costFuel: drivingFuelsCost("Conc", miles, assem.labor.concMobilizations + assem.addMobils),
+            costMaintenance: trucksMaintCost("Conc", miles, assem.labor.concMobilizations + assem.addMobils, false)
       }
       
       //we will not calculate the insurance, registration, or dot costs since those get paid regardless if there is work or not

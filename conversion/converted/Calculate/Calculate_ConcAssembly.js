@@ -1,4 +1,4 @@
-var calculateConcAssembly = function(assem, drivingTimeHrs, wageType, city, miles, zipCode, saturdayConc, concPumpCostOption, numOfFloors, overrideConcBarrelMix) {
+module.exports.calculateConcAssembly = function(assem, drivingTimeHrs, wageType, city, miles, zipCode, saturdayConc, concPumpCostOption, numOfFloors, overrideConcBarrelMix) {
       //1. CALCULATE MATERIALS AND COST FOR ASSEMBLY
       materialsAndCostsConc(assem, assem, wageType, city, zipCode, saturdayConc, overrideConcBarrelMix);
       

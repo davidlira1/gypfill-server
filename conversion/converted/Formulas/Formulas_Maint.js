@@ -1,4 +1,4 @@
-var trucksMaintCost = function(gypOrConc, miles, mobilizations, overnight) {
+module.exports.trucksMaintCost = function(gypOrConc, miles, mobilizations, overnight) {
       //1. GET MAINTENANCE COST PER DAY (BASED ON THE YEARLY TRUCK BREAK COST)
       var dict = getValues("Maint_Trucks", {"Truck": "Yearly"}, ["Maint Cost/Day"]);
       var maintCostPerDay = dict["Maint Cost/Day"];
@@ -22,7 +22,7 @@ var trucksMaintCost = function(gypOrConc, miles, mobilizations, overnight) {
       }
       return trucksMaintCost
 }
-var machinesMaintCost = function(gypOrConc, hours, machines, mobilizations) {
+module.exports.machinesMaintCost = function(gypOrConc, hours, machines, mobilizations) {
     var machinesMaintCost = {};
 
     if (gypOrConc === "Gyp") {
@@ -33,7 +33,7 @@ var machinesMaintCost = function(gypOrConc, hours, machines, mobilizations) {
     }
     return machinesMaintCost;
 }
-var machineMaintCost = function(machineType, hours, machine, mobilizations) {
+module.exports.machineMaintCost = function(machineType, hours, machine, mobilizations) {
     var tableName;
     if (machineType === "gypPump") {
         tableName = "Equip_Gyp_Pumps"

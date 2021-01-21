@@ -1,15 +1,15 @@
-var axios = require('axios');
+const axios = require('axios');
 
 var formulaTables;
 
-var getFormulaTables = () => {
+module.exports.getFormulaTables = () => {
     return axios.get('http://localhost:3000/getFormulaTables')
     .then(result => {
         formulaTables = result.data;
     })
 }
 
-var getValues = (tableName, obj, resultHeaders) => {
+module.exports.getValues = (tableName, obj, resultHeaders) => {
     var headers = Object.keys(obj);
     var table = formulaTables[tableName];
     var match;
@@ -35,7 +35,7 @@ var getValues = (tableName, obj, resultHeaders) => {
     return results;
 }
 
-var getValuesBasedOnNum = (tableName, num, resultHeaders) => {
+module.exports.getValuesBasedOnNum = (tableName, num, resultHeaders) => {
     var table = formulaTables[tableName];
     var firstCol = table[Object.keys(table)[0]];
     var results = {};
@@ -55,10 +55,4 @@ var getValuesBasedOnNum = (tableName, num, resultHeaders) => {
     }
 
     return results;
-}
-
-module.exports = {
-    getFormulaTables,
-    getValues,
-    getValuesBasedOnNum
 }

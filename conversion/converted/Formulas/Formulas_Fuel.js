@@ -1,4 +1,4 @@
-var drivingFuelsCost = function(material, miles, mobilizations) {
+module.exports.drivingFuelsCost = function(material, miles, mobilizations) {
       //WE DRIVE FOR EACH MOBILIZATION, ROUND TRIP
       if (miles !== "Not Available") {
             //1. CALCULATE COST FOR ONE WAY
@@ -20,7 +20,7 @@ var drivingFuelsCost = function(material, miles, mobilizations) {
       }
       return drivingFuelsCost;
 }
-var drivingFuelCost = function(vehicle, miles) {
+module.exports.drivingFuelCost = function(vehicle, miles) {
     //ONE WAY
     var dict;
     dict = getValues("Equip_Vehicles", {"Model": vehicle}, ["Fuel"]);
@@ -36,7 +36,7 @@ var drivingFuelCost = function(vehicle, miles) {
     
     return Math.ceil(gallons * pricePerGallon);
 }
-var machinesFuelCost = function(gypOrConc, hrs, machines) {
+module.exports.machinesFuelCost = function(gypOrConc, hrs, machines) {
       machinesFuelCost = {}
       
       if (gypOrConc === "Gyp") {
@@ -47,7 +47,7 @@ var machinesFuelCost = function(gypOrConc, hrs, machines) {
       }
       return machineFuelCost;
 }
-var machineFuelCost = function(machineType, machine, hrs) {
+module.exports.machineFuelCost = function(machineType, machine, hrs) {
       var tableName;
       //1. DETERMINE TABLE NAME
       if (machineType === "gypPump") {

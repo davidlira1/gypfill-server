@@ -1,4 +1,4 @@
-{
+module.exports.projData = {
     "_id": "6005b4d7d214cdcecb774c02",
     "projectInfo": {
         "projectName": "3020x Test Aparts",

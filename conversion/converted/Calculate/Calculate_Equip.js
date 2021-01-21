@@ -1,4 +1,4 @@
-var calculateEquip = function(estimate, gypExists, concExists) {
+module.exports.calculateEquip = function(estimate, gypExists, concExists) {
       if (gypExists) {
             //==========================================================================================
             //GYPCRETE EQUIP
@@ -37,7 +37,7 @@ var calculateEquip = function(estimate, gypExists, concExists) {
             //==========================================================================================
       }
 }
-var equipCostsConc = function(assem, concPumpCostOption, mobilizations, overrideConcBarrelMix) {
+module.exports.equipCostsConc = function(assem, concPumpCostOption, mobilizations, overrideConcBarrelMix) {
       if (assem.concYds > 2.37 || overrideConcBarrelMix === "Yes" || assem.section === "Stairs") {
           assem.equip = {
             pumpTimeHrs: concPumpTime(assem.concYds, assem.section),
@@ -54,7 +54,7 @@ var equipCostsConc = function(assem, concPumpCostOption, mobilizations, override
             }
       }
 }
-var concPumpCost = function(concPumpCostOption, mobilizations) {
+module.exports.concPumpCost = function(concPumpCostOption, mobilizations) {
       if (concPumpCostOption === "Yes") {
             var dict = getValues("Equip_Conc_Pumps", ["Model-Num"], ["757"], ["Pump Cost/Day"]);
             return dict["Pump Cost/Day"] * mobilizations;

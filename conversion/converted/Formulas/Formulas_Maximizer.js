@@ -1,11 +1,11 @@
-var maximizerBags = function(yds) {
+module.exports.maximizerBags = function(yds) {
     return Math.ceil(yds * 27);
 }
-var costOfMaximizerBags = function(bags) {
+module.exports.costOfMaximizerBags = function(bags) {
       var dict = getValues("Prices_ConcBag", {"Type": "Maximizer"}, ["Price/Bag"]);
       return bags * dict["Price/Bag"];
 }
-var maximizerLaborers = function(yds, addMobils) {
+module.exports.maximizerLaborers = function(yds, addMobils) {
       var ml = {}
       var dict = getValuesBasedOnNum("Labor_ConcBag", yds, ["CuYds", "Laborers", "Finishers"]);
       var sets = Math.ceil(yds / 2.37);
@@ -16,7 +16,7 @@ var maximizerLaborers = function(yds, addMobils) {
       ml.totalCrew.Total = ml.totalCrew.Laborers + ml.totalCrew.Finishers;
       return ml;
 }
-var costOfMaximizerLaborers = function(wageType, laborers, miles, saturday) {
+module.exports.costOfMaximizerLaborers = function(wageType, laborers, miles, saturday) {
       var costOfMaximizerLaborers = {};
       var dict = getValues("Wage_" + wageType + "_Conc", {"Laborer": "Average"}, ["Price/Day", "Price/Hr [OT]"]);
   

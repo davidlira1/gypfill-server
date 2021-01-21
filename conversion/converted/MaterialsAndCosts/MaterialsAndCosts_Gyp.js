@@ -1,4 +1,4 @@
-var materialsAndCostsGyp = function(assem, dict, mixDesign, wageType, projectType, saturday) {
+module.exports.materialsAndCostsGyp = function(assem, dict, mixDesign, wageType, projectType, saturday) {
       var temp;
       //==========================================================================================
       //PERIMETER FOAM

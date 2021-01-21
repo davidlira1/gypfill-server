@@ -1,23 +1,23 @@
-var drivingTime = function(miles) {
+module.exports.drivingTime = function(miles) {
     //ROUND TRIP TIME
     //AT 55mph
     return (miles / 55) * 2;
 }
-var setupTime = function(structureType) {
+module.exports.setupTime = function(structureType) {
     var key = structureType === "House" ? "House Setup Time" : "Building Setup Time";
 
     var dict = getValues("Time_Gyp", {"Type Of Time": key}, ["Hr"]);
     return dict.Hr;
 }
-var lunchTime = function() {
+module.exports.lunchTime = function() {
       var dict = getValues("Time_Gyp", {"Type Of Time": "Lunch Time"}, ["Hr"]);
       return dict.Hr
 }
-var cleanupTime = function() {
+module.exports.cleanupTime = function() {
     var dict = getValues("Time_Gyp", {"Type Of Time": "Cleanup Time"}, ["Hr"]);
     return dict.Hr;
 }
-var pumpTime = function(bags) {
+module.exports.pumpTime = function(bags) {
 
     var dict = getValues("Equip_Gyp_Pumps", {"Model-Num": "D6528"}, ["Bags/Hr"]);
     var blastcreteHrs = bags / dict["Bags/Hr"];
@@ -34,17 +34,17 @@ var pumpTime = function(bags) {
         "Placer": placerHrs
     }  
 }
-var concPumpTime = function(yds, section) {
+module.exports.concPumpTime = function(yds, section) {
       var dict = getValues("Conc_YdsPerHr", {"Section": section}, ["Yds/Hr"]);
       return yds / dict["Yds/Hr"];
 }
-var totalGypTime = function(setupTime, pumpTime, cleanupTime) {
+module.exports.totalGypTime = function(setupTime, pumpTime, cleanupTime) {
     return setupTime + pumpTime + cleanupTime;
 }
-var overTimeGyp = function(totalGypTime) {
+module.exports.overTimeGyp = function(totalGypTime) {
       return totalGypTime - 7.5 < 0 ? 0 : totalGypTime - 7.5;
 }
-var hoursToPhrase = function(totalHrs) {
+module.exports.hoursToPhrase = function(totalHrs) {
       var hrs = Math.floor(totalHrs / 1);
       var mins = Math.ceil(((totalHrs - hrs) * 60));
     

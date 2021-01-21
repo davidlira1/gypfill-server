@@ -1,4 +1,4 @@
-const lib = require('../library.js');
+const lb = require('../library.js');
 
 module.exports.calcGyp = function(projData, estimateVersion) {
       //1. SET THE ESTIMATE VERSION OBJECT

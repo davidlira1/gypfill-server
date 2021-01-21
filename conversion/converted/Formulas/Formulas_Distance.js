@@ -1,4 +1,4 @@
-var distance = function(zipCode, city) {
+module.exports.distance = function(zipCode, city) {
       return {
             "Van Nuys" : milesToLocation("Van Nuys", zipCode, city),
             "Irvine": 0,
@@ -6,7 +6,7 @@ var distance = function(zipCode, city) {
       }
 }
 
-var milesToLocation = function(origin, zipCode, city) {
+module.exports.milesToLocation = function(origin, zipCode, city) {
       var dict;
           
       if (zipCode !== "") {

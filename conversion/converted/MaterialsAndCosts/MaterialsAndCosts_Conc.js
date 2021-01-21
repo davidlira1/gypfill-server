@@ -1,4 +1,4 @@
-var materialsAndCostsConc = function(assem, dict, wageType, city, zipCode, saturdayConc, overrideConcBarrelMix) {
+module.exports.materialsAndCostsConc = function(assem, dict, wageType, city, zipCode, saturdayConc, overrideConcBarrelMix) {
       var temp;
       //1. CALCULATE CONCRETE YARDS
       assem.concYds = concYds(assem.SF, dict.concThick);

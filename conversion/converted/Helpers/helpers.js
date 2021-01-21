@@ -1,4 +1,4 @@
-var decimalToFraction = function(value) {
+module.exports.decimalToFraction = function(value) {
     switch(value) {
         case 0.125: 
             return`1/8"`;
@@ -34,13 +34,13 @@ var decimalToFraction = function(value) {
             return`2"`;
     }
 }
-var costAfterMargin = function(initialCost, margin) {
+module.exports.costAfterMargin = function(initialCost, margin) {
       return Math.ceil((initialCost / (100 - margin)) * 100);
 }
-var costAfterMarginNoRound = function(initialCost, margin) {
+module.exports.costAfterMarginNoRound = function(initialCost, margin) {
       return (initialCost / (100 - margin)) * 100;
 }
-var numberToOrdinal = function(number) {
+module.exports.numberToOrdinal = function(number) {
       switch(number) {
             case 1:
                   return "1st"
@@ -74,7 +74,7 @@ var numberToOrdinal = function(number) {
                   return "15th"
       }
 }
-var doubleToFraction = function(number) {
+module.exports.doubleToFraction = function(number) {
       switch(number) {
             case 0.25:
                   return `1/4"`;

@@ -1,4 +1,4 @@
-var laborAndCostsGyp = function(inputs, assem, wageType, sameDay, overnight, miles, gypMobilizations, soundMatMobilizations, projectType) {
+module.exports.laborAndCostsGyp = function(inputs, assem, wageType, sameDay, overnight, miles, gypMobilizations, soundMatMobilizations, projectType) {
       //1. CALCULATE COST OF GYP LABOR
       assem.costOfGypLabor = Math.ceil(inputs.gyp.labor.costOfGypLabor * (assem.SF / (inputs.totals.gypSF)))
       

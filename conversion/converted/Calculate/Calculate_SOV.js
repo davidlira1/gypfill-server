@@ -1,4 +1,4 @@
-var calculateSOV = function(projData, estimateVersion) {
+module.exports.calculateSOV = function(projData, estimateVersion) {
       var sov = {};
       var estimate = projData.estimates("estimate" + estimateVersion);
       var structureType = projData.projectinfo.projectType;
@@ -172,7 +172,7 @@ var calculateSOV = function(projData, estimateVersion) {
       //9.
       return sov;
 }
-var calculateSOVMulti = function(estimate, costTotalGrand, costTotalGypScope, percentGypScopeOfGrandTotal, costTotalConcScope, percentConcScopeOfGrandTotal, gypExists, concExists) {
+module.exports.calculateSOVMulti = function(estimate, costTotalGrand, costTotalGypScope, percentGypScopeOfGrandTotal, costTotalConcScope, percentConcScopeOfGrandTotal, gypExists, concExists) {
       var dict = {}
       var costGypAssemsTotal;
       var costPrePoursTotal;

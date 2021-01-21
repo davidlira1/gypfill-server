@@ -1,9 +1,7 @@
-var { getFormulaTables, getValues, getValuesBasedOnNum } = require('./formulaTables.js');
+const { projData } = require('../sampleData/3020x Test Rd.js');
+const { calculate } = require('./index.js');
 
-getFormulaTables()
-.then(result => {
-    console.log(getValuesBasedOnNum("Labor_Houses_NoSM", 16000, ['Super 80 Hrs']));
-});
+calculate(projData, 0);
 
 
 

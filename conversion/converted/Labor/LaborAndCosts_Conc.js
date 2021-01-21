@@ -1,4 +1,4 @@
-var laborAndCostsConc = function(assem, drivingTimeHrs, wageType, miles, saturdayConc, numOfFloors, overrideConcBarrelMix) {
+module.exports.laborAndCostsConc = function(assem, drivingTimeHrs, wageType, miles, saturdayConc, numOfFloors, overrideConcBarrelMix) {
       var dict;
       assem.labor = {}
       if (assem.concYds <= 2.37 && overrideConcBarrelMix === "No" && assem.section !== "Stairs") {

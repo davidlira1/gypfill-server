@@ -1,56 +1,153 @@
-//grabs all the functions from all the files, 
-//and places them into an object...module.exports
+module.exports = {
+    calcGyp: require('./Calculate/Calculate.js'),
+    materialsAndCostsPrimer: require('./Calculate/Calculate.js'),
+    materialsAndCostsWire: require('./Calculate/Calculate.js'),
+    laborAndCostsWire: require('./Calculate/Calculate.js'),
+    materialsAndCostsBlackPaper: require('./Calculate/Calculate.js'),
+    materialsAndCostsBlackPaperMoistStop: require('./Calculate/Calculate.js'),
+    materialsAndCostsSprayGlue: require('./Calculate/Calculate.js'),
+    materialsAndCostsDuctTapeRollsWhenNoSM: require('./Calculate/Calculate.js'),
+    materialsAndCostsSealer: require('./Calculate/Calculate.js'),
+    materialsAndCostsRamboard: require('./Calculate/Calculate.js'),
+    calculateConcAssembly: require('./Calculate/Calculate_ConcAssembly.js'),
+    calculateEquip: require('./Calculate/Calculate_Equip.js'),
+    equipCostsConc: require('./Calculate/Calculate_Equip.js'),
+    concPumpCost: require('./Calculate/Calculate_Equip.js'),
+    calculateGypAssembly: require('./Calculate/Calculate_GypAssembly.js'),
+    calculateOptionals: require('./Calculate/Calculate_Optionals.js'),
+    compareRegToOptGyp: require('./Calculate/Calculate_Optionals.js'),
+    compareRegToOptConc: require('./Calculate/Calculate_Optionals.js'),
+    exteriorScopeStr: require('./Calculate/Calculate_Optionals.js'),
+    calculatePerGypFloorTotals: require('./Calculate/Calculate_PerGypFloorTotals.js'),
+    calculateSOV: require('./Calculate/Calculate_SOV.js'),
+    calculateSOVMulti: require('./Calculate/Calculate_SOV.js'),
+    calculateTrucks: require('./Calculate/Calculate_Trucks.js'),
+    calculateTrucksConc: require('./Calculate/Calculate_Trucks.js'),
+    costOfADURegLabor: require('./Formulas/Formulas_ADURegulation.js'),
+    blackPaperRolls: require('./Formulas/Formulas_BlackPaperAndMoistStop.js'),
+    blackPaperRollsMoistStop: require('./Formulas/Formulas_BlackPaperAndMoistStop.js'),
+    costOfBlackPaperRolls: require('./Formulas/Formulas_BlackPaperAndMoistStop.js'),
+    blackPaperLaborers: require('./Formulas/Formulas_BlackPaperAndMoistStop.js'),
+    costOfBlackPaperLaborers: require('./Formulas/Formulas_BlackPaperAndMoistStop.js'),
+    blackPaperMoistStopLaborers: require('./Formulas/Formulas_BlackPaperAndMoistStop.js'),
+    concYds: require('./Formulas/Formulas_Concrete.js'),
+    costOfConcYds: require('./Formulas/Formulas_Concrete.js'),
+    concShortLoad: require('./Formulas/Formulas_Concrete.js'),
+    costOfConcShortLoad: require('./Formulas/Formulas_Concrete.js'),
+    concTrucks: require('./Formulas/Formulas_Concrete.js'),
+    costOfEnvironmental: require('./Formulas/Formulas_Concrete.js'),
+    costOfEnergy: require('./Formulas/Formulas_Concrete.js'),
+    costOfWashOut: require('./Formulas/Formulas_Concrete.js'),
+    costOfDownTime: require('./Formulas/Formulas_Concrete.js'),
+    costOfTracker: require('./Formulas/Formulas_Concrete.js'),
+    concMobilizations: require('./Formulas/Formulas_Concrete.js'),
+    concLaborers: require('./Formulas/Formulas_Concrete.js'),
+    costOfConcLaborers: require('./Formulas/Formulas_Concrete.js'),
+    costOfOvertimeConcLaborers: require('./Formulas/Formulas_Concrete.js'),
+    distance: require('./Formulas/Formulas_Distance.js'),
+    milesToLocation: require('./Formulas/Formulas_Distance.js'),
+    ductTapeRolls: require('./Formulas/Formulas_DuctTape.js'),
+    ductTapeRollsWhenNoSM: require('./Formulas/Formulas_DuctTape.js'),
+    costOfDuctTapeRolls: require('./Formulas/Formulas_DuctTape.js'),
+    drivingFuelsCost: require('./Formulas/Formulas_Fuel.js'),
+    drivingFuelCost: require('./Formulas/Formulas_Fuel.js'),
+    machinesFuelCost: require('./Formulas/Formulas_Fuel.js'),
+    machineFuelCost: require('./Formulas/Formulas_Fuel.js'),
+    gypBags: require('./Formulas/Formulas_GypAssembly.js'),
+    costOfGypBags: require('./Formulas/Formulas_GypAssembly.js'),
+    tons: require('./Formulas/Formulas_GypAssembly.js'),
+    costOfTons: require('./Formulas/Formulas_GypAssembly.js'),
+    rotoStater: require('./Formulas/Formulas_GypAssembly.js'),
+    costOfRotoStater: require('./Formulas/Formulas_GypAssembly.js'),
+    soundMatRolls: require('./Formulas/Formulas_GypAssembly.js'),
+    costOfSoundMat: require('./Formulas/Formulas_GypAssembly.js'),
+    soundMatLaborers: require('./Formulas/Formulas_GypAssembly.js'),
+    costOfSoundMatLabor: require('./Formulas/Formulas_GypAssembly.js'),
+    lFt: require('./Formulas/Formulas_GypAssembly.js'),
+    gypLabor: require('./Formulas/Formulas_Labor.js'),
+    gypMobilizations: require('./Formulas/Formulas_Labor.js'),
+    addMobilsCost: require('./Formulas/Formulas_Labor.js'),
+    costOfGypLabor: require('./Formulas/Formulas_Labor.js'),
+    overTimeGypLabor: require('./Formulas/Formulas_Labor.js'),
+    costOfOverTimeGypLaborHelper: require('./Formulas/Formulas_Labor.js'),
+    costOfOverTimeSoundMatLabor: require('./Formulas/Formulas_Labor.js'),
+    overTimeRate: require('./Formulas/Formulas_Labor.js'),
+    trucksMaintCost: require('./Formulas/Formulas_Maint.js'),
+    machinesMaintCost: require('./Formulas/Formulas_Maint.js'),
+    machineMaintCost: require('./Formulas/Formulas_Maint.js'),
+    maximizerBags: require('./Formulas/Formulas_Maximizer.js'),
+    costOfMaximizerBags: require('./Formulas/Formulas_Maximizer.js'),
+    maximizerLaborers: require('./Formulas/Formulas_Maximizer.js'),
+    costOfMaximizerLaborers: require('./Formulas/Formulas_Maximizer.js'),
+    perFoamRollType: require('./Formulas/Formulas_Prep.js'),
+    perFoamRolls: require('./Formulas/Formulas_Prep.js'),
+    costOfPerFoamRolls: require('./Formulas/Formulas_Prep.js'),
+    perFoamCuttingLaborers: require('./Formulas/Formulas_Prep.js'),
+    costOfPerFoamCutting: require('./Formulas/Formulas_Prep.js'),
+    stapleBoxes: require('./Formulas/Formulas_Prep.js'),
+    costOfStapleBoxes: require('./Formulas/Formulas_Prep.js'),
+    cansOfSprayGlue: require('./Formulas/Formulas_Prep.js'),
+    costOfCansOfSprayGlue: require('./Formulas/Formulas_Prep.js'),
+    prePourMobilizations: require('./Formulas/Formulas_PrePours.js'),
+    prePourLaborCrew: require('./Formulas/Formulas_PrePours.js'),
+    costOfPrePoursLabor: require('./Formulas/Formulas_PrePours.js'),
+    costOfOverTimePrePours: require('./Formulas/Formulas_PrePours.js'),
+    primerGallons: require('./Formulas/Formulas_PrimerAndSealer.js'),
+    costOfPrimerGallons: require('./Formulas/Formulas_PrimerAndSealer.js'),
+    sealerGallons: require('./Formulas/Formulas_PrimerAndSealer.js'),
+    costOfSealerGallons: require('./Formulas/Formulas_PrimerAndSealer.js'),
+    ramBoardRolls: require('./Formulas/Formulas_Ramboard.js'),
+    costOfRamBoardRolls: require('./Formulas/Formulas_Ramboard.js'),
+    ductTapeRollsForRamBoard: require('./Formulas/Formulas_Ramboard.js'),
+    rotoStaterCost: require('./Formulas/Formulas_RotoStater.js'),
+    stringLineRolls: require('./Formulas/Formulas_StringLine.js'),
+    costOfStringLineRolls: require('./Formulas/Formulas_StringLine.js'),
+    drivingTime: require('./Formulas/Formulas_Time.js'),
+    setupTime: require('./Formulas/Formulas_Time.js'),
+    lunchTime: require('./Formulas/Formulas_Time.js'),
+    cleanupTime: require('./Formulas/Formulas_Time.js'),
+    pumpTime: require('./Formulas/Formulas_Time.js'),
+    concPumpTime: require('./Formulas/Formulas_Time.js'),
+    totalGypTime: require('./Formulas/Formulas_Time.js'),
+    overTimeGyp: require('./Formulas/Formulas_Time.js'),
+    hoursToPhrase: require('./Formulas/Formulas_Time.js'),
+    wireUnits: require('./Formulas/Formulas_Wire.js'),
+    costOfWireUnits: require('./Formulas/Formulas_Wire.js'),
+    pinBoxes: require('./Formulas/Formulas_Wire.js'),
+    costOfPinBoxes: require('./Formulas/Formulas_Wire.js'),
+    washerBoxes: require('./Formulas/Formulas_Wire.js'),
+    costOfWasherBoxes: require('./Formulas/Formulas_Wire.js'),
+    wireLaborers: require('./Formulas/Formulas_Wire.js'),
+    costOfWireLaborers: require('./Formulas/Formulas_Wire.js'),
+    decimalToFraction: require('./Helpers/helpers.js'),
+    costAfterMargin: require('./Helpers/helpers.js'),
+    costAfterMarginNoRound: require('./Helpers/helpers.js'),
+    numberToOrdinal: require('./Helpers/helpers.js'),
+    doubleToFraction: require('./Helpers/helpers.js'),
+    laborAndCostsConc: require('./Labor/LaborAndCosts_Conc.js'),
+    laborAndCostsGyp: require('./Labor/LaborAndCosts_Gyp.js'),
+    materialsAndCostsConc: require('./MaterialsAndCosts/MaterialsAndCosts_Conc.js'),
+    materialsAndCostsGyp: require('./MaterialsAndCosts/MaterialsAndCosts_Gyp.js'),
+    getFormulaTables: require('./formulaTables'),
+    getValues: require('./formulaTables'),
+    getValuesBasedOnNum: require('./formulaTables')
+}
 
-const regex = /var (\w*) = function/g;
+// const fs = require('fs');
 
-fs.readdirSync('./conversion/converted').forEach(dir => {
-    try {
-        //loop thru each file in specific directory
-        fs.readdirSync(`./conversion/converted/${dir}`).forEach(file => {
-    
-            //1. read file, 
-            var fileData = fs.readFileSync(`./conversion/converted/${dir}/${file}`, 'utf8');
-            fileData = fileData.replace(/var (\w*) = function/g,"module.exports.$1 = function");
-            
-            fs.writeFileSync(`./conversion/converted/${dir}/${file}`, fileData);
-        
-            //for each filedata, we will apply a regex
-            //var (\w*) = function    module.exports.$1 = function
-        });
-    } catch(error) {
+// fs.readdirSync('./conversion/converted').forEach(dir => {
+//     try {
+//         //loop thru each file in specific directory
+//         fs.readdirSync(`./conversion/converted/${dir}`).forEach(file => {
+//             //1. read file, 
+//             var fileData = fs.readFileSync(`./conversion/converted/${dir}/${file}`, 'utf8')
+//             var matches = fileData.matchAll(/module.exports.(\w*)/g)//(?<![\{\}])\n
+//             for(const match of matches) {
+//                 console.log(`${match[1]}: require('./${dir}/${file}'),`)
+//             }
+//         })
+//     } catch(error) {
 
-    }
-});
+//     }
+// })
 
-
-// Calculate.js
-// Calculate_ConcAssembly.js
-// Calculate_Equip.js
-// Calculate_GypAssembly.js
-// Calculate_Optionals.js
-// Calculate_PerGypFloorTotals.js
-// Calculate_SOV.js
-// Calculate_Trucks.js
-// Formulas_ADURegulation.js
-// Formulas_BlackPaperAndMoistStop.js
-// Formulas_Concrete.js
-// Formulas_Distance.js
-// Formulas_DuctTape.js
-// Formulas_Fuel.js
-// Formulas_GypAssembly.js
-// Formulas_Labor.js
-// Formulas_Maint.js
-// Formulas_Maximizer.js
-// Formulas_Prep.js
-// Formulas_PrePours.js
-// Formulas_PrimerAndSealer.js
-// Formulas_Ramboard.js
-// Formulas_RotoStater.js
-// Formulas_StringLine.js
-// Formulas_Time.js
-// Formulas_Wire.js
-// helpers.js
-// LaborAndCosts_Conc.js
-// LaborAndCosts_Gyp.js
-// MaterialsAndCosts_Conc.js
-// MaterialsAndCosts_Gyp.js

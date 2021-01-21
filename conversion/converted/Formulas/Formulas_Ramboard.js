@@ -1,12 +1,12 @@
-var ramBoardRolls = function(SF) {
+module.exports.ramBoardRolls = function(SF) {
       var dict = getValues("Prices_RamBoard", {"Default": "Default"}, ["SF/Roll"]);
       return Math.ceil(SF / dict["SF/Roll"]);
 }
-var costOfRamBoardRolls = function(rolls) {
+module.exports.costOfRamBoardRolls = function(rolls) {
       var dict = getValues("Prices_RamBoard", {"Default": "Default"}, ["Price/Roll"]);
       return Math.ceil(rolls * dict["Price/Roll"]);
 }
-var ductTapeRollsForRamBoard = function(SF) {
+module.exports.ductTapeRollsForRamBoard = function(SF) {
       //1. GET LF OF DUCT TAPE PER SF OF PROJECT
       var dict = getValues("Materials_DuctTapeForRamBoard", {"Quantity": "LF / SF"}, ["SF", "LF"]);
       

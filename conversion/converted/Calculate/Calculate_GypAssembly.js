@@ -1,4 +1,4 @@
-var calculateGypAssembly = function(inputs, assem, mixDesign, wageType, sameDay, overnight, miles, projectType, saturday) {
+module.exports.calculateGypAssembly = function(inputs, assem, mixDesign, wageType, sameDay, overnight, miles, projectType, saturday) {
       //1. GET PSI DEPENDING ON GYP TYPE
       var dict = getValues("Prices_GypBag", {"Gyp Type": assem.gypType}, ["PSI"]);
       assem.PSI = dict.PSI;

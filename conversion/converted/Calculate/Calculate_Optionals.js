@@ -1,4 +1,4 @@
-var calculateOptionals = function(projData, estimateVersion) {
+module.exports.calculateOptionals = function(projData, estimateVersion) {
       var calculateOptionals = {}
       var optionalDict;
       var gypAssem;
@@ -58,7 +58,7 @@ var calculateOptionals = function(projData, estimateVersion) {
                   }
                   calculateOptionals["option" + opt] = {
                         option: optionalStr,
-                        cost: costAfterMargin(estimate.totals.prePoursCostMaterialAndLabor + estimate.totals.prePoursCostTravel + estimate.totals.prePoursCostAfterMilesThreshold, margin);
+                        cost: costAfterMargin(estimate.totals.prePoursCostMaterialAndLabor + estimate.totals.prePoursCostTravel + estimate.totals.prePoursCostAfterMilesThreshold, margin)
                   }
                   opt++;
             }
@@ -169,7 +169,7 @@ var calculateOptionals = function(projData, estimateVersion) {
       }
       return calculateOptionals;
 }
-var compareRegToOptGyp = function(regAssem, optAssem, margin) {
+module.exports.compareRegToOptGyp = function(regAssem, optAssem, margin) {
       var compareRegToOptGyp = {};
       var totalCost = (optAssem.difference / (100 - margin)) * 100;
       var optionalStr;
@@ -311,7 +311,7 @@ var compareRegToOptGyp = function(regAssem, optAssem, margin) {
       compareRegToOptGyp.cost = totalCost;
       return compareRegToOptGyp;
 }
-var compareRegToOptConc = function(regAssem, optAssem, margin) {
+module.exports.compareRegToOptConc = function(regAssem, optAssem, margin) {
       compareRegToOptConc = {};
       var totalCost = optAssem.difference; //i think this is different from gyp because each has its own margin. so the difference already includes the difference in margin
       var optionalStr;
@@ -425,7 +425,7 @@ var compareRegToOptConc = function(regAssem, optAssem, margin) {
       compareRegToOptConc.cost = totalCost;
       return compareRegToOptConc;
 }
-var exteriorScopeStr = function(concAssem) {
+module.exports.exteriorScopeStr = function(concAssem) {
       //THIS FN IS CALLED BY EITHER,
       //1. THE diplay_proposalExteriorScope subroutine
       //2. THE diplay_proposalOptionalScope subroutine
