@@ -1,8 +1,8 @@
-var stringLineRolls = function(SF) {
-      var dict = getValues("Prices_StringLine", Array.Type, Array("String Line"), Array("LF/Roll"))
-      stringLineRolls = Round((lFt[SF] / dict("LF/Roll")) + 0.49)
+module.exports.stringLineRolls = function(SF) {
+      var dict = getValues("Prices_StringLine", {"Type": "String Line"}, ["LF/Roll"]);
+      return Math.ceil(lFt[SF] / dict["LF/Roll"]);
 }
-var costOfStringLineRolls = function(stringLineRolls) {
-      var dict = getValues("Prices_StringLine", Array.Type, Array("String Line"), Array("Price/Roll"))
-      costOfStringLineRolls = Round((stringLineRolls * dict("Price/Roll")) + 0.49)
+module.exports.costOfStringLineRolls = function(stringLineRolls) {
+      var dict = getValues("Prices_StringLine", {"Type": "String Line"}, ["Price/Roll"]);
+      return Math.ceil(stringLineRolls * dict["Price/Roll"]);
 }

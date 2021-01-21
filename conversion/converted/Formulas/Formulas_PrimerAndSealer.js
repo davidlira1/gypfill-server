@@ -1,24 +1,16 @@
 var primerGallons = function(gypOrConc, primerType, SF) {
-
-    var dict = getValues("Prices_" + gypOrConc + "_Primer", Array.Manufacturer, Array[primerType], Array("SF/Diluted Gal"))
-    primerGallons = Round((SF / dict("SF/Diluted Gal")) + 0.49)
-    
+    var dict = getValues("Prices_" + gypOrConc + "_Primer", {"Manufacturer": primerType}, ["SF/Diluted Gal"]);
+    return Math.ceil((SF / dict["SF/Diluted Gal"]));
 }
 var costOfPrimerGallons = function(gypOrConc, primerType, SF) {
-
-    var dict = getValues("Prices_" + gypOrConc + "_Primer", Array.Manufacturer, Array[primerType], Array("Total Price/SF"))
-    costOfPrimerGallons = Round((SF * dict("Total Price/SF")) + 0.49)
-    
+    var dict = getValues("Prices_" + gypOrConc + "_Primer", {"Manufacturer": primerType}, ["Total Price/SF"]);
+    return Math.ceil((SF * dict["Total Price/SF"]));
 }
 var sealerGallons = function(gypOrConc, sealerType, SF) {
-
-    var dict = getValues("Prices_" + gypOrConc + "_Sealer", Array.Manufacturer, Array[sealerType], Array("SF/Diluted Gal"))
-    sealerGallons = Round((SF / dict("SF/Diluted Gal")) + 0.49)
-    
+    var dict = getValues("Prices_" + gypOrConc + "_Sealer", {"Manufacturer": sealerType}, ["SF/Diluted Gal"]);
+    return Math.ceil((SF / dict["SF/Diluted Gal"]));
 }
 var costOfSealerGallons = function(gypOrConc, sealerType, SF) {
-
-    var dict = getValues("Prices_" + gypOrConc + "_Sealer", Array.Manufacturer, Array[sealerType], Array("Total Price/SF"))
-    costOfSealerGallons = Round((SF * dict("Total Price/SF")) + 0.49)
-    
+    var dict = getValues("Prices_" + gypOrConc + "_Sealer", {"Manufacturer": sealerType}, ["Total Price/SF"]);
+    return Math.ceil((SF * dict["Total Price/SF"]));
 }

@@ -1,5 +1,4 @@
-var rotoStaterCost = function(SF, gypBags) {
-      var dict = getValuesBasedOnNum("Coverage_RotoStater", SF, Array("Cost Per Bag"))
-      
-      rotoStaterCost = Round((gypBags * dict("Cost Per Bag")) + 0.49)
+module.exports.rotoStaterCost = function(SF, gypBags) {
+      var dict = getValuesBasedOnNum("Coverage_RotoStater", SF, ["Cost Per Bag"]);
+      return Math.ceil(gypBags * dict["Cost Per Bag"]);
 }

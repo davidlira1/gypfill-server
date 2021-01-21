@@ -4,17 +4,17 @@ var calculateTrucks = function(estimate, gypExists, concExists, overnight, sameD
             //TRUCKS DRIVING - GYPCRETE, PREPOURS, AND SOUNDMAT
             //==========================================================================================
             //TRUCKS DRIVING FUEL COST
-            estimate.trucks.gypDrivingFuelCost = drivingFuelsCost("Gyp", (estimate.distance("Van Nuys")), (estimate.gyp.labor.mobilizations))
-            estimate.trucks.prePoursDrivingFuelCost = drivingFuelsCost("", (estimate.distance("Van Nuys")), (estimate.gyp.labor.mobilizationsPrePours))
+            estimate.trucks.gypDrivingFuelCost = drivingFuelsCost("Gyp", estimate.distance("Van Nuys"), estimate.gyp.labor.mobilizations);
+            estimate.trucks.prePoursDrivingFuelCost = drivingFuelsCost("", estimate.distance("Van Nuys"), estimate.gyp.labor.mobilizationsPrePours);
             if (overnight !== true && sameDay !== "Yes") {
-                  estimate.trucks.soundMatDrivingFuelCost = drivingFuelsCost("", (estimate.distance("Van Nuys")), (estimate.gyp.labor.mobilizationsSoundMat))
+                  estimate.trucks.soundMatDrivingFuelCost = drivingFuelsCost("", estimate.distance("Van Nuys"), estimate.gyp.labor.mobilizationsSoundMat);
             }
             
             //TRUCKS MAINTENANCE COST
-            estimate.trucks.gypMaintenanceCost = trucksMaintCost("Gyp", (estimate.distance("Van Nuys")), (estimate.gyp.labor.mobilizations), overnight)
-            estimate.trucks.prePoursMaintenanceCost = trucksMaintCost("", (estimate.distance("Van Nuys")), (estimate.gyp.labor.mobilizationsPrePours), false)
+            estimate.trucks.gypMaintenanceCost = trucksMaintCost("Gyp", estimate.distance("Van Nuys"), estimate.gyp.labor.mobilizations, overnight);
+            estimate.trucks.prePoursMaintenanceCost = trucksMaintCost("", estimate.distance("Van Nuys"), estimate.gyp.labor.mobilizationsPrePours, false);
             if (overnight !== true && sameDay !== "Yes") {
-                  estimate.trucks.soundMatMaintenanceCost = trucksMaintCost("", (estimate.distance("Van Nuys")), (estimate.gyp.labor.mobilizationsSoundMat), overnight)
+                  estimate.trucks.soundMatMaintenanceCost = trucksMaintCost("", estimate.distance("Van Nuys"), estimate.gyp.labor.mobilizationsSoundMat, overnight);
             }
             //==========================================================================================
             estimate.totals.gypCostTrucksFuelMaint = _
@@ -28,13 +28,10 @@ var calculateTrucks = function(estimate, gypExists, concExists, overnight, sameD
 }
 var calculateTrucksConc = function(assem, miles) {
       //ADD A TRUCKS OBJECT TO THE ASSEMBLY
-      assem.trucks = {}
-      
-      //FUEL COST
-      assem.trucks.costFuel = drivingFuelsCost("Conc", miles, (assem.labor.concMobilizations) + assem.addMobils)
-            
-      //MAINTENANCE COST
-      assem.trucks.costMaintenance = trucksMaintCost("Conc", miles, (assem.labor.concMobilizations) + assem.addMobils, false)
+      assem.trucks = {
+            costFuel = drivingFuelsCost("Conc", miles, assem.labor.concMobilizations + assem.addMobils),
+            costMaintenance = trucksMaintCost("Conc", miles, assem.labor.concMobilizations + assem.addMobils, false)
+      }
       
       //we will not calculate the insurance, registration, or dot costs since those get paid regardless if there is work or not
       //tamir said these will be part of overhead

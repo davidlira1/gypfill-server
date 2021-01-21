@@ -1,130 +1,115 @@
 var gypBags = function(SF, gypType, thickness, mixDesign) {
-      var cuYdPerBag
+      var cuYdPerBag;
       if (mixDesign === 0) {
-            if (gypType = "Regular" Or gypType = "2010+" Or gypType = "3310" Or gypType === "Radiant") {
-                  cuYdPerBag = 2.5 //1.9 mix
-            } else if (gypType = "3310+" Or gypType = "High Strength" Or gypType = "4010+" Or gypType = "true Screed" Or gypType === "CMD") {
-                  cuYdPerBag = 2 //so now will be 1.52 mix => before //2 //1.4 mix
+            if (gypType === "Regular" || gypType === "2010+" || gypType === "3310" || gypType === "Radiant") {
+                  cuYdPerBag = 2.5; //1.9 mix
+            } else if (gypType === "3310+" || gypType === "High Strength" || gypType === "4010+" || gypType === "true Screed" || gypType === "CMD") {
+                  cuYdPerBag = 2; //so now will be 1.52 mix => bef||e //2 //1.4 mix
             }
       } else {
             if (mixDesign === 1.4) {
-                  cuYdPerBag = 2 //1.4 mix
+                  cuYdPerBag = 2; //1.4 mix
             } else if (mixDesign === 1) {
-                  cuYdPerBag = 1.75 //1.0 mix
+                  cuYdPerBag = 1.75; //1.0 mix
             }
       }
     
-      gypBags = Round((SF * (thickness / 12) / cuYdPerBag) + 0.49)
+      return Math.ceil(SF * (thickness / 12) / cuYdPerBag);
 }
 var costOfGypBags = function(gypType, gypBags) {
-    
-    var dict = getValues("Prices_GypBag", Array("Gyp Type"), Array[gypType], Array("Price/Bag"))
-    costOfGypBags = Round((gypBags * dict("Price/Bag")) + 0.49)
-    
+    var dict = getValues("Prices_GypBag", {"Gyp Type": gypType}, ["Price/Bag"]);
+    return Math.ceil(gypBags * dict["Price/Bag"]);
 }
 var tons = function(gypType, gypBags, mixDesign) {
-      var poundsOfSand
+      var poundsOfSand;
       if (mixDesign === 0) {
-            if (gypType = "Regular" Or gypType = "2010+" Or gypType = "3310" Or gypType === "Radiant") {
-                  poundsOfSand = 190 //1.9 mix - 190 lbs per bag, times 4 is 760 lbs
-            } else if (gypType = "3310+" Or gypType = "High Strength" Or gypType = "4010+" Or gypType = "true Screed" Or gypType === "CMD") {
-                  poundsOfSand = 152 //tamir wanted to do 152  => //before //1.4 mix - would be 140, but Tamir wanted to do it as 152lbs per bag
+            if (gypType === "Regular" || gypType === "2010+" || gypType === "3310" || gypType === "Radiant") {
+                  poundsOfSand = 190; //1.9 mix - 190 lbs per bag, times 4 is 760 lbs
+            } else if (gypType === "3310+" || gypType === "High Strength" || gypType === "4010+" || gypType === "true Screed" || gypType === "CMD") {
+                  poundsOfSand = 152; //tamir wanted to do 152  => //bef||e //1.4 mix - would be 140, but Tamir wanted to do it as 152lbs per bag
             }
       } else {
             if (mixDesign === 1.4) {
-                  poundsOfSand = 152 //1.4 mix
+                  poundsOfSand = 152; //1.4 mix
             } else if (mixDesign === 1) {
-                  poundsOfSand = 108 //1.0 mix
+                  poundsOfSand = 108; //1.0 mix
             }
       }
-     
-     tons = Round(gypBags * (poundsOfSand / 2000) + 0.49)
-    
+     return Math.ceil(gypBags * (poundsOfSand / 2000));
 }
 var costOfTons = function(tons, saturday) {
+      var dict = getValues("Prices_Sand", {"Type": "Regular"}, ["Price/Ton", "Freight Cost", "Saturday Extra"]);
       
-      var dict = getValues("Prices_Sand", Array.Type, Array.Regular, Array("Price/Ton", "Freight Cost", "Saturday Extra"))
-      
-      var numOfTrucks = Round(tons / 25 + 0.49)
+      var numOfTrucks = Math.ceil(tons / 25);
       
       var d = {}
       //COST
-      if (saturday = "No" Or saturday === "Yes - Option") {
-            d.cost = (tons * dict("Price/Ton")) + (dict("Freight Cost") * numOfTrucks)
+      if (saturday === "No" || saturday === "Yes - Option") {
+            d.cost = (tons * dict["Price/Ton"]) + (dict["Freight Cost"] * numOfTrucks);
       } else if (saturday === "Yes") {
-            d.cost = ((tons * dict("Price/Ton")) + (dict("Freight Cost") * numOfTrucks)) * (1 + dict("Saturday Extra"))
+            d.cost = ((tons * dict["Price/Ton"]) + (dict["Freight Cost"] * numOfTrucks)) * (1 + dict["Saturday Extra"]);
       }
       
       //OPTION COST
       if (saturday === "Yes - Option") {
-            d.costOption = d.cost * dict("Saturday Extra")
+            d.costOption = d.cost * dict["Saturday Extra"];
       } else {
-            d.costOption = 0
+            d.costOption = 0;
       }
-    
-      costOfTons = d
+      return d;
 }
 var rotoStater = function(bags) {
-    rotoStater = bags / 3600 + 0.001
+    return bags / 3600 + 0.001;
 }
 var costOfRotoStater = function() {
     costOfRotoStater = getValue("RotoStater", "Roto Stater", "Price")
 }
 var soundMatRolls = function(SF, soundMatType) {
-
-    var dict = getValues("Prices_SoundMat", Array("SM Type"), Array[soundMatType], Array("SF/Roll"))
-    soundMatRolls = Round((SF / dict("SF/Roll")) + 0.49)
-    
+    var dict = getValues("Prices_SoundMat", {"SM Type": soundMatType}, ["SF/Roll"]);
+    return Math.ceil(SF / dict["SF/Roll"]);
 }
 var costOfSoundMat = function(SF, soundMatType) {
-
-    var dict = getValues("Prices_SoundMat", Array("SM Type"), Array[soundMatType], Array("Price/SF"))
-    costOfSoundMat = Round((SF * dict("Price/SF")) + 0.49)
-    
+    var dict = getValues("Prices_SoundMat", {"SM Type": soundMatType}, ["Price/SF"]);
+    return Math.ceil(SF * dict["Price/SF"]);
 }
 var soundMatLaborers = function(SF, overnight, soundMatMobilizations, soundMatType) {
-      var dict
+      var dict;
       //CHECK IF SOUND MAT SF IS LESS THAN MINIMUM IN TABLE. IF SO, GET FROM THE SMALL TABLE
-      dict = getValues("Labor_SoundMat_Minimum", Array.Type, Array.Minimum, Array.SF)
+      dict = getValues("Labor_SoundMat_Minimum", {"Type": "Minimum"}, ["SF"]);
       if (SF <= dict.SF) {
             //GET FROM MINIMUM TABLE
-            dict = getValuesBasedOnNum("Labor_SoundMat_Small", SF, Array.Laborers)
-            soundMatLaborers = dict.Laborers
+            dict = getValuesBasedOnNum("Labor_SoundMat_Small", SF, ["Laborers"]);
+            return dict.Laborers;
       } else {
-            //IF OVERNIGHT, SOUND MAT LABORERS WILL DEPEND ON THE OVERNIGHT TABLE INSTEAD
+            //IF OVERNIGHT, SOUND MAT LAB||ERS WILL DEPEND ON THE OVERNIGHT TABLE INSTEAD
             if (overnight === true) {
-                  var smSFPerDay = SF / soundMatMobilizations
-                  dict = getValuesBasedOnNum("Labor_Overnight", smSFPerDay, Array("1st Day SM"))
-                  soundMatLaborers = dict("1st Day SM") * soundMatMobilizations
+                  var smSFPerDay = SF / soundMatMobilizations;
+                  dict = getValuesBasedOnNum("Labor_Overnight", smSFPerDay, ["1st Day SM"]);
+                  return dict["1st Day SM"] * soundMatMobilizations;
             } else {
-                  dict = getValues("Prices_SoundMat", Array("SM Type"), Array[soundMatType], Array("SF/Roll"))
+                  dict = getValues("Prices_SoundMat", {"SM Type": soundMatType}, ["SF/Roll"]);
                   
-                  if (dict("SF/Roll") <= 260) {
-                         dict = getValues("Labor_SoundMat", Array("Per Day"), Array("Smaller Rolls"), Array.SF)
+                  if (dict["SF/Roll"] <= 260) {
+                         dict = getValues("Labor_SoundMat", {"Per Day": "Smaller Rolls"}, ["SF"]);
                   } else {
-                        dict = getValues("Labor_SoundMat", Array("Per Day"), Array("Regular Rolls"), Array.SF)
+                        dict = getValues("Labor_SoundMat", {"Per Day": "Regular Rolls"}, ["SF"]);
                   }
                   
-                  var laborers = SF / dict.SF
+                  var laborers = SF / dict.SF;
                   var remainder = laborers - Round((laborers / 1) - 0.49)
                   
-                  if (remainder <= 0.38) {
-                        soundMatLaborers = Round[laborers]
-                  } else {
-                        soundMatLaborers = Round(laborers + 0.49)
-                  }
+                  return remainder <= 0.38 ? Math.round(laborers) : Math.ceil(laborers);
             }
-      }
-      
+      } 
 }
 var costOfSoundMatLabor = function(laborers, wageType) {
-      //1. GET PRICE/DAY FOR SOUND MAT LABOR
-      var dict = getValues("Wage_" + wageType + "_SM", Array.Laborer, Array.Average, Array("Price/Day"))
+      //1. GET PRICE/DAY F|| SOUND MAT LAB||
+      var dict = getValues("Wage_" + wageType + "_SM", {"Laborer": "Average"}, ["Price/Day"]);
     
-      //2. CALCULATE SOUND MAT LABOR
-      costOfSoundMatLabor = Round((dict("Price/Day") * laborers) + 0.49)
+      //2. CALCULATE SOUND MAT LAB||
+      return Math.ceil(dict["Price/Day"] * laborers);
 }
 var lFt = function(SF) {
-      lFt = Round((SF * 0.31) + 0.49)
+      lFt = Math.ceil(SF * 0.31);
 }
 

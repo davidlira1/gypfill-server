@@ -1,140 +1,127 @@
 var calculateOptionals = function(projData, estimateVersion) {
-      calculateOptionals = {}
-      var optionalDict
-      var gypAssem
-      var concAssem
-      var optAssem
-      var comparison
-      var margin
-      var opt = 1
-      var estimate = projData.estimates("estimate" + estimateVersion)
+      var calculateOptionals = {}
+      var optionalDict;
+      var gypAssem;
+      var concAssem;
+      var optAssem;
+      var comparison;
+      var margin;
+      var opt = 1;
+      var estimate = projData.estimates("estimate" + estimateVersion);
       
       //GYPCRETE
       if (estimate.structures.structure1.gypAssemblies.count > 0) {
-            //1. ESTABLISH MARGIN
-            margin = estimate.totals.gypMargin
+            //1. ESTABLISH MARGin
+            margin = estimate.totals.gypMargin;
             
-            //STRING LINE
+            //STRinG LinE
             if (estimate.gyp.slgs === "Yes - Option") {
-                  optionalStr = "Survey floor and install SLGS(String-Line Grid System) to control and enhance the floor leveling application"
-                  optionalDict = {}
-                  optionalDict.option = optionalStr
-                  optionalDict.cost = costAfterMargin((estimate.totals.costOfStringLineInstallation), margin)
-                  calculateOptionals[("option" + opt)] = optionalDict
-                  opt = opt + 1
+                  calculateOptionals["option" + opt] = {
+                        option: "Survey floor and install SLGS(String-Line Grid System) to control and enhance the floor leveling application",
+                        cost: costAfterMargin(estimate.totals.costOfStringLineinstallation, margin)
+                  };
+                  opt++;
             }
             
             //FLAGMEN
             if (estimate.gyp.flagmen === "Yes - Option") {
-                  optionalStr = "Provide flagman to control street traffic"
-                  optionalDict = {}
-                  optionalDict.option = optionalStr
-                  optionalDict.cost = costAfterMargin((estimate.gyp.labor.costOfGypFlagmenLabor), margin)
-                  calculateOptionals[("option" + opt)] = optionalDict
-                  opt = opt + 1
+                  calculateOptionals["option" + opt] = {
+                        option: "Provide flagman to control street traffic",
+                        cost: costAfterMargin(estimate.gyp.labor.costOfGypFlagmenLabor, margin)
+                  }
+                  opt++;
             }
       
             //PERIMETER FOAM
             if (estimate.gyp.perFoamCutting === "Yes - Option") {
-                  optionalStr = "Return to cut and remove excess perimeter foam"
-                  optionalDict = {}
-                  optionalDict.option = optionalStr
-                  optionalDict.cost = costAfterMargin((estimate.totals.gypCostPerFoamCutting), margin)
-                  calculateOptionals[("option" + opt)] = optionalDict
-                  opt = opt + 1
+                  calculateOptionals["option" + opt] = {
+                        option: "Return to cut and remove excess perimeter foam",
+                        cost: costAfterMargin(estimate.totals.gypCostPerFoamCutting, margin)
+                  }
+                  opt++;
             }
 
             //ADDITIONAL MOBILIZATION
-            optionalStr = "Additional day for production pour"
-            optionalDict = {}
-            optionalDict.option = optionalStr
-            optionalDict.cost = estimate.gyp.labor.addMobils.mobilCost //this is just for one day
-            calculateOptionals[("option" + opt)] = optionalDict
-            opt = opt + 1
+            calculateOptionals["option" + opt] = {
+                  option: "Additional day for production pour",
+                  cost: estimate.gyp.labor.addMobils.mobilCost //this is just for one day
+            }
+            opt++;
             
             //PREPOURS
             if (estimate.structures.structure1.prePours.contractOrOption === "Optional") {
-                  var mobilizationsPrePours = estimate.gyp.labor.mobilizationsPrePours
-                  var numOfPrePours = estimate.structures.structure1.prePours.tubs
+                  var mobilizationsPrePours = estimate.gyp.labor.mobilizationsPrePours;
+                  var numOfPrePours = estimate.structures.structure1.prePours.tubs;
                   if (mobilizationsPrePours !== 0) {
-                        optionalStr = "Pre Pour " + numOfPrePours + " tubs/dead spaces. To be done in " + mobilizationsPrePours
-                        if (mobilizationsPrePours === 1) {
-                              optionalStr = optionalStr + " mobilization"
-                        } else {
-                              optionalStr = optionalStr + " mobilizations"
-                        }
+                        optionalStr = "Pre Pour " + numOfPrePours + " tubs/dead spaces. To be done in " + mobilizationsPrePours;
+                        optionalStr+= mobilizationsPrePours === 1 ? " mobilization" : " mobilizations";
                   }
-                  optionalDict = {}
-                  optionalDict.option = optionalStr
-                  optionalDict.cost = costAfterMargin((estimate.totals.prePoursCostMaterialAndLabor) + (estimate.totals.prePoursCostTravel) + (estimate.totals.prePoursCostAfterMilesThreshold), margin)
-                  calculateOptionals[("option" + opt)] = optionalDict
-                  opt = opt + 1
+                  calculateOptionals["option" + opt] = {
+                        option: optionalStr,
+                        cost: costAfterMargin(estimate.totals.prePoursCostMaterialAndLabor + estimate.totals.prePoursCostTravel + estimate.totals.prePoursCostAfterMilesThreshold, margin);
+                  }
+                  opt++;
             }
 
             //ADU REGULATION
-            if (projData.projectInfo.projectType = "Building" && estimate.totals.ADURegCostMaterialAndLabor !== 0 && estimate.structures.structure1.aduRegulation.contractOrOption === "Optional") {
-                  optionalStr = "Install string lines at all kitchen cabinet areas to achieve ADU height regulation"
-                  optionalDict = {}
-                  optionalDict.option = optionalStr
-                  optionalDict.cost = costAfterMargin((estimate.totals.ADURegCostMaterialAndLabor), margin)
-                  calculateOptionals[("option" + opt)] = optionalDict
-                  opt = opt + 1
+            if (projData.projectinfo.projectType === "Building" && estimate.totals.ADURegCostMaterialAndLabor !== 0 && estimate.structures.structure1.aduRegulation.contractOrOption === "Optional") {
+                  calculateOptionals["option" + opt] = {
+                        option: "install string lines at all kitchen cabinet areas to achieve ADU height regulation",
+                        cost: costAfterMargin(estimate.totals.ADURegCostMaterialAndLabor, margin)
+                  }
+                  opt++;
             }
             
             //GYP SATURDAY OPTION
             if (estimate.totals.gypCostSaturdayOption !== 0) {
-                  optionalStr = "Pour gypcrete on Saturday"
-                  optionalDict = {}
-                  optionalDict.option = optionalStr
-                  optionalDict.cost = costAfterMargin((estimate.totals.gypCostSaturdayOption), margin)
-                  calculateOptionals[("option" + opt)] = optionalDict
-                  opt = opt + 1
+                  calculateOptionals["option" + opt] = {
+                        option: "Pour gypcrete on Saturday",
+                        cost: costAfterMargin(estimate.totals.gypCostSaturdayOption, margin)
+                  }
+                  opt++;
             }
             
             //MOIST STOP
             if (estimate.gyp.moistStop === "Yes - Option") {
-                  optionalStr = "Install moist stop at all floor to wall transitions receiving Gypsum Concrete"
-                  optionalDict = {}
-                  optionalDict.option = optionalStr
-                  optionalDict.cost = costAfterMargin((estimate.totals.costOfMoistStop), margin)
-                  calculateOptionals[("option" + opt)] = optionalDict
-                  opt = opt + 1
+                  calculateOptionals["option" + opt] = {
+                        option: "install moist stop at all floor to wall transitions receiving Gypsum Concrete",
+                        cost: costAfterMargin(estimate.totals.costOfMoistStop, margin)
+                  }
+                  opt++;
             }
             
             //SEALER
             if (estimate.gyp.sealer === "Yes - Option") {
-                  optionalStr = "Apply " + Format((estimate.totals.gypSF), "#,###") + " SF of Hacker sealer at all newly poured areas"
-                  optionalDict = {}
-                  optionalDict.option = optionalStr
-                  optionalDict.cost = costAfterMargin((estimate.totals.costOfSealerGallons), margin)
-                  calculateOptionals[("option" + opt)] = optionalDict
-                  opt = opt + 1
+                  calculateOptionals["option" + opt] = {
+                        option: "Apply " + estimate.totals.gypSF.toLocaleString('en') + " SF of Hacker sealer at all newly poured areas",
+                        cost: costAfterMargin(estimate.totals.costOfSealerGallons, margin)
+                  }
+                  opt++;
             }
             
             //RAMBOARD
             if (estimate.gyp.ramboard === "Yes - Option") {
-                  optionalStr = "Install " + Format((estimate.totals.gypSF), "#,###") + " SF of ramboard at all newly poured areas"
-                  optionalDict = {}
-                  optionalDict.option = optionalStr
-                  optionalDict.cost = costAfterMargin((estimate.totals.costOfRamBoard), margin)
-                  calculateOptionals[("option" + opt)] = optionalDict
-                  opt = opt + 1
+                  calculateOptionals["option" + opt] = {
+                        option: "install " + estimate.totals.gypSF.toLocaleString('en') + " SF of ramboard at all newly poured areas",
+                        cost: costAfterMargin(estimate.totals.costOfRamBoard, margin)
+                  }
+                  opt++;
             }
             
             //5. LOOP THRU GYP ASSEMBLIES
-            For Each gypAssemKey In estimate.structures.structure1.gypAssemblies
+            for (var gypAssemKey in estimate.structures.structure1.gypAssemblies) {
                   //1. SET VARIABLE
-                  gypAssem = estimate.structures.structure1.gypAssemblies[gypAssemKey]
+                  gypAssem = estimate.structures.structure1.gypAssemblies[gypAssemKey];
                   
                   //2. LOOP THRU OPTIONS
-                  For Each optAssemKey In gypAssem.options
-                        optAssem = gypAssem.options[optAssemKey]
+                  for (var optAssemKey in gypAssem.options) {
+                        optAssem = gypAssem.options[optAssemKey];
                         
-                        //1. PASS THE OBJECTS TO THE FUNCTION AND GET STRING
-                        optionalDict = compareRegToOptGyp(gypAssem, optAssem, margin)
+                        //1. PASS THE OBJECTS TO THE FUNCTION AND GET STRinG
+                        optionalDict = compareRegToOptGyp(gypAssem, optAssem, margin);
                         if (optionalDict.option !== "option is not different") {
-                              calculateOptionals[("option" + opt)] = optionalDict
-                              opt = opt + 1
+                              calculateOptionals["option" + opt] = optionalDict;
+                              opt++;
                         }
                   }
                   
@@ -146,52 +133,51 @@ var calculateOptionals = function(projData, estimateVersion) {
       
       //5. CONC SATURDAY OPTION
       if (estimate.totals.concCostSaturdayOption !== 0) {
-            optionalStr = "Pour concrete on Saturday"
-            optionalDict = {}
-            optionalDict.option = optionalStr
-            optionalDict.cost = costAfterMargin((estimate.totals.concCostSaturdayOption), margin)
-            calculateOptionals[("option" + opt)] = optionalDict
-            opt = opt + 1
+            calculateOptionals["option" + opt] = {
+                  option: "Pour concrete on Saturday",
+                  cost: costAfterMargin(estimate.totals.concCostSaturdayOption, margin)
+            }
+            opt++;
       }
 
-      For Each concAssemKey In estimate.structures.structure1.concAssemblies
+      for (var concAssemKey in estimate.structures.structure1.concAssemblies) {
             //1. SET VARIABLE
-            concAssem = estimate.structures.structure1.concAssemblies[concAssemKey]
+            concAssem = estimate.structures.structure1.concAssemblies[concAssemKey];
             
             //2. IF CONC ASSEMBLY IS AN OPTION
             if (concAssem.contractOrOption === "Optional") {
-                  optionalStr = exteriorScopeStr[concAssem]
-                  optionalDict = {}
-                  optionalDict.option = optionalStr
-                  optionalDict.cost = concAssem.costTotal
-                  calculateOptionals[("option" + opt)] = optionalDict
-                  opt = opt + 1
+                  optionalStr = exteriorScopeStr(concAssem);
+                  calculateOptionals["option" + opt] = {
+                        option: optionalStr,
+                        cost: concAssem.costTotal
+                  }
+                  opt++;
             }
                   
             //1. LOOP THRU OPTIONS
-            For Each optAssemKey In concAssem.options
-                  optAssem = concAssem.options[optAssemKey]
+            for (var optAssemKey in concAssem.options) {
+                  optAssem = concAssem.options[optAssemKey];
                         
-                  //1. PASS THE OBJECTS TO THE FUNCTION AND GET STRING
-                  optionalDict = compareRegToOptConc(concAssem, optAssem, concAssem.margin)
+                  //1. PASS THE OBJECTS TO THE FUNCTION AND GET STRinG
+                  optionalDict = compareRegToOptConc(concAssem, optAssem, concAssem.margin);
                   if (optionalDict.option !== "option is not different") {
-                        calculateOptionals[("option" + opt)] = optionalDict
-                        opt = opt + 1
+                        calculateOptionals["option" + opt] = optionalDict;
+                        opt++;
                   }
             }
                                     
       }
-      
+      return calculateOptionals;
 }
 var compareRegToOptGyp = function(regAssem, optAssem, margin) {
-      compareRegToOptGyp = {}
-      var totalCost = (optAssem.difference / (100 - [margin])) * 100
-      var optionalStr
-      var addOrDeduct
-      var arrSM1[]
-      var arrSM2[]
-      var sm1
-      var sm2
+      var compareRegToOptGyp = {};
+      var totalCost = (optAssem.difference / (100 - margin)) * 100;
+      var optionalStr;
+      var addOrDeduct;
+      var arrSM1;
+      var arrSM2;
+      var sm1;
+      var sm2;
       
       //IF gypTypes ARE DIFFERENT
       if (regAssem.gypType !== optAssem.gypType) {
@@ -200,22 +186,21 @@ var compareRegToOptGyp = function(regAssem, optAssem, margin) {
             if (regAssem.gypThick !== optAssem.gypThick) {
                   //WHEN gypType AND gypThick ARE DIFFERENT
                   if (optAssem.difference > 0) {
-                        addOrDeduct = "ADD"
-                        optionalStr = "Upgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + regAssem.gypType + ") to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + optAssem.gypType + ")"
+                        addOrDeduct = "ADD";
+                        optionalStr = "Upgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + regAssem.gypType + ") to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + optAssem.gypType + ")";
                   } else {
-                        addOrDeduct = "DEDUCT"
-                        optionalStr = "Downgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + regAssem.gypType + ") to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + optAssem.gypType + ")"
+                        addOrDeduct = "DEDUCT";
+                        optionalStr = "Downgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + regAssem.gypType + ") to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + optAssem.gypType + ")";
                   }
             } else {
                   //WHEN ONLY gypType IS DIFFERENT
                   if (optAssem.difference > 0) {
                         addOrDeduct = "ADD"
-                        optionalStr = "Upgrade from Firm-Fill" + Chr[174] + " " + regAssem.gypType + " / " + regAssem.PSI + " PSI" + " to " + " Firm-Fill" + Chr[174] + " " + optAssem.gypType + " / " + optAssem.PSI + " PSI"
+                        optionalStr = "Upgrade from Firm-Fill" + "\xAE" + " " + regAssem.gypType + " / " + regAssem.PSI + " PSI" + " to " + " Firm-Fill" + "\xAE" + " " + optAssem.gypType + " / " + optAssem.PSI + " PSI"
                   } else {
                         addOrDeduct = "DEDUCT"
-                        optionalStr = "Downgrade from Firm-Fill" + Chr[174] + " " + regAssem.gypType + " / " + regAssem.PSI + " PSI" + " to " + " Firm-Fill" + Chr[174] + " " + optAssem.gypType + " / " + optAssem.PSI + " PSI"
+                        optionalStr = "Downgrade from Firm-Fill" + "\xAE" + " " + regAssem.gypType + " / " + regAssem.PSI + " PSI" + " to " + " Firm-Fill" + "\xAE" + " " + optAssem.gypType + " / " + optAssem.PSI + " PSI"
                   }
-                  
             }
       
       //IF GYP THICKNESSES ARE DIFFERENT
@@ -225,247 +210,244 @@ var compareRegToOptGyp = function(regAssem, optAssem, margin) {
             if (regAssem.soundMatType !== optAssem.soundMatType) {
                   if (regAssem.soundMatType !== "") {
                         arrSM1 = Split(regAssem.soundMatType)
-                        sm1 = arrSM1[0] + " Mat" + "(" + arrSM1[1] + "-" + arrSM1[2] + Chr[174] + ")"
+                        sm1 = arrSM1[0] + " Mat" + "(" + arrSM1[1] + "-" + arrSM1[2] + "\xAE" + ")"
                   }
                   
                   if (optAssem.soundMatType !== "") {
                         arrSM2 = Split(optAssem.soundMatType)
-                        sm2 = arrSM2[0] + " Mat" + "(" + arrSM2[1] + "-" + arrSM2[2] + Chr[174] + ")"
+                        sm2 = arrSM2[0] + " Mat" + "(" + arrSM2[1] + "-" + arrSM2[2] + "\xAE" + ")"
                   }
 
                   if (optAssem.difference > 0) {
                         addOrDeduct = "ADD"
                         if (regAssem.soundMatType === "") {
-                              optionalStr = "Upgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2
+                              optionalStr = "Upgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2;
                         } else {
-                              optionalStr = "Upgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2
+                              optionalStr = "Upgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2;
                         }
                         
                   } else {
                         addOrDeduct = "DEDUCT"
                         if (optAssem.soundMatType === "") {
-                              optionalStr = "Downgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete"
+                              optionalStr = "Downgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete";
                         } else {
-                              optionalStr = "Downgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2
+                              optionalStr = "Downgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2;
                         }
                   }
                   
             //IF ONLY GYP THICKNESS IS DIFFERENT
             } else {
                   if (optAssem.difference > 0) {
-                        addOrDeduct = "ADD"
-                        optionalStr = "Upgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete"
+                        addOrDeduct = "ADD";
+                        optionalStr = "Upgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete";
                   } else {
-                        addOrDeduct = "DEDUCT"
-                        optionalStr = "Downgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete"
+                        addOrDeduct = "DEDUCT";
+                        optionalStr = "Downgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete";
                   }
             }
       
       //IF SOUNDMAT TYPES DIFFERENT
       } else if (regAssem.soundMatType !== optAssem.soundMatType) {
-            arrSM1 = Split(regAssem.soundMatType)
-            arrSM2 = Split(optAssem.soundMatType)
-            sm1 = arrSM1[0] + " Mat " + "(" + arrSM1[1] + "-" + arrSM1[2] + Chr[174] + ")"
-            sm2 = arrSM2[0] + " Mat " + "(" + arrSM2[1] + "-" + arrSM2[2] + Chr[174] + ")"
+            arrSM1 = regAssem.soundMatType.split(" ");
+            arrSM2 = optAssem.soundMatType.split(" ");
+            sm1 = arrSM1[0] + " Mat " + "(" + arrSM1[1] + "-" + arrSM1[2] + "\xAE" + ")";
+            sm2 = arrSM2[0] + " Mat " + "(" + arrSM2[1] + "-" + arrSM2[2] + "\xAE" + ")";
             
             if (optAssem.difference > 0) {
-                  addOrDeduct = "ADD"
+                  addOrDeduct = "ADD";
                   if (regAssem.soundMatType === "") {
-                        optionalStr = "Upgrade from no sound mat to " + sm2
+                        optionalStr = "Upgrade from no sound mat to " + sm2;
                   } else {
-                        optionalStr = "Upgrade from " + sm1 + " to " + sm2
+                        optionalStr = "Upgrade from " + sm1 + " to " + sm2;
                   }
             } else {
-                  addOrDeduct = "DEDUCT"
+                  addOrDeduct = "DEDUCT";
                   if (optAssem.soundMatType === "") {
-                        optionalStr = "Downgrade from " + sm1 + " to no sound mat"
+                        optionalStr = "Downgrade from " + sm1 + " to no sound mat";
                   } else {
-                        optionalStr = "Downgrade from " + sm1 + " to " + sm2
+                        optionalStr = "Downgrade from " + sm1 + " to " + sm2;
                   }
             }
             
       //IF WIRE TYPES ARE DIFFERENT
       } else if (regAssem.wireType !== optAssem.wireType) {
              if (optAssem.difference > 0) {
-                  addOrDeduct = "ADD"
+                  addOrDeduct = "ADD";
                   if (regAssem.wireType === "") {
-                        if ((regAssem.SF !== optAssem.SF)) {
-                              optionalStr = "Install " + optAssem.SF + " SF of " + optAssem.wireType
+                        if (regAssem.SF !== optAssem.SF) {
+                              optionalStr = "install " + optAssem.SF + " SF of " + optAssem.wireType;
                         } else {
-                              optionalStr = "Install " + optAssem.wireType
+                              optionalStr = "install " + optAssem.wireType;
                         }
                   } else {
-                        optionalStr = "Upgrade from " + regAssem.wireType + " to " + optAssem.wireType
+                        optionalStr = "Upgrade from " + regAssem.wireType + " to " + optAssem.wireType;
                   }
             } else {
                   addOrDeduct = "DEDUCT"
                   if (optAssem.wireType === "") {
-                        optionalStr = "Remove " + regAssem.wireType
+                        optionalStr = "Remove " + regAssem.wireType;
                   } else {
-                        optionalStr = "Downgrade from " + regAssem.wireType + " to " + optAssem.wireType
+                        optionalStr = "Downgrade from " + regAssem.wireType + " to " + optAssem.wireType;
                   }
             }
                 
       //IF BLACK PAPER TYPES ARE DIFFERENT
       } else if (regAssem.blackPaperType !== optAssem.blackPaperType) {
              if (optAssem.difference > 0) {
-                  addOrDeduct = "ADD"
-                  optionalStr = "Install " + optAssem.blackPaperType
+                  addOrDeduct = "ADD";
+                  optionalStr = "install " + optAssem.blackPaperType;
             } else {
-                  addOrDeduct = "DEDUCT"
-                  optionalStr = "Remove " + regAssem.blackPaperType
+                  addOrDeduct = "DEDUCT";
+                  optionalStr = "Remove " + regAssem.blackPaperType;
             }
       
       } else {
             compareRegToOptGyp.option = "option is not different"
-            Exit Function
+            return compareRegToOptGyp;
       }
       
-      optionalStr = optionalStr + " at " + LCase(regAssem.section)
-      compareRegToOptGyp.option = optionalStr
-      compareRegToOptGyp.cost = totalCost
-      
+      optionalStr = optionalStr + " at " + regAssem.section.toLowerCase();
+      compareRegToOptGyp.option = optionalStr;
+      compareRegToOptGyp.cost = totalCost;
+      return compareRegToOptGyp;
 }
 var compareRegToOptConc = function(regAssem, optAssem, margin) {
-      compareRegToOptConc = {}
-      var totalCost = optAssem.difference //i think this is different from gyp because each has its own margin. so the difference already includes the difference in margin
-      var optionalStr
-      var addOrDeduct
-      var arrSM1[]
-      var arrSM2[]
-      var sm1
-      var sm2
+      compareRegToOptConc = {};
+      var totalCost = optAssem.difference; //i think this is different from gyp because each has its own margin. so the difference already includes the difference in margin
+      var optionalStr;
+      var addOrDeduct;
+      var arrSM1;
+      var arrSM2;
+      var sm1;
+      var sm2;
       
       //IF concThicks ARE DIFFERENT
       if (regAssem.concThick !== optAssem.concThick) {
             if (optAssem.difference > 0) {
-                  addOrDeduct = "ADD"
-                  optionalStr = "Upgrade from " + doubleToFraction(regAssem.concThick) + " " + regAssem.concType + " to " + doubleToFraction(optAssem.concThick) + " " + optAssem.concType
+                  addOrDeduct = "ADD";
+                  optionalStr = "Upgrade from " + doubleToFraction(regAssem.concThick) + " " + regAssem.concType + " to " + doubleToFraction(optAssem.concThick) + " " + optAssem.concType;
             } else {
-                  addOrDeduct = "DEDUCT"
-                  optionalStr = "Downgrade from " + doubleToFraction(regAssem.concThick) + " " + regAssem.concType + " to " + doubleToFraction(optAssem.concThick) + " " + optAssem.concType
+                  addOrDeduct = "DEDUCT";
+                  optionalStr = "Downgrade from " + doubleToFraction(regAssem.concThick) + " " + regAssem.concType + " to " + doubleToFraction(optAssem.concThick) + " " + optAssem.concType;
             }
             
       //IF concTypes ARE DIFFERENT
       } else if (regAssem.concType !== optAssem.concType) {
              if (optAssem.difference > 0) {
-                  addOrDeduct = "ADD"
-                  optionalStr = "Upgrade from " + regAssem.concType + " to " + optAssem.concType
+                  addOrDeduct = "ADD";
+                  optionalStr = "Upgrade from " + regAssem.concType + " to " + optAssem.concType;
             } else {
-                  addOrDeduct = "DEDUCT"
-                  optionalStr = "Downgrade from " + regAssem.concType + " to " + optAssem.concType
+                  addOrDeduct = "DEDUCT";
+                  optionalStr = "Downgrade from " + regAssem.concType + " to " + optAssem.concType;
             }
             
       //IF psi//s ARE DIFFERENT
       } else if (regAssem.psi !== optAssem.psi) {
             if (optAssem.difference > 0) {
-                  addOrDeduct = "ADD"
-                  optionalStr = "Upgrade " + regAssem.concType + " from " + regAssem.psi + " to " + optAssem.psi
+                  addOrDeduct = "ADD";
+                  optionalStr = "Upgrade " + regAssem.concType + " from " + regAssem.psi + " to " + optAssem.psi;
             } else {
-                  addOrDeduct = "DEDUCT"
-                  optionalStr = "Downgrade " + regAssem.concType + " from " + regAssem.psi + " to " + optAssem.psi
+                  addOrDeduct = "DEDUCT";
+                  optionalStr = "Downgrade " + regAssem.concType + " from " + regAssem.psi + " to " + optAssem.psi;
             }
             
       //IF blackPaperTypes ARE DIFFERENT
       } else if (regAssem.blackPaperType !== optAssem.blackPaperType) {
             if (optAssem.difference > 0) {
-                  addOrDeduct = "ADD"
-                  optionalStr = "Install " + optAssem.blackPaperType
+                  addOrDeduct = "ADD";
+                  optionalStr = "install " + optAssem.blackPaperType;
             } else {
-                  addOrDeduct = "DEDUCT"
-                  optionalStr = "Remove " + regAssem.blackPaperType
+                  addOrDeduct = "DEDUCT";
+                  optionalStr = "Remove " + regAssem.blackPaperType;
             }
             
       //IF wireTypes ARE DIFFERENT
       } else if (regAssem.wireType !== optAssem.wireType) {
             if (optAssem.difference > 0) {
-                  addOrDeduct = "ADD"
+                  addOrDeduct = "ADD";
                   if (regAssem.wireType === "") {
-                        optionalStr = "Install " + optAssem.wireType
+                        optionalStr = "install " + optAssem.wireType;
                   } else {
-                        optionalStr = "Upgrade from " + regAssem.wireType + " to " + optAssem.wireType
+                        optionalStr = "Upgrade from " + regAssem.wireType + " to " + optAssem.wireType;
                   }
             } else {
-                  addOrDeduct = "DEDUCT"
+                  addOrDeduct = "DEDUCT";
                   if (optAssem.wireType === "") {
-                        optionalStr = "Remove " + regAssem.wireType
+                        optionalStr = "Remove " + regAssem.wireType;
                   } else {
-                        optionalStr = "Downgrade from " + regAssem.wireType + " to " + optAssem.wireType
+                        optionalStr = "Downgrade from " + regAssem.wireType + " to " + optAssem.wireType;
                   }
             }
             
       //IF soundMatTypes ARE DIFFERENT
       } else if (regAssem.soundMatType !== optAssem.soundMatType) {
-            arrSM1 = Split(regAssem.soundMatType)
-            arrSM2 = Split(optAssem.soundMatType)
-            sm1 = arrSM1[0] + " Mat " + "(" + arrSM1[1] + "-" + arrSM1[2] + Chr[174] + ")"
-            sm2 = arrSM2[0] + " Mat " + "(" + arrSM2[1] + "-" + arrSM2[2] + Chr[174] + ")"
+            arrSM1 = regAssem.soundMatType.split(" ");
+            arrSM2 = optAssem.soundMatType.split(" ");
+            sm1 = arrSM1[0] + " Mat " + "(" + arrSM1[1] + "-" + arrSM1[2] + "\xAE" + ")";
+            sm2 = arrSM2[0] + " Mat " + "(" + arrSM2[1] + "-" + arrSM2[2] + "\xAE" + ")";
             
             if (optAssem.difference > 0) {
-                  addOrDeduct = "ADD"
+                  addOrDeduct = "ADD";
                   if (regAssem.soundMatType === "") {
-                        optionalStr = "Install " + sm2
+                        optionalStr = "install " + sm2;
                   } else {
-                        optionalStr = "Upgrade from " + sm1 + " to " + sm2
+                        optionalStr = "Upgrade from " + sm1 + " to " + sm2;
                   }
             } else {
-                  addOrDeduct = "DEDUCT"
+                  addOrDeduct = "DEDUCT";
                   if (optAssem.soundMatType === "") {
-                        optionalStr = "Downgrade from " + sm1 + " to no sound mat"
+                        optionalStr = "Downgrade from " + sm1 + " to no sound mat";
                   } else {
-                        optionalStr = "Downgrade from " + sm1 + " to " + sm2
+                        optionalStr = "Downgrade from " + sm1 + " to " + sm2;
                   }
             }
       
       //IF ADD MOBILIZATIONS ARE DIFFERENT
       } else if (regAssem.addMobils !== optAssem.addMobils) {
             if (optAssem.difference > 0) {
-                  addOrDeduct = "ADD"
+                  addOrDeduct = "ADD";
                   if (optAssem.addMobils === 1) {
-                        optionalStr = "Add " + optAssem.addMobils + " mobilization"
+                        optionalStr = "Add " + optAssem.addMobils + " mobilization";
                   } else {
-                        optionalStr = "Add " + optAssem.addMobils + " mobilizations"
+                        optionalStr = "Add " + optAssem.addMobils + " mobilizations";
                   }
             } else {
-                  optionalStr = "Reduce " + optAssem.addMobils + " mobilizations"
+                  optionalStr = "Reduce " + optAssem.addMobils + " mobilizations";
             }
       } else {
             compareRegToOptConc.option = "option is not different"
-            Exit Function
+            return compareRegToOptConc;
       }
       
-      optionalStr = optionalStr + " at " + LCase(regAssem.section)
-      compareRegToOptConc.option = optionalStr
+      optionalStr = optionalStr + " at " + regAssem.section.toLowerCase();
+      compareRegToOptConc.option = optionalStr;
       
-      compareRegToOptConc.cost = totalCost
-
-      
+      compareRegToOptConc.cost = totalCost;
+      return compareRegToOptConc;
 }
 var exteriorScopeStr = function(concAssem) {
       //THIS FN IS CALLED BY EITHER,
       //1. THE diplay_proposalExteriorScope subroutine
       //2. THE diplay_proposalOptionalScope subroutine
-      
-      var concType
-      
-      if (contains(concAssem.concType, "Hydrolite") === true) {
-            concType = "Lightweight"
-      } else if (contains(concAssem.concType, "Pea Gravel") === true) {
-            concType = "Pea Gravel"
-      } else if (contains(concAssem.concType, "Hardrock") === true) {
-            concType = "Hardrock"
+      var concType;
+      if (concAssem.concType.includes("Hydrolite")) {
+            concType = "Lightweight";
+      } else if (concAssem.concType.includes("Pea Gravel")) {
+            concType = "Pea Gravel";
+      } else if (concAssem.concType.includes("Hardrock")) {
+            concType = "Hardrock";
       }
       
       exteriorScopeStr = "Pour " + _
-                                   Format((concAssem.SF), "#,###") + " SqF of " + _
-                                   doubleToFraction((concAssem.concThick)) + " " + _
+                                   concAssem.SF.toLocaleString('en') + " SqF of " + _
+                                   doubleToFraction(concAssem.concThick) + " " + _
                                    concType + " concrete" + _
                                    " (" + concAssem.psi + " PSI)" + _
-                                   " over "
+                                   " over ";
             
       if (concAssem.soundMatType !== "") {
-            var arr[], arr = Split((concAssem.soundMatType))
-            exteriorScopeStr = exteriorScopeStr + arr[0] + " Sound Mat " + "(" + arr[1] + "-" + arr[2] + Chr[174] + ")" + " over "
+            var arr = concAssem.soundMatType.split(' ');
+            exteriorScopeStr = exteriorScopeStr + arr[0] + " Sound Mat " + "(" + arr[1] + "-" + arr[2] + "\xAE" + ")" + " over "
       }
             
       if (concAssem.wireType !== "") {
@@ -476,7 +458,7 @@ var exteriorScopeStr = function(concAssem) {
             exteriorScopeStr = exteriorScopeStr + "black paper"
       }
       
-      var mobilizationStr
+      var mobilizationStr;
       if (concAssem.labor.concMobilizations + concAssem.addMobils === 1) {
             mobilizationStr = concAssem.labor.concMobilizations + concAssem.addMobils + " mobilization"
       } else {
@@ -484,6 +466,7 @@ var exteriorScopeStr = function(concAssem) {
       }
       
       exteriorScopeStr = exteriorScopeStr + " at " + LCase(concAssem.section) + " - " + mobilizationStr
-
+      
+      return exteriorScopeStr;
 }
 

@@ -82,3 +82,12 @@ true
 24==========
 False
 false
+
+
+Round\((.*) \+ 0.49\)      Math.ceil($1)
+dict\((.*?)\)              dict[$1]
+Array\[(.*?)\]              [$1]
+Array
+Array\((.*?)\)            [$1]
+Array\.(\w*)               ["$1"]
+(?<![\{\}])\n             ;\n

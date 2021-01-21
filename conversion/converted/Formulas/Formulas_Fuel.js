@@ -3,10 +3,10 @@ var drivingFuelsCost = function(material, miles, mobilizations) {
       if (miles !== "Not Available") {
             //1. CALCULATE COST FOR ONE WAY
             //here we hardcoded the truck type
-            drivingFuelsCost = drivingFuelCost("F-550", miles)
+            drivingFuelsCost = drivingFuelCost("F-550", miles);
                   
             //2. MULTIPLY BY 2 FOR ROUND TRIP
-            drivingFuelsCost = drivingFuelsCost * 2
+            drivingFuelsCost = drivingFuelsCost * 2;
                   
             //3. MULTIPLY DRIVING FUELS COST BY MOBILIZATIONS
             drivingFuelsCost = drivingFuelsCost * mobilizations
@@ -18,43 +18,37 @@ var drivingFuelsCost = function(material, miles, mobilizations) {
       } else {
             drivingFuelsCost = "Not Available"
       }
+      return drivingFuelsCost;
 }
 var drivingFuelCost = function(vehicle, miles) {
     //ONE WAY
+    var dict;
+    dict = getValues("Equip_Vehicles", {"Model": vehicle}, ["Fuel"]);
+    var fuelType = dict.Fuel;
     
-    var dict
+    dict = getValues("Equip_Vehicles", {"Model": vehicle}, ["MPG"]);
+    var MPG = dict.MPG;
     
-    var fuelType
-    dict = getValues("Equip_Vehicles", Array.Model, Array[vehicle], Array.Fuel)
-    fuelType = dict.Fuel
-    
-    var MPG
-    dict = getValues("Equip_Vehicles", Array.Model, Array[vehicle], Array.MPG)
-    MPG = dict.MPG
-    
-    var gallons
-    gallons = miles / MPG
+    var gallons = miles / MPG;
 
-    var pricePerGallon
-    dict = getValues("Prices_Fuel", Array("Fuel Type"), Array[fuelType], Array("Price/Gallon"))
-    pricePerGallon = dict("Price/Gallon")
+    dict = getValues("Prices_Fuel", {"Fuel Type": fuelType}, ["Price/Gallon"]);
+    var pricePerGallon = dict["Price/Gallon"];
     
-    drivingFuelCost = Round((gallons * pricePerGallon) + 0.49)
+    return Math.ceil(gallons * pricePerGallon);
 }
 var machinesFuelCost = function(gypOrConc, hrs, machines) {
       machinesFuelCost = {}
       
       if (gypOrConc === "Gyp") {
-            machinesFuelCost.pump = machineFuelCost("gypPump", (machines[0]), hrs)
-            machinesFuelCost.bobcat = machineFuelCost("bobcat", (machines[1]), hrs)
+            machinesFuelCost.pump = machineFuelCost("gypPump", machines[0], hrs);
+            machinesFuelCost.bobcat = machineFuelCost("bobcat", machines[1], hrs);
       } else {
-            machinesFuelCost.pump = machineFuelCost("concPump", (machines[0]), hrs)
+            machinesFuelCost.pump = machineFuelCost("concPump", machines[0], hrs);
       }
-      
+      return machineFuelCost;
 }
 var machineFuelCost = function(machineType, machine, hrs) {
-      var tableName
-      
+      var tableName;
       //1. DETERMINE TABLE NAME
       if (machineType === "gypPump") {
             tableName = "Equip_Gyp_Pumps"
@@ -66,21 +60,20 @@ var machineFuelCost = function(machineType, machine, hrs) {
       }
       
       //2. GET GALS/HR AND FUEL TYPE FOR MACHINE
-      var dict = getValues(tableName, Array("Model-Num"), Array[machine], Array("Gals/Hr", "Fuel Type"))
+      var dict = getValues(tableName, {"Model-Num": machine}, ["Gals/Hr", "Fuel Type"]);
       
       //3. CALCULATE GALLONS
-      var gallons = hrs * dict("Gals/Hr")
+      var gallons = hrs * dict["Gals/Hr"];
       
       //4. SET FUEL TYPE VARIABLE
-      var fuelType = dict("Fuel Type")
+      var fuelType = dict["Fuel Type"];
       
       //5. GET PRICE/GALLON FOR FUEL
-      dict = getValues("Prices_Fuel", Array("Fuel Type"), Array[fuelType], Array("Price/Gallon"))
+      dict = getValues("Prices_Fuel", {"Fuel Type": fuelType}, ["Price/Gallon"]);
       
       //6. SET PRICE/GALLON VARIABLE
-      var fuelCostPerGal = dict("Price/Gallon")
+      var fuelCostPerGal = dict["Price/Gallon"];
       
       //7. CALCULATE MACHINE FUEL COST
-      machineFuelCost = gallons * fuelCostPerGal
-      
+      return gallons * fuelCostPerGal
 }

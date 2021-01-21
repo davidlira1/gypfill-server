@@ -35,7 +35,30 @@ var getValues = (tableName, obj, resultHeaders) => {
     return results;
 }
 
+var getValuesBasedOnNum = (tableName, num, resultHeaders) => {
+    var table = formulaTables[tableName];
+    var firstCol = table[Object.keys(table)[0]];
+    var results = {};
+
+    //loop down the first key's values
+    for(var row = 0; row < firstCol.length; row++) {
+        //at each element, check if it's more than the num
+        if(num > firstCol[row]) {
+            continue;
+        } else {
+            break;
+        } 
+    }
+
+    for(var i = 0; i < resultHeaders.length; i++) {
+        results[resultHeaders[i]] = table[resultHeaders[i]][row];
+    }
+
+    return results;
+}
+
 module.exports = {
     getFormulaTables,
-    getValues
+    getValues,
+    getValuesBasedOnNum
 }
