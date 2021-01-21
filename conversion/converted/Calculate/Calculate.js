@@ -1,4 +1,6 @@
-var calcGyp = function(projData, estimateVersion) {
+const lib = require('../library.js');
+
+module.exports.calcGyp = function(projData, estimateVersion) {
       //1. SET THE ESTIMATE VERSION OBJECT
       var estimate = projData.estimates("estimate" + estimateVersion);
       
@@ -458,11 +460,11 @@ var calcGyp = function(projData, estimateVersion) {
       estimate.scheduleOfValues = calculateSOV(projData, estimateVersion)
 
 }
-var materialsAndCostsPrimer = function(gypOrConc, assem, dict) {
+module.exports.materialsAndCostsPrimer = function(gypOrConc, assem, dict) {
       assem.primerGallons = primerGallons(gypOrConc, dict.primerType, assem.SF)
       assem.costOfPrimerGallons = costOfPrimerGallons(gypOrConc, dict.primerType, assem.SF)
 }
-var materialsAndCostsWire = function(assem, dict, wageType) {
+module.exports.materialsAndCostsWire = function(assem, dict, wageType) {
       var temp = wireUnits(dict.wireType, assem.SF)
       assem.wireUnitType = temp.unitType
       assem.wireUnits = temp.units
@@ -472,34 +474,34 @@ var materialsAndCostsWire = function(assem, dict, wageType) {
       assem.washerBoxes = washerBoxes(assem.pinBoxes)
       assem.costOfWasherBoxes = costOfWasherBoxes(assem.washerBoxes)
 }
-var laborAndCostsWire = function(assem, dict, wageType) {
+module.exports.laborAndCostsWire = function(assem, dict, wageType) {
       assem.wireLaborers = wireLaborers(dict.wireType, assem.SF)
       assem.costOfWireLaborers = costOfWireLaborers(wageType, (assem.wireLaborers))
 }
-var materialsAndCostsBlackPaper = function(assem, dict) {
+module.exports.materialsAndCostsBlackPaper = function(assem, dict) {
       assem.blackPaperRolls = blackPaperRolls(dict.blackPaperType, assem.SF)
       assem.costOfBlackPaperRolls = costOfBlackPaperRolls(dict.blackPaperType, assem.blackPaperRolls)
       //duct tape rolls for black paper will be calculated in the same way as duct tape rolls for ramboard
       assem.ductTapeRollsForBlackPaper = ductTapeRollsForRamBoard(assem.SF)
       assem.costOfDuctTapeRollsForBlackPaper = costOfDuctTapeRolls(assem.ductTapeRollsForBlackPaper)
 }
-var materialsAndCostsBlackPaperMoistStop = function(assem, dict) {
+module.exports.materialsAndCostsBlackPaperMoistStop = function(assem, dict) {
       assem.blackPaperRollsMoistStop = blackPaperRollsMoistStop("Default", assem.SF)
       assem.costOfBlackPaperRollsMoistStop = costOfBlackPaperRolls("1-Ply (10 Min Single Layer)", assem.blackPaperRollsMoistStop)
 }
-var materialsAndCostsSprayGlue = function(assem) {
+module.exports.materialsAndCostsSprayGlue = function(assem) {
       assem.cansOfSprayGlue = cansOfSprayGlue(assem.SF)
       assem.costOfCansOfSprayGlue = costOfCansOfSprayGlue(assem.cansOfSprayGlue)
 }
-var materialsAndCostsDuctTapeRollsWhenNoSM = function(assem) {
+module.exports.materialsAndCostsDuctTapeRollsWhenNoSM = function(assem) {
       assem.ductTapeRollsWhenNoSM = ductTapeRollsWhenNoSM(assem.SF)
       assem.costOfDuctTapeRollsWhenNoSM = costOfDuctTapeRolls(assem.ductTapeRollsWhenNoSM)
 }
-var materialsAndCostsSealer = function(gypOrConc, assem, dict) {
+module.exports.materialsAndCostsSealer = function(gypOrConc, assem, dict) {
       assem.sealerGallons = sealerGallons(gypOrConc, dict.sealerType, dict.SF)
       assem.costOfSealerGallons = costOfSealerGallons(gypOrConc, dict.sealerType, dict.SF)
 }
-var materialsAndCostsRamboard = function(assem) {
+module.exports.materialsAndCostsRamboard = function(assem) {
       assem.ramBoardRolls = ramBoardRolls(assem.SF)
       assem.costOfRamBoardRolls = costOfRamBoardRolls(assem.ramBoardRolls)
       assem.ductTapeRollsForRamBoard = ductTapeRollsForRamBoard(assem.SF)
