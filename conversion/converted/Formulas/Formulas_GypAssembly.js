@@ -1,3 +1,5 @@
+const lb = require('../library.js');
+
 module.exports.gypBags = function(SF, gypType, thickness, mixDesign) {
       var cuYdPerBag;
       if (mixDesign === 0) {
@@ -17,7 +19,7 @@ module.exports.gypBags = function(SF, gypType, thickness, mixDesign) {
       return Math.ceil(SF * (thickness / 12) / cuYdPerBag);
 }
 module.exports.costOfGypBags = function(gypType, gypBags) {
-    var dict = getValues("Prices_GypBag", {"Gyp Type": gypType}, ["Price/Bag"]);
+    var dict = lb.getValues("Prices_GypBag", {"Gyp Type": gypType}, ["Price/Bag"]);
     return Math.ceil(gypBags * dict["Price/Bag"]);
 }
 module.exports.tons = function(gypType, gypBags, mixDesign) {
@@ -38,11 +40,11 @@ module.exports.tons = function(gypType, gypBags, mixDesign) {
      return Math.ceil(gypBags * (poundsOfSand / 2000));
 }
 module.exports.costOfTons = function(tons, saturday) {
-      var dict = getValues("Prices_Sand", {"Type": "Regular"}, ["Price/Ton", "Freight Cost", "Saturday Extra"]);
+      var dict = lb.getValues("Prices_Sand", {"Type": "Regular"}, ["Price/Ton", "Freight Cost", "Saturday Extra"]);
       
       var numOfTrucks = Math.ceil(tons / 25);
       
-      var d = {}
+      var d = {};
       //COST
       if (saturday === "No" || saturday === "Yes - Option") {
             d.cost = (tons * dict["Price/Ton"]) + (dict["Freight Cost"] * numOfTrucks);
@@ -65,38 +67,38 @@ module.exports.costOfRotoStater = function() {
     costOfRotoStater = getValue("RotoStater", "Roto Stater", "Price")
 }
 module.exports.soundMatRolls = function(SF, soundMatType) {
-    var dict = getValues("Prices_SoundMat", {"SM Type": soundMatType}, ["SF/Roll"]);
+    var dict = lb.getValues("Prices_SoundMat", {"SM Type": soundMatType}, ["SF/Roll"]);
     return Math.ceil(SF / dict["SF/Roll"]);
 }
 module.exports.costOfSoundMat = function(SF, soundMatType) {
-    var dict = getValues("Prices_SoundMat", {"SM Type": soundMatType}, ["Price/SF"]);
+    var dict = lb.getValues("Prices_SoundMat", {"SM Type": soundMatType}, ["Price/SF"]);
     return Math.ceil(SF * dict["Price/SF"]);
 }
 module.exports.soundMatLaborers = function(SF, overnight, soundMatMobilizations, soundMatType) {
       var dict;
       //CHECK IF SOUND MAT SF IS LESS THAN MINIMUM IN TABLE. IF SO, GET FROM THE SMALL TABLE
-      dict = getValues("Labor_SoundMat_Minimum", {"Type": "Minimum"}, ["SF"]);
+      dict = lb.getValues("Labor_SoundMat_Minimum", {"Type": "Minimum"}, ["SF"]);
       if (SF <= dict.SF) {
             //GET FROM MINIMUM TABLE
-            dict = getValuesBasedOnNum("Labor_SoundMat_Small", SF, ["Laborers"]);
+            dict = lb.getValuesBasedOnNum("Labor_SoundMat_Small", SF, ["Laborers"]);
             return dict.Laborers;
       } else {
             //IF OVERNIGHT, SOUND MAT LAB||ERS WILL DEPEND ON THE OVERNIGHT TABLE INSTEAD
             if (overnight === true) {
                   var smSFPerDay = SF / soundMatMobilizations;
-                  dict = getValuesBasedOnNum("Labor_Overnight", smSFPerDay, ["1st Day SM"]);
+                  dict = lb.getValuesBasedOnNum("Labor_Overnight", smSFPerDay, ["1st Day SM"]);
                   return dict["1st Day SM"] * soundMatMobilizations;
             } else {
-                  dict = getValues("Prices_SoundMat", {"SM Type": soundMatType}, ["SF/Roll"]);
+                  dict = lb.getValues("Prices_SoundMat", {"SM Type": soundMatType}, ["SF/Roll"]);
                   
                   if (dict["SF/Roll"] <= 260) {
-                         dict = getValues("Labor_SoundMat", {"Per Day": "Smaller Rolls"}, ["SF"]);
+                         dict = lb.getValues("Labor_SoundMat", {"Per Day": "Smaller Rolls"}, ["SF"]);
                   } else {
-                        dict = getValues("Labor_SoundMat", {"Per Day": "Regular Rolls"}, ["SF"]);
+                        dict = lb.getValues("Labor_SoundMat", {"Per Day": "Regular Rolls"}, ["SF"]);
                   }
                   
                   var laborers = SF / dict.SF;
-                  var remainder = laborers - Round((laborers / 1) - 0.49)
+                  var remainder = laborers - Math.floor(laborers);
                   
                   return remainder <= 0.38 ? Math.round(laborers) : Math.ceil(laborers);
             }
@@ -104,12 +106,12 @@ module.exports.soundMatLaborers = function(SF, overnight, soundMatMobilizations,
 }
 module.exports.costOfSoundMatLabor = function(laborers, wageType) {
       //1. GET PRICE/DAY F|| SOUND MAT LAB||
-      var dict = getValues("Wage_" + wageType + "_SM", {"Laborer": "Average"}, ["Price/Day"]);
+      var dict = lb.getValues("Wage_" + wageType + "_SM", {"Laborer": "Average"}, ["Price/Day"]);
     
       //2. CALCULATE SOUND MAT LAB||
       return Math.ceil(dict["Price/Day"] * laborers);
 }
 module.exports.lFt = function(SF) {
-      lFt = Math.ceil(SF * 0.31);
+      return Math.ceil(SF * 0.31);
 }
 

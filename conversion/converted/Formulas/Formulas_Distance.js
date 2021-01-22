@@ -1,31 +1,15 @@
-module.exports.distance = function(zipCode, city) {
+const lb = require('../library.js');
+
+module.exports.distance = function(zipCode) {
       return {
-            "Van Nuys" : milesToLocation("Van Nuys", zipCode, city),
+            "Van Nuys" : module.exports.milesToLocation(zipCode),
             "Irvine": 0,
             "San Diego": 0
       }
-}
+};
 
-module.exports.milesToLocation = function(origin, zipCode, city) {
-      var dict;
-          
-      if (zipCode !== "") {
-            dict = getValues("Miles_ZipCodes_VanNuys", {"Zip Code": zipCode}, ["Miles"])
-          
-            if (dict.Miles === "") {
-                  dict = getValues("Miles_Cities_VanNuys", {"City": city}, ["Miles"])
-                  return dict.Miles;
-            } else {
-                  return dict.Miles;
-            }
-          
-      } else if (city !== "") {
-      
-          dict = getValues("Miles_Cities_VanNuys", {"City": city}, ["Miles"])
-          return dict.Miles
-      }
-      
-      if (milesToLocation === "") {
-          return 0;
-      }
-}
+module.exports.milesToLocation = function(zipCode) {
+      var dict = lb.getValues("Miles_ZipCodes_VanNuys", {"Zip Code": zipCode}, ["Miles"]);
+
+      return dict["Miles"] !== undefined ? dict["Miles"] : 40; //we'll do 40 as a default in case it doesn't find anything for the passed in zip code. that way at least some cost is added
+};

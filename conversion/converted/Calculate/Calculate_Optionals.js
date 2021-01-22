@@ -1,5 +1,7 @@
+const lb = require('../library.js');
+
 module.exports.calculateOptionals = function(projData, estimateVersion) {
-      var calculateOptionals = {}
+      var calculateOptionals = {};
       var optionalDict;
       var gypAssem;
       var concAssem;
@@ -7,7 +9,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
       var comparison;
       var margin;
       var opt = 1;
-      var estimate = projData.estimates("estimate" + estimateVersion);
+      var estimate = projData.estimates["estimate" + estimateVersion];
       
       //GYPCRETE
       if (estimate.structures.structure1.gypAssemblies.count > 0) {
@@ -18,7 +20,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
             if (estimate.gyp.slgs === "Yes - Option") {
                   calculateOptionals["option" + opt] = {
                         option: "Survey floor and install SLGS(String-Line Grid System) to control and enhance the floor leveling application",
-                        cost: costAfterMargin(estimate.totals.costOfStringLineinstallation, margin)
+                        cost: lb.costAfterMargin(estimate.totals.costOfStringLineinstallation, margin)
                   };
                   opt++;
             }
@@ -27,7 +29,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
             if (estimate.gyp.flagmen === "Yes - Option") {
                   calculateOptionals["option" + opt] = {
                         option: "Provide flagman to control street traffic",
-                        cost: costAfterMargin(estimate.gyp.labor.costOfGypFlagmenLabor, margin)
+                        cost: lb.costAfterMargin(estimate.gyp.labor.costOfGypFlagmenLabor, margin)
                   }
                   opt++;
             }
@@ -36,7 +38,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
             if (estimate.gyp.perFoamCutting === "Yes - Option") {
                   calculateOptionals["option" + opt] = {
                         option: "Return to cut and remove excess perimeter foam",
-                        cost: costAfterMargin(estimate.totals.gypCostPerFoamCutting, margin)
+                        cost: lb.costAfterMargin(estimate.totals.gypCostPerFoamCutting, margin)
                   }
                   opt++;
             }
@@ -58,7 +60,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
                   }
                   calculateOptionals["option" + opt] = {
                         option: optionalStr,
-                        cost: costAfterMargin(estimate.totals.prePoursCostMaterialAndLabor + estimate.totals.prePoursCostTravel + estimate.totals.prePoursCostAfterMilesThreshold, margin)
+                        cost: lb.costAfterMargin(estimate.totals.prePoursCostMaterialAndLabor + estimate.totals.prePoursCostTravel + estimate.totals.prePoursCostAfterMilesThreshold, margin)
                   }
                   opt++;
             }
@@ -67,7 +69,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
             if (projData.projectinfo.projectType === "Building" && estimate.totals.ADURegCostMaterialAndLabor !== 0 && estimate.structures.structure1.aduRegulation.contractOrOption === "Optional") {
                   calculateOptionals["option" + opt] = {
                         option: "install string lines at all kitchen cabinet areas to achieve ADU height regulation",
-                        cost: costAfterMargin(estimate.totals.ADURegCostMaterialAndLabor, margin)
+                        cost: lb.costAfterMargin(estimate.totals.ADURegCostMaterialAndLabor, margin)
                   }
                   opt++;
             }
@@ -76,7 +78,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
             if (estimate.totals.gypCostSaturdayOption !== 0) {
                   calculateOptionals["option" + opt] = {
                         option: "Pour gypcrete on Saturday",
-                        cost: costAfterMargin(estimate.totals.gypCostSaturdayOption, margin)
+                        cost: lb.costAfterMargin(estimate.totals.gypCostSaturdayOption, margin)
                   }
                   opt++;
             }
@@ -85,7 +87,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
             if (estimate.gyp.moistStop === "Yes - Option") {
                   calculateOptionals["option" + opt] = {
                         option: "install moist stop at all floor to wall transitions receiving Gypsum Concrete",
-                        cost: costAfterMargin(estimate.totals.costOfMoistStop, margin)
+                        cost: lb.costAfterMargin(estimate.totals.costOfMoistStop, margin)
                   }
                   opt++;
             }
@@ -94,7 +96,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
             if (estimate.gyp.sealer === "Yes - Option") {
                   calculateOptionals["option" + opt] = {
                         option: "Apply " + estimate.totals.gypSF.toLocaleString('en') + " SF of Hacker sealer at all newly poured areas",
-                        cost: costAfterMargin(estimate.totals.costOfSealerGallons, margin)
+                        cost: lb.costAfterMargin(estimate.totals.costOfSealerGallons, margin)
                   }
                   opt++;
             }
@@ -103,7 +105,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
             if (estimate.gyp.ramboard === "Yes - Option") {
                   calculateOptionals["option" + opt] = {
                         option: "install " + estimate.totals.gypSF.toLocaleString('en') + " SF of ramboard at all newly poured areas",
-                        cost: costAfterMargin(estimate.totals.costOfRamBoard, margin)
+                        cost: lb.costAfterMargin(estimate.totals.costOfRamBoard, margin)
                   }
                   opt++;
             }
@@ -135,7 +137,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
       if (estimate.totals.concCostSaturdayOption !== 0) {
             calculateOptionals["option" + opt] = {
                   option: "Pour concrete on Saturday",
-                  cost: costAfterMargin(estimate.totals.concCostSaturdayOption, margin)
+                  cost: lb.costAfterMargin(estimate.totals.concCostSaturdayOption, margin)
             }
             opt++;
       }
@@ -187,10 +189,10 @@ module.exports.compareRegToOptGyp = function(regAssem, optAssem, margin) {
                   //WHEN gypType AND gypThick ARE DIFFERENT
                   if (optAssem.difference > 0) {
                         addOrDeduct = "ADD";
-                        optionalStr = "Upgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + regAssem.gypType + ") to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + optAssem.gypType + ")";
+                        optionalStr = "Upgrade from " + lb.doubleToFraction(regAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + regAssem.gypType + ") to " + lb.doubleToFraction(optAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + optAssem.gypType + ")";
                   } else {
                         addOrDeduct = "DEDUCT";
-                        optionalStr = "Downgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + regAssem.gypType + ") to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + optAssem.gypType + ")";
+                        optionalStr = "Downgrade from " + lb.doubleToFraction(regAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + regAssem.gypType + ") to " + lb.doubleToFraction(optAssem.gypThick) + " Gypsum Concrete (Firm-Fill " + optAssem.gypType + ")";
                   }
             } else {
                   //WHEN ONLY gypType IS DIFFERENT
@@ -221,17 +223,17 @@ module.exports.compareRegToOptGyp = function(regAssem, optAssem, margin) {
                   if (optAssem.difference > 0) {
                         addOrDeduct = "ADD"
                         if (regAssem.soundMatType === "") {
-                              optionalStr = "Upgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2;
+                              optionalStr = "Upgrade from " + lb.doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + lb.doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2;
                         } else {
-                              optionalStr = "Upgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2;
+                              optionalStr = "Upgrade from " + lb.doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + lb.doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2;
                         }
                         
                   } else {
                         addOrDeduct = "DEDUCT"
                         if (optAssem.soundMatType === "") {
-                              optionalStr = "Downgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete";
+                              optionalStr = "Downgrade from " + lb.doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + lb.doubleToFraction(optAssem.gypThick) + " Gypsum Concrete";
                         } else {
-                              optionalStr = "Downgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2;
+                              optionalStr = "Downgrade from " + lb.doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + lb.doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2;
                         }
                   }
                   
@@ -239,10 +241,10 @@ module.exports.compareRegToOptGyp = function(regAssem, optAssem, margin) {
             } else {
                   if (optAssem.difference > 0) {
                         addOrDeduct = "ADD";
-                        optionalStr = "Upgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete";
+                        optionalStr = "Upgrade from " + lb.doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + lb.doubleToFraction(optAssem.gypThick) + " Gypsum Concrete";
                   } else {
                         addOrDeduct = "DEDUCT";
-                        optionalStr = "Downgrade from " + doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + doubleToFraction(optAssem.gypThick) + " Gypsum Concrete";
+                        optionalStr = "Downgrade from " + lb.doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + lb.doubleToFraction(optAssem.gypThick) + " Gypsum Concrete";
                   }
             }
       
@@ -325,10 +327,10 @@ module.exports.compareRegToOptConc = function(regAssem, optAssem, margin) {
       if (regAssem.concThick !== optAssem.concThick) {
             if (optAssem.difference > 0) {
                   addOrDeduct = "ADD";
-                  optionalStr = "Upgrade from " + doubleToFraction(regAssem.concThick) + " " + regAssem.concType + " to " + doubleToFraction(optAssem.concThick) + " " + optAssem.concType;
+                  optionalStr = "Upgrade from " + lb.doubleToFraction(regAssem.concThick) + " " + regAssem.concType + " to " + lb.doubleToFraction(optAssem.concThick) + " " + optAssem.concType;
             } else {
                   addOrDeduct = "DEDUCT";
-                  optionalStr = "Downgrade from " + doubleToFraction(regAssem.concThick) + " " + regAssem.concType + " to " + doubleToFraction(optAssem.concThick) + " " + optAssem.concType;
+                  optionalStr = "Downgrade from " + lb.doubleToFraction(regAssem.concThick) + " " + regAssem.concType + " to " + lb.doubleToFraction(optAssem.concThick) + " " + optAssem.concType;
             }
             
       //IF concTypes ARE DIFFERENT
@@ -440,7 +442,7 @@ module.exports.exteriorScopeStr = function(concAssem) {
       
       exteriorScopeStr = "Pour " + _
                                    concAssem.SF.toLocaleString('en') + " SqF of " + _
-                                   doubleToFraction(concAssem.concThick) + " " + _
+                                   lb.doubleToFraction(concAssem.concThick) + " " + _
                                    concType + " concrete" + _
                                    " (" + concAssem.psi + " PSI)" + _
                                    " over ";

@@ -2,7 +2,7 @@ const lb = require('../library.js');
 
 module.exports.calcGyp = function(projData, estimateVersion) {
       //1. SET THE ESTIMATE VERSION OBJECT
-      var estimate = projData.estimates("estimate" + estimateVersion);
+      var estimate = projData.estimates["estimate" + estimateVersion];
       
       //2. SET VARIABLES FOR EASIER ACCESS
       var projectType = projData.projectInfo.projectType; //House, Building, Multi-Building, Unit, Commercial, Industrial
@@ -22,7 +22,7 @@ module.exports.calcGyp = function(projData, estimateVersion) {
       var overrideGypBarrelMix = estimate.gyp.overrideGypBarrelMix;
       var overrideConcBarrelMix = estimate.gyp.overrideConcBarrelMix;
 
-      var assem, f, assemOption;
+      var assem, f, assemOption, prePours, aduReg;
       var dict;
       //==========================================================================================
       var gypExists = false;
@@ -40,16 +40,16 @@ module.exports.calcGyp = function(projData, estimateVersion) {
       //DRIVING
       //==========================================================================================
       //1. ADD DISTANCE  DICTIONARY
-      estimate.distance = distance(zipCode, city);
+      estimate.distance = lb.distance(zipCode, city);
       var miles = estimate.distance["Van Nuys"];
       
       //2. ADD DRIVING TIME TO TRUCK DICTIONARY (ROUND TRIP at 55mph)
-      estimate.trucks.drivingTime = drivingTime(miles);
+      estimate.trucks.drivingTime = lb.drivingTime(miles);
       var drivingTimeHrs = estimate.trucks.drivingTime;
       
       //3. DETERMINE IF OVERNIGHT
       if (gypExists === true) {
-            dict = getValues("Prices_PerDiem", {"Per Diem": "Default"}, ["Miles Threshold"]);
+            dict = lb.getValues("Prices_PerDiem", {"Per Diem": "Default"}, ["Miles Threshold"]);
             //the assumption is it must be a certain minimum distance and must have soundmat
             //what if it is only gyp though? good question for Tamir. but let//s study this first.
             if (miles > dict["Miles Threshold"] && estimate.totals.gypSFWithSoundMat !== 0) {
@@ -66,7 +66,6 @@ module.exports.calcGyp = function(projData, estimateVersion) {
                   estimate.gyp.size = "Normal";
             }
       }
-
       //==========================================================================================
       //GYPCRETE LABOR    
       //==========================================================================================
@@ -83,10 +82,10 @@ module.exports.calcGyp = function(projData, estimateVersion) {
             
             var sameDay = estimate.gyp.sameDay;
       
-            gypLabor (wageType, projectType, totalGypSF, totalGypSFWithSoundMat, gypThick1stAssem, difficultyLevel, gypType, miles, overnight, saturdayGyp, estimate, overrideGypBarrelMix);
+            lb.gypLabor(wageType, projectType, totalGypSF, totalGypSFWithSoundMat, gypThick1stAssem, difficultyLevel, gypType, miles, overnight, saturdayGyp, estimate, overrideGypBarrelMix);
             estimate.totals.gypCostAfterMilesThreshold = estimate.gyp.labor.costOfAfterMilesThreshold; //more will be added later
-            estimate.gyp.labor.mobilizationsSoundMat = gypMobilizations(estimate.totals.gypSFWithSoundMat, "Normal");
-            dict = addMobilsCost(estimate.gyp.labor.addMobils.mobils, estimate.gyp.labor.addMobils.mobilCost, wageType);
+            estimate.gyp.labor.mobilizationsSoundMat = lb.gypMobilizations(estimate.totals.gypSFWithSoundMat, "Normal");
+            dict = lb.addMobilsCost(estimate.gyp.labor.addMobils.mobils, estimate.gyp.labor.addMobils.mobilCost, wageType);
             estimate.gyp.labor.addMobils.addMobilsCost = dict.addMobilsCostTotal;
             estimate.gyp.labor.addMobils.enabled = false;
             estimate.totals.gypCostAddMobilsProduction = dict.addMobilsCostProduction;
@@ -104,127 +103,129 @@ module.exports.calcGyp = function(projData, estimateVersion) {
             // LOOP OVER EACH GYP ASSEM
             //==========================================================================================
             for(gypAssem in estimate.structures[structure].gypAssemblies) {
-                  
+
                   //1. SET ASSEM VARIABLE FOR EASIER ACCESS
                   assem = estimate.structures[structure].gypAssemblies[gypAssem];
                   
                   //2. CALCULATE MATERIALS AND LABOR COSTS FOR ASSEMBLY
-                  calculateGypAssembly(estimate, assem, mixDesign, wageType, sameDay, overnight, miles, projectType, saturdayGyp);
+                  lb.calculateGypAssembly(estimate, assem, mixDesign, wageType, sameDay, overnight, miles, projectType, saturdayGyp);
                   
                   //3. LOOP OVER EACH FLOOR
                   for(Floor in estimate.structures[structure].gypAssemblies[gypAssem].floors) {
                       //1. SET F VARIABLE FOR EASIER ACCESS
                       f = estimate.structures[structure].gypAssemblies[gypAssem].floors[Floor]
                       //2. CALCULATE MATERIALS AND COSTS FOR FLOOR
-                      materialsAndCostsGyp (f, assem, mixDesign, wageType, projectType, saturdayGyp);
+                      lb.materialsAndCostsGyp (f, assem, mixDesign, wageType, projectType, saturdayGyp);
                   }
                   
                   //4. LOOP OVER EACH OPTION
                   for(opt in estimate.structures[structure].gypAssemblies[gypAssem].options) {
                       //1. SET assemOption VARIABLE FOR EASIER ACCESS
-                      assemOption = estimate.structures[structure].gypAssemblies[gypAssem].options[opt]
+                      assemOption = estimate.structures[structure].gypAssemblies[gypAssem].options[opt];
                       //2. CALCULATE MATERIALS AND COSTS FOR FLOOR
-                      calculateGypAssembly(estimate, assemOption, mixDesign, wageType, sameDay, overnight, miles, projectType, saturdayGyp);
+                      lb.calculateGypAssembly(estimate, assemOption, mixDesign, wageType, sameDay, overnight, miles, projectType, saturdayGyp);
                       //3. CALCULATE DIFFERENCE BETWEEN OPTION ASSEMBLY AND REGULAR ASSEMBLY
-                      assemOption.difference = assemOption.gypAssemCost - assem.gypAssemCost
+                      assemOption.difference = assemOption.gypAssemCost - assem.gypAssemCost;
                   }
            
                   //6. TOTAL GYP BAGS, ADD TO IT THE AMOUNT OF GYP BAGS
-                  totals.gypBags = totals.gypBags + assem.gypBags
+                  totals.gypBags = !totals.gypBags ? assem.gypBags : totals.gypBags+=assem.gypBags;
                   
                   //7. TOTAL TONS, ADD TO IT THE AMOUNT OF TONS
-                  totals.gypTons = totals.gypTons + assem.tons
+                  totals.gypTons = !totals.gypTons ? assem.tons : totals.gypTons+=assem.tons;
 
                   //8. TOTAL GYP ASSEMBLIES COST, ADD TO IT THIS GYP ASSEMBLY COST
-                  totals.gypCostAssemsMaterialAndLabor = totals.gypCostAssemsMaterialAndLabor + assem.gypAssemCost
+                  totals.gypCostAssemsMaterialAndLabor = !totals.gypCostAssemsMaterialAndLabor ? assem.gypAssemCost : totals.gypCostAssemsMaterialAndLabor+=assem.gypAssemCost;
                   
                   //PER DIEM
-                  totals.gypCostPerDiem = totals.gypCostPerDiem + assem.costOfPerDiem
+                  totals.gypCostPerDiem = !totals.gypCostPerDiem ? assem.costOfPerDiem : totals.gypCostPerDiem+=assem.costOfPerDiem;
                   
                   //AFTER MILES THRESHOLD
-                  totals.gypCostAfterMilesThreshold = totals.gypCostAfterMilesThreshold + assem.costAfterMilesThresholdSoundMat
+                  totals.gypCostAfterMilesThreshold = !totals.gypCostAfterMilesThreshold ? assem.costAfterMilesThresholdSoundMat : totals.gypCostAfterMilesThreshold+=assem.costAfterMilesThresholdSoundMat;
                   
                   //SATURDAY COST
-                  totals.gypCostSaturdayOption = totals.gypCostSaturdayOption + assem.costOfTonsOption
+                  totals.gypCostSaturdayOption = !totals.gypCostSaturdayOption ? assem.costOfTonsOption : totals.gypCostSaturdayOption+=assem.costOfTonsOption;
             }
             //==========================================================================================
             //PREPOURS
             //==========================================================================================
             if (estimate.structures[structure].prePours.tubs !== 0) {
+                  prePours = estimate.structures[structure].prePours;
                   //1. CALCULATE MATERIAL QUANTITIES AND COSTS
-                  estimate.structures[structure].prePours.gypBags = estimate.structures[structure].prePours.tubs;
-                  estimate.structures[structure].prePours.costOfGypBags = costOfGypBags("2010+", estimate.structures[structure].prePours.gypBags);
-                  estimate.structures[structure].prePours.tons = tons("2010+", estimate.structures[structure].prePours.gypBags, 0);
-                  estimate.structures[structure].prePours.costOfTons = costOfTons(estimate.structures[structure].prePours.tons, "No").cost;
-                  estimate.structures[structure].prePours.costOfMaterials = estimate.structures[structure].prePours.costOfGypBags + estimate.structures[structure].prePours.costOfTons;
+                  prePours.gypBags = prePours.tubs;
+                  prePours.costOfGypBags = lb.costOfGypBags("2010+", prePours.gypBags);
+                  prePours.tons = lb.tons("2010+", prePours.gypBags, 0);
+                  prePours.costOfTons = lb.costOfTons(prePours.tons, "No").cost;
+                  prePours.costOfMaterials = prePours.costOfGypBags + prePours.costOfTons;
               
                   //2. CALCULATE MOBILIZATIONS
-                  estimate.structures[structure].prePours.mobilizations = prePourMobilizations(estimate.structures[structure].prePours.tubs);
+                  prePours.mobilizations = lb.prePourMobilizations(prePours.tubs);
               
                   //3. CALCULATE LABOR CREW
-                  estimate.structures[structure].prePours.laborCrew = prePourLaborCrew(estimate.structures[structure].prePours.tubs, estimate.structures[structure].prePours.mobilizations);
+                  prePours.laborCrew = lb.prePourLaborCrew(prePours.tubs, prePours.mobilizations);
             
                   //4. CALCULATE LABOR CREW TOTAL COST
-                  estimate.structures[structure].prePours.costOfPrePoursLabor = costOfPrePoursLabor(wageType, estimate.structures[structure].prePours.laborCrew.Laborers, miles);
+                  prePours.costOfPrePoursLabor = lb.costOfPrePoursLabor(wageType, prePours.laborCrew.Laborers, miles);
               
                   //5. CALCULATE TOTAL COST OF PREPOURS (WITHOUT OVERTIME)
-                   estimate.structures[structure].prePours.costOfPrePours = estimate.structures[structure].prePours.costOfMaterials + estimate.structures[structure].prePours.costOfPrePoursLabor;
+                  prePours.costOfPrePours = prePours.costOfMaterials + prePours.costOfPrePoursLabor;
               
                   //6. CALCULATE OVER TIME COST
-                  estimate.structures[structure].prePours.costOfOverTimePrePours = costOfOverTimePrePours(wageType, estimate.trucks.drivingTime, estimate.structures[structure].prePours.mobilizations);
+                  prePours.costOfOverTimePrePours = lb.costOfOverTimePrePours(wageType, estimate.trucks.drivingTime, prePours.mobilizations);
                   
                   //7. ADD TO THE TOTALS
-                  estimate.totals.prePoursCostMaterials = estimate.totals.prePoursCostMaterials + estimate.structures[structure].prePours.costOfMaterials;
-                  estimate.totals.prePoursCostLabor = estimate.totals.prePoursCostLabor + estimate.structures[structure].prePours.costOfPrePoursLabor;
-                  estimate.totals.prePoursCostMaterialAndLabor = estimate.totals.prePoursCostMaterialAndLabor + estimate.structures[structure].prePours.costOfPrePours;
-                  estimate.gyp.labor.mobilizationsPrePours = estimate.gyp.labor.mobilizationsPrePours + estimate.structures[structure].prePours.mobilizations;
-                  estimate.gyp.labor.costOfOverTimePrePoursLabor = estimate.gyp.labor.costOfOverTimePrePoursLabor + estimate.structures[structure].prePours.costOfOverTimePrePours;
+                  totals.prePoursCostMaterials = !totals.prePoursCostMaterials ? prePours.costOfMaterials : totals.prePoursCostMaterials+=prePours.costOfMaterials;
+                  totals.prePoursCostLabor = !totals.prePoursCostLabor ? prePours.costOfPrePoursLabor : totals.prePoursCostLabor+= prePours.costOfPrePoursLabor;
+                  totals.prePoursCostMaterialAndLabor = !totals.prePoursCostMaterialAndLabor ? prePours.costOfPrePours : totals.prePoursCostMaterialAndLabor+=prePours.costOfPrePours;
+                  estimate.gyp.labor.mobilizationsPrePours = !estimate.gyp.labor.mobilizationsPrePours ? prePours.mobilizations : estimate.gyp.labor.mobilizationsPrePours+=prePours.mobilizations;
+                  estimate.gyp.labor.costOfOverTimePrePoursLabor = !estimate.gyp.labor.costOfOverTimePrePoursLabor ? prePours.costOfOverTimePrePours : estimate.gyp.labor.costOfOverTimePrePoursLabor+=prePours.costOfOverTimePrePours;
 
-                  tempDict = getValues("Prices_AfterMileThreshold", {"Description": "Threshold"}, ["Miles", "Price/Day"]);
+                  tempDict = lb.getValues("Prices_AfterMileThreshold", {"Description": "Threshold"}, ["Miles", "Price/Day"]);
                   if (miles > tempDict.Miles) {
-                        estimate.totals.prePoursCostAfterMilesThreshold = estimate.totals.prePoursCostAfterMilesThreshold + (((estimate.structures[structure].prePours.laborCrew.Laborers) - 1) * (estimate.structures[structure].prePours.mobilizations) * tempDict["Price/Day"]);
-                        if (estimate.structures[structure].prePours.contractOrOption === "Contract") {
-                              totals.gypCostAfterMilesThreshold = totals.gypCostAfterMilesThreshold + (((estimate.structures[structure].prePours.laborCrew.Laborers) - 1) * (estimate.structures[structure].prePours.mobilizations) * tempDict["Price/Day"]);
+                        totals.prePoursCostAfterMilesThreshold = !totals.prePoursCostAfterMilesThreshold ? (((prePours.laborCrew.Laborers) - 1) * (prePours.mobilizations) * tempDict["Price/Day"]) : totals.prePoursCostAfterMilesThreshold+=(((prePours.laborCrew.Laborers) - 1) * (prePours.mobilizations) * tempDict["Price/Day"]);
+                        if (prePours.contractOrOption === "Contract") {
+                              totals.gypCostAfterMilesThreshold = !totals.gypCostAfterMilesThreshold ? (((prePours.laborCrew.Laborers) - 1) * (prePours.mobilizations) * tempDict["Price/Day"]) : totals.gypCostAfterMilesThreshold+=(((prePours.laborCrew.Laborers) - 1) * (prePours.mobilizations) * tempDict["Price/Day"]);
                         }
                   }
                   
                   //IF CONTRACT
-                  if (estimate.structures[structure].prePours.contractOrOption === "Contract") {
-                        estimate.totals.gypCostAssemsMaterialAndLabor = estimate.totals.gypCostAssemsMaterialAndLabor + estimate.structures[structure].prePours.costOfPrePours;
+                  if (prePours.contractOrOption === "Contract") {
+                        totals.gypCostAssemsMaterialAndLabor = !totals.gypCostAssemsMaterialAndLabor ? prePours.costOfPrePours : totals.gypCostAssemsMaterialAndLabor+=prePours.costOfPrePours;
                   }
             }
             //==========================================================================================
             //ADU REGULATION
             //==========================================================================================
             if (estimate.structures[structure].aduRegulation.units !== 0) {
+                  aduReg = estimate.structures[structure].aduRegulation;
                   //1. CALCULATE MATERIAL QUANTITIES AND COSTS
-                  estimate.structures[structure].aduRegulation.gypBags = estimate.structures[structure].aduRegulation.units
-                  estimate.structures[structure].aduRegulation.costOfGypBags = costOfGypBags("2010+", estimate.structures[structure].aduRegulation.gypBags);
-                  estimate.structures[structure].aduRegulation.tons = tons("2010+", estimate.structures[structure].aduRegulation.gypBags, mixDesign);
-                  estimate.structures[structure].aduRegulation.costOfTons = costOfTons(estimate.structures[structure].aduRegulation.tons, "No").cost;
-                  estimate.structures[structure].aduRegulation.stringLineRolls = stringLineRolls(estimate.structures[structure].aduRegulation.units * 194); //60 LF for each kitchen. that will convert to 194SF
-                  estimate.structures[structure].aduRegulation.costOfStringLineRolls = costOfStringLineRolls(estimate.structures[structure].aduRegulation.stringLineRolls);
-                  estimate.structures[structure].aduRegulation.costOfMaterials = estimate.structures[structure].aduRegulation.costOfGypBags + estimate.structures[structure].aduRegulation.costOfTons + estimate.structures[structure].aduRegulation.costOfStringLineRolls;
+                  aduReg.gypBags = aduReg.units
+                  aduReg.costOfGypBags = lb.costOfGypBags("2010+", aduReg.gypBags);
+                  aduReg.tons = lb.tons("2010+", aduReg.gypBags, mixDesign);
+                  aduReg.costOfTons = lb.costOfTons(aduReg.tons, "No").cost;
+                  aduReg.stringLineRolls = lb.stringLineRolls(aduReg.units * 194); //60 LF for each kitchen. that will convert to 194SF
+                  aduReg.costOfStringLineRolls = lb.costOfStringLineRolls(aduReg.stringLineRolls);
+                  aduReg.costOfMaterials = aduReg.costOfGypBags + aduReg.costOfTons + aduReg.costOfStringLineRolls;
                   
                   //2. MOBILIZATIONS WOULD BE SAME AS PRODUCTION MOBILIZATIONS
-                  estimate.structures[structure].aduRegulation.mobilizations = estimate.gyp.labor.mobilizations;
+                  aduReg.mobilizations = estimate.gyp.labor.mobilizations;
 
                   //3. CALCULATE LABOR CREW TOTAL COST
-                  estimate.structures[structure].aduRegulation.costOfADURegLabor = costOfADURegLabor(wageType, estimate.structures[structure].aduRegulation.mobilizations);
+                  aduReg.costOfADURegLabor = lb.costOfADURegLabor(wageType, aduReg.mobilizations);
 
 
                   //4. CALCULATE TOTAL COST OF ADU REGULATION
-                   estimate.structures[structure].aduRegulation.costOfADUReg = estimate.structures[structure].aduRegulation.costOfMaterials + estimate.structures[structure].aduRegulation.costOfADURegLabor;
+                  aduReg.costOfADUReg = aduReg.costOfMaterials + aduReg.costOfADURegLabor;
 
                   //5. ADD TO THE TOTALS
-                  estimate.totals.ADURegCostMaterials = estimate.totals.ADURegCostMaterials + estimate.structures[structure].aduRegulation.costOfMaterials;
-                  estimate.totals.ADURegCostLabor = estimate.totals.ADURegCostLabor + estimate.structures[structure].aduRegulation.costOfADURegLabor;
-                  estimate.totals.ADURegCostMaterialAndLabor = estimate.totals.ADURegCostMaterialAndLabor + estimate.structures[structure].aduRegulation.costOfADUReg;
-                  estimate.totals.ADURegMobilizations = estimate.totals.ADURegMobilizations + estimate.structures[structure].aduRegulation.mobilizations;
+                  totals.ADURegCostMaterials = !totals.ADURegCostMaterials ? aduReg.costOfMaterials : totals.ADURegCostMaterials+=aduReg.costOfMaterials;
+                  totals.ADURegCostLabor = !totals.ADURegCostLabor ? aduReg.costOfADURegLabor : totals.ADURegCostLabor+=aduReg.costOfADURegLabor;
+                  totals.ADURegCostMaterialAndLabor = !totals.ADURegCostMaterialAndLabor ? aduReg.costOfADUReg : totals.ADURegCostMaterialAndLabor+=aduReg.costOfADUReg;
+                  totals.ADURegMobilizations = !totals.ADURegMobilizations ? aduReg.mobilizations : totals.ADURegMobilizations+=aduReg.mobilizations;
                   
                   //IF CONTRACT
-                  if (estimate.structures[structure].aduRegulation.contractOrOption === "Contract") {
-                        estimate.totals.gypCostAssemsMaterialAndLabor = estimate.totals.gypCostAssemsMaterialAndLabor + estimate.structures[structure].aduRegulation.costOfADUReg;
+                  if (aduReg.contractOrOption === "Contract") {
+                        totals.gypCostAssemsMaterialAndLabor = !totals.gypCostAssemsMaterialAndLabor ? aduReg.costOfADUReg : totals.gypCostAssemsMaterialAndLabor+=aduReg.costOfADUReg;
                   }
                  
             }
@@ -239,14 +240,14 @@ module.exports.calcGyp = function(projData, estimateVersion) {
                   var numOfFloors = assem.floors.count;
                   
                   //3. CALCULATE CONCRETE MATERIALS
-                  calculateConcAssembly(assem, drivingTimeHrs, wageType, city, miles, zipCode, saturdayConc, concPumpCostOption, numOfFloors, overrideConcBarrelMix);
+                  lb.calculateConcAssembly(assem, drivingTimeHrs, wageType, city, miles, zipCode, saturdayConc, concPumpCostOption, numOfFloors, overrideConcBarrelMix);
                   
                   //4. LOOP OVER EACH FLOOR
                   for(Floor in assem.floors) {
                       //1. SET F VARIABLE FOR EASIER ACCESS
                       f = assem.floors[Floor];
                       //2. CALCULATE MATERIALS AND COSTS FOR FLOOR
-                      materialsAndCostsConc(f, assem, wageType, projData.projectInfo.city, zipCode, saturdayConc, overrideConcBarrelMix);
+                      lb.materialsAndCostsConc(f, assem, wageType, projData.projectInfo.city, zipCode, saturdayConc, overrideConcBarrelMix);
                   }
                   
                   //5. LOOP OVER EACH OPTION
@@ -254,33 +255,33 @@ module.exports.calcGyp = function(projData, estimateVersion) {
                       //1. SET assemOption VARIABLE FOR EASIER ACCESS
                       assemOption = assem.options[opt];
                       //2. CALCULATE MATERIALS AND COSTS FOR FLOOR
-                      calculateConcAssembly(assemOption, drivingTimeHrs, wageType, projData.projectInfo.city, miles, zipCode, saturdayConc, concPumpCostOption, numOfFloors, overrideConcBarrelMix);
+                      lb.calculateConcAssembly(assemOption, drivingTimeHrs, wageType, projData.projectInfo.city, miles, zipCode, saturdayConc, concPumpCostOption, numOfFloors, overrideConcBarrelMix);
                       //3. CALCULATE DIFFERENCE BETWEEN OPTION ASSEMBLY AND REGULAR ASSEMBLY
                       assemOption.difference = assemOption.costTotal - assem.costTotal;
                   }
                   
                   //5. ADD TO TOTAL VARIABLES
                   if (assem.contractOrOption === "Contract") {
-                        totals.concYds = totals.concYds + assem.concYds;
-                        totals.concPumpTimeHrs = totals.concPumpTimeHrs + assem.equip.pumpTimeHrs;
-                        totals.concMobilizations = totals.concMobilizations + assem.labor.concMobilizations;
+                        totals.concYds = !totals.concYds ? assem.concYds : totals.concYds+= assem.concYds;
+                        totals.concPumpTimeHrs = !totals.concPumpTimeHrs ? assem.equip.pumpTimeHrs : totals.concPumpTimeHrs+= assem.equip.pumpTimeHrs;
+                        totals.concMobilizations = !totals.concMobilizations ? assem.labor.concMobilizations : totals.concMobilizations+= assem.labor.concMobilizations;
                         
-                        totals.concCostMachineFuel = totals.concCostMachineFuel + assem.equip.costFuel.pump;
-                        totals.concCostMachineMaintenance = totals.concCostMachineMaintenance + assem.equip.costMaintenance.pump;
-                        totals.concCostEquip = totals.concCostEquipment + assem.equip.costFuel.pump + assem.equip.costMaintenance.pump;
+                        totals.concCostMachineFuel = !totals.concCostMachineFuel ? assem.equip.costFuel.pump : totals.concCostMachineFuel+= assem.equip.costFuel.pump;
+                        totals.concCostMachineMaintenance = !totals.concCostMachineMaintenance ? assem.equip.costMaintenance.pump : totals.concCostMachineMaintenance+= assem.equip.costMaintenance.pump;
+                        totals.concCostEquip = !totals.concCostEquipment ? assem.equip.costFuel.pump + assem.equip.costMaintenance.pump : totals.concCostEquipment+= assem.equip.costFuel.pump + assem.equip.costMaintenance.pump;
                         
-                        totals.concCostLabor = totals.concCostLabor + assem.labor.costOfConcLaborers; //what about sm labor?? right???
-
-                        totals.concCostSaturdayOption = totals.concCostSaturdayOption + assem.costOfConcYdsOption + assem.labor.costOfConcLaborersOption;
-            
-                        totals.concCostTrucksFuel = totals.concCostTrucksFuel + assem.trucks.costFuel;
-                        totals.concCostTrucksMaintenance = totals.concCostTrucksMaintenance + assem.trucks.costMaintenance;
-                        totals.concCostOverTimeLabor = totals.concCostOverTimeLabor + assem.labor.costOfOverTimeConcLabor + assem.labor.costOfOverTimeSoundMatLabor;
-                        totals.concCostAfterMilesThreshold = totals.concCostAfterMilesThreshold + assem.costAfterMilesThreshold;
-                        totals.concCostTravel = totals.concCostTravel + assem.costTravel;
+                        totals.concCostLabor = !totals.concCostLabor ? assem.labor.costOfConcLaborers : totals.concCostLabor+= assem.labor.costOfConcLaborers; //what about sm labor?? right???
                         
-                        totals.concCostProduction = totals.concCostProduction + assem.costProduction;
-                        totals.concCostTotal = totals.concCostTotal + assem.costTotal;
+                        totals.concCostSaturdayOption = !totals.concCostSaturdayOption ? assem.costOfConcYdsOption + assem.labor.costOfConcLaborersOption : totals.concCostSaturdayOption+= assem.costOfConcYdsOption + assem.labor.costOfConcLaborersOption;
+                        
+                        totals.concCostTrucksFuel = !totals.concCostTrucksFuel ? assem.trucks.costFuel : totals.concCostTrucksFuel+= assem.trucks.costFuel;
+                        totals.concCostTrucksMaintenance = !totals.concCostTrucksMaintenance ? assem.trucks.costMaintenance : totals.concCostTrucksMaintenance+= assem.trucks.costMaintenance;
+                        totals.concCostOverTimeLabor = !totals.concCostOverTimeLabor ? assem.labor.costOfOverTimeConcLabor + assem.labor.costOfOverTimeSoundMatLabor : totals.concCostOverTimeLabor+= assem.labor.costOfOverTimeConcLabor + assem.labor.costOfOverTimeSoundMatLabor;
+                        totals.concCostAfterMilesThreshold = !totals.concCostAfterMilesThreshold ? assem.costAfterMilesThreshold : totals.concCostAfterMilesThreshold+= assem.costAfterMilesThreshold;
+                        totals.concCostTravel = !totals.concCostTravel ? assem.costTravel : totals.concCostTravel+= assem.costTravel;
+                        
+                        totals.concCostProduction = !totals.concCostProduction ? assem.costProduction : totals.concCostProduction+= assem.costProduction;
+                        totals.concCostTotal = !totals.concCostTotal ? assem.costTotal : totals.concCostTotal+= assem.costTotal;
                   }
             
             }
@@ -289,94 +290,90 @@ module.exports.calcGyp = function(projData, estimateVersion) {
       //GYP - COSTS BASED ON TOTAL SF  
       //==========================================================================================
       //PERIMETER FOAM CUTTING //theres no "No" option for perimeter foam cutting
-      estimate.gyp.labor.laborers.perFoamCuttingLaborers = perFoamCuttingLaborers(totalGypSF);
-      estimate.totals.gypCostPerFoamCutting = costOfPerFoamCutting(wageType, estimate.gyp.labor.laborers.perFoamCuttingLaborers);
+      estimate.gyp.labor.laborers.perFoamCuttingLaborers = lb.perFoamCuttingLaborers(totalGypSF);
+      estimate.totals.gypCostPerFoamCutting = lb.costOfPerFoamCutting(wageType, estimate.gyp.labor.laborers.perFoamCuttingLaborers);
       if (estimate.gyp.perFoamCutting === "Yes") {
-            estimate.totals.gypCostAssemsMaterialAndLabor = estimate.totals.gypCostAssemsMaterialAndLabor + estimate.totals.gypCostPerFoamCutting;
+            totals.gypCostAssemsMaterialAndLabor+= totals.gypCostPerFoamCutting;
       }
       
       //FLAGMEN //for building it would be no
       if (estimate.gyp.flagmen !== "No") {
             if (estimate.gyp.flagmen === "Yes") {
-                  estimate.totals.gypCostAssemsMaterialAndLabor = estimate.totals.gypCostAssemsMaterialAndLabor + estimate.gyp.labor.costOfGypFlagmenLabor;
+                  totals.gypCostAssemsMaterialAndLabor+= estimate.gyp.labor.costOfGypFlagmenLabor;
             }
       }
       
       //STRING LINE GRID SYSTEM //for building it would be no
       if (estimate.gyp.slgs !== "No") {
-            estimate.totals.stringLineRolls = stringLineRolls[totalGypSF];
-            estimate.totals.costOfStringLineRolls = costOfStringLineRolls(estimate.totals.stringLineRolls);
-            estimate.totals.costOfStringLineInstallation = estimate.totals.costOfStringLineRolls + estimate.gyp.labor.costOfGypStringLineLabor;
+            totals.stringLineRolls = lb.stringLineRolls(totalGypSF);
+            totals.costOfStringLineRolls = lb.costOfStringLineRolls(totals.stringLineRolls);
+            totals.costOfStringLineInstallation = totals.costOfStringLineRolls + estimate.gyp.labor.costOfGypStringLineLabor;
             if (estimate.gyp.slgs === "Yes") {
-                  estimate.totals.gypCostAssemsMaterialAndLabor = estimate.totals.gypCostAssemsMaterialAndLabor + estimate.totals.costOfStringLineInstallation;
+                  totals.gypCostAssemsMaterialAndLabor+= totals.costOfStringLineInstallation;
             }
       }
       
       //MOIST STOP
-      if (estimate.gyp.moistStop !== "No" && estimate.gyp.moistStop !== Empty) {
-            estimate.totals.blackPaperRollsMoistStop = blackPaperRollsMoistStop("Default", totalGypSF);
-            estimate.totals.costOfBlackPaperRollsMoistStop = costOfBlackPaperRolls("1-Ply (10 Min Single Layer)", estimate.totals.blackPaperRollsMoistStop);
-            estimate.totals.moistStopLaborers = blackPaperMoistStopLaborers[totalGypSF];
-            estimate.totals.costOfMoistStopLaborers = costOfBlackPaperLaborers(wageType, estimate.totals.moistStopLaborers);
-            estimate.totals.costOfMoistStop = estimate.totals.costOfBlackPaperRollsMoistStop + estimate.totals.costOfMoistStopLaborers;
+      if (estimate.gyp.moistStop !== "No" && estimate.gyp.moistStop !== undefined) {
+            totals.blackPaperRollsMoistStop = lb.blackPaperRollsMoistStop("Default", totalGypSF);
+            totals.costOfBlackPaperRollsMoistStop = lb.costOfBlackPaperRolls("1-Ply (10 Min Single Layer)", totals.blackPaperRollsMoistStop);
+            totals.moistStopLaborers = lb.blackPaperMoistStopLaborers(totalGypSF);
+            totals.costOfMoistStopLaborers = lb.costOfBlackPaperLaborers(wageType, totals.moistStopLaborers);
+            totals.costOfMoistStop = totals.costOfBlackPaperRollsMoistStop + totals.costOfMoistStopLaborers;
             if (estimate.gyp.moistStop === "Yes") {
-                  estimate.totals.gypCostAssemsMaterialAndLabor = estimate.totals.gypCostAssemsMaterialAndLabor + estimate.totals.costOfMoistStop;
+                  totals.gypCostAssemsMaterialAndLabor+= totals.costOfMoistStop;
             }
       }
       
       //SEALER
-      if (estimate.gyp.sealer !== "No" && estimate.gyp.sealer !== Empty) {
-            estimate.totals.sealerGallons = sealerGallons("Gyp", estimate.gyp.sealerType, totalGypSF);
-            estimate.totals.costOfSealerGallons = costOfSealerGallons("Gyp", estimate.gyp.sealerType, totalGypSF);
+      if (estimate.gyp.sealer !== "No" && estimate.gyp.sealer !== undefined) {
+            totals.sealerGallons = lb.sealerGallons("Gyp", estimate.gyp.sealerType, totalGypSF);
+            totals.costOfSealerGallons = lb.costOfSealerGallons("Gyp", estimate.gyp.sealerType, totalGypSF);
             if (estimate.gyp.sealer === "Yes") {
-                  estimate.totals.gypCostAssemsMaterialAndLabor = estimate.totals.gypCostAssemsMaterialAndLabor + estimate.totals.costOfSealerGallons;
+                  totals.gypCostAssemsMaterialAndLabor+= totals.costOfSealerGallons;
             }
       }
       
       //RAM BOARD
-      if (estimate.gyp.ramboard !== "No" && estimate.gyp.ramboard !== Empty) {
-            estimate.totals.ramBoardRolls = ramBoardRolls[totalGypSF];
-            estimate.totals.costOfRamBoardRolls = costOfRamBoardRolls(estimate.totals.ramBoardRolls);
-            estimate.totals.ductTapeRollsForRamBoard = ductTapeRollsForRamBoard[totalGypSF];
-            estimate.totals.costOfDuctTapeRollsForRamBoard = costOfDuctTapeRolls(estimate.totals.ductTapeRollsForRamBoard);
-            estimate.totals.ramBoardLaborers = soundMatLaborers(totalGypSF, false, estimate.gyp.labor.mobilizations, "2010+");
-            estimate.totals.costOfRamBoardLaborers = costOfSoundMatLabor(estimate.totals.ramBoardLaborers, wageType);
-            estimate.totals.costOfRamBoard = estimate.totals.costOfRamBoardRolls + estimate.totals.costOfDuctTapeRollsForRamBoard + estimate.totals.costOfRamBoardLaborers;
+      if (estimate.gyp.ramboard !== "No" && estimate.gyp.ramboard !== undefined) {
+            totals.ramBoardRolls = ramBoardRolls(totalGypSF);
+            totals.costOfRamBoardRolls = lb.costOfRamBoardRolls(totals.ramBoardRolls);
+            totals.ductTapeRollsForRamBoard = ductTapeRollsForRamBoard(totalGypSF);
+            totals.costOfDuctTapeRollsForRamBoard = lb.costOfDuctTapeRolls(totals.ductTapeRollsForRamBoard);
+            totals.ramBoardLaborers = lb.addMobilsCostsoundMatLaborers(totalGypSF, false, estimate.gyp.labor.mobilizations, "2010+");
+            totals.costOfRamBoardLaborers = lb.costOfSoundMatLabor(totals.ramBoardLaborers, wageType);
+            totals.costOfRamBoard = totals.costOfRamBoardRolls + totals.costOfDuctTapeRollsForRamBoard + totals.costOfRamBoardLaborers;
             if (estimate.gyp.ramboard === "Yes") {
-                  estimate.totals.gypCostAssemsMaterialAndLabor = estimate.totals.gypCostAssemsMaterialAndLabor + estimate.totals.costOfRamBoard;
+                  totals.gypCostAssemsMaterialAndLabor+= totals.costOfRamBoard;
             }
       }
       
       //==========================================================================================
       //TRUCKS
       //==========================================================================================
-      calculateTrucks(estimate, gypExists, concExists, overnight, sameDay)
+      lb.calculateTrucks(estimate, gypExists, concExists, overnight, sameDay)
       //==========================================================================================
       //EQUIPMENT
       //==========================================================================================
-      calculateEquip(estimate, gypExists, concExists);
+      lb.calculateEquip(estimate, gypExists, concExists);
       //==========================================================================================
       //TIME
       //==========================================================================================
       estimate.gyp.time = {
-            setupTime: setupTime(projectType),
-            cleanupTime: cleanupTime,
-            lunchTime: lunchTime
+            setupTime: lb.setupTime(projectType),
+            cleanupTime: lb.cleanupTime(),
+            lunchTime: lb.lunchTime()
       }
       //==========================================================================================
       //OVERTIME LABOR COST
       //==========================================================================================
-      var estimate_gyp_time = estimate.gyp.time; //i think i did these two like this since it wasn//t working otherwise?
-      var estimate_gyp_equip = estimate.gyp.equip;
-      
       //1. OVERTIME FOR GYP
-      estimate.gyp.labor.overTimeGypLabor = overTimeGypLabor(wageType, estimate.gyp.labor.mobilizations, estimate.gyp.labor.laborers.Laborers, estimate.trucks.drivingTime, estimate_gyp_time, estimate_gyp_equip, estimate.structures, estimate.totals.gypBags, overnight);
+      estimate.gyp.labor.overTimeGypLabor = lb.overTimeGypLabor(wageType, estimate.gyp.labor.mobilizations, estimate.gyp.labor.laborers.Laborers, estimate.trucks.drivingTime, estimate.gyp.time, estimate.gyp.equip, estimate.structures, estimate.totals.gypBags, overnight);
       
       //2. OVER TIME FOR SOUND MAT
       if (sameDay !== "Yes") {
-            estimate.gyp.labor.costOfOverTimeSoundMatLabor = costOfOverTimeSoundMatLabor(wageType, estimate.gyp.labor.mobilizationsSoundMat, estimate.trucks.drivingTime, overnight);
+            estimate.gyp.labor.costOfOverTimeSoundMatLabor = lb.costOfOverTimeSoundMatLabor(wageType, estimate.gyp.labor.mobilizationsSoundMat, estimate.trucks.drivingTime, overnight);
       }
-
       //==========================================================================================
       //TRAVEL COST
       //==========================================================================================
@@ -384,7 +381,7 @@ module.exports.calcGyp = function(projData, estimateVersion) {
             //TOTAL GYP TRAVEL COST
             estimate.totals.gypAssemsCostTravel = estimate.trucks.gypDrivingFuelCost + 
                                                   estimate.trucks.gypMaintenanceCost + 
-                                                  estimate.gyp.labor.overTimeGypLabor.costOfOverTimeGypLaborDrivers
+                                                  estimate.gyp.labor.overTimeGypLabor.costOfOverTimeGypLaborDrivers;
       
             //TOTAL SOUNDMAT TRAVEL COST
             estimate.totals.soundMatCostTravel = estimate.trucks.soundMatDrivingFuelCost + 
@@ -403,7 +400,7 @@ module.exports.calcGyp = function(projData, estimateVersion) {
                                             estimate.totals.gypCostPerDiem
                                               
             if (estimate.structures.structure1.prePours.contractOrOption === "Contract") {
-                  estimate.totals.gypCostTravel = estimate.totals.gypCostTravel + estimate.totals.prePoursCostTravel
+                  estimate.totals.gypCostTravel+= estimate.totals.prePoursCostTravel;
             }
             
       }
@@ -413,19 +410,19 @@ module.exports.calcGyp = function(projData, estimateVersion) {
       //=========================================================================================
       //GYPCRETE
       if (gypExists === true) {
-            estimate.totals.gypCostProduction = estimate.totals.gypCostAssemsMaterialAndLabor + _
-                                                estimate.totals.gypCostEquip + _
-                                                estimate.gyp.labor.overTimeGypLabor.costOfOverTimeGypLaborCrew + _
+            estimate.totals.gypCostProduction = estimate.totals.gypCostAssemsMaterialAndLabor +
+                                                estimate.totals.gypCostEquip +
+                                                estimate.gyp.labor.overTimeGypLabor.costOfOverTimeGypLaborCrew +
                                                 estimate.totals.gypCostTravel;
                                                                                   
-            estimate.totals.gypCostTotalMarket = costAfterMargin(estimate.totals.gypCostProduction, estimate.totals.gypMarginMarket);
-            estimate.totals.gypCostTotalInter = costAfterMargin(estimate.totals.gypCostProduction, estimate.totals.gypMarginInter);
-            estimate.totals.gypCostTotal = costAfterMargin(estimate.totals.gypCostProduction, estimate.totals.gypMargin);
+            estimate.totals.gypCostTotalMarket = lb.costAfterMargin(estimate.totals.gypCostProduction, estimate.totals.gypMarginMarket);
+            estimate.totals.gypCostTotalInter = lb.costAfterMargin(estimate.totals.gypCostProduction, estimate.totals.gypMarginInter);
+            estimate.totals.gypCostTotal = lb.costAfterMargin(estimate.totals.gypCostProduction, estimate.totals.gypMargin);
       }
       
       //CONCRETE
       if (concExists === true) {
-            estimate.totals.concCostTotalMarket = costAfterMargin(estimate.totals.concCostProduction, estimate.totals.concMarginMarket);
+            estimate.totals.concCostTotalMarket = lb.costAfterMargin(estimate.totals.concCostProduction, estimate.totals.concMarginMarket);
             estimate.totals.concCostTotalInter = Math.ceil(estimate.totals.concCostTotal);
             estimate.totals.concCostTotal = estimate.totals.concCostTotalInter;
             
@@ -436,7 +433,7 @@ module.exports.calcGyp = function(projData, estimateVersion) {
       estimate.totals.grandCostTotal = estimate.totals.gypCostTotal + estimate.totals.concCostTotal;
       //=============================================================
 
-      estimate.totalsPerGypFloor = calculatePerGypFloorTotals[estimate];
+      estimate.totalsPerGypFloor = lb.calculatePerGypFloorTotals(estimate);
       
 
       //=============================================================
@@ -444,66 +441,66 @@ module.exports.calcGyp = function(projData, estimateVersion) {
       //=============================================================
       //1. CHECK IF OPTIONALS DICT ALREADY EXISTS
       if (estimate.optionals) {
-            delete estimate.optionals
+            delete estimate.optionals;
       }
       //2. MAKE OPTIONALS DICT
-      estimate.optionals = calculateOptionals(projData, estimateVersion)
+      estimate.optionals = lb.calculateOptionals(projData, estimateVersion);
       
       //=============================================================
       //CALCULATE SOV
       //=============================================================
       //1. CHECK IF SCHEDULE OF VALUES DICT ALREADY EXISTS
       if (estimate.scheduleOfValues) {
-            delete estimate.scheduleOfValues
+            delete estimate.scheduleOfValues;
       }
       //2. MAKE SCHEDULE OF VALUES DICT
-      estimate.scheduleOfValues = calculateSOV(projData, estimateVersion)
+      estimate.scheduleOfValues = lb.calculateSOV(projData, estimateVersion);
 
 }
 module.exports.materialsAndCostsPrimer = function(gypOrConc, assem, dict) {
-      assem.primerGallons = primerGallons(gypOrConc, dict.primerType, assem.SF)
-      assem.costOfPrimerGallons = costOfPrimerGallons(gypOrConc, dict.primerType, assem.SF)
+      assem.primerGallons = lb.primerGallons(gypOrConc, dict.primerType, assem.SF);
+      assem.costOfPrimerGallons = lb.costOfPrimerGallons(gypOrConc, dict.primerType, assem.SF);
 }
 module.exports.materialsAndCostsWire = function(assem, dict, wageType) {
-      var temp = wireUnits(dict.wireType, assem.SF)
-      assem.wireUnitType = temp.unitType
-      assem.wireUnits = temp.units
-      assem.costOfWireUnits = costOfWireUnits(dict.wireType, assem.SF)
-      assem.pinBoxes = pinBoxes(dict.thick, assem.wireUnits)
-      assem.costOfPinBoxes = costOfPinBoxes(assem.pinBoxes)
-      assem.washerBoxes = washerBoxes(assem.pinBoxes)
-      assem.costOfWasherBoxes = costOfWasherBoxes(assem.washerBoxes)
+      var temp = lb.wireUnits(dict.wireType, assem.SF);
+      assem.wireUnitType = temp.unitType;
+      assem.wireUnits = temp.units;
+      assem.costOfWireUnits = lb.costOfWireUnits(dict.wireType, assem.SF);
+      assem.pinBoxes = lb.pinBoxes(assem.wireUnits);
+      assem.costOfPinBoxes = lb.costOfPinBoxes(assem.pinBoxes);
+      assem.washerBoxes = lb.washerBoxes(assem.pinBoxes);
+      assem.costOfWasherBoxes = lb.costOfWasherBoxes(assem.washerBoxes);
 }
 module.exports.laborAndCostsWire = function(assem, dict, wageType) {
-      assem.wireLaborers = wireLaborers(dict.wireType, assem.SF)
-      assem.costOfWireLaborers = costOfWireLaborers(wageType, (assem.wireLaborers))
+      assem.wireLaborers = lb.wireLaborers(dict.wireType, assem.SF);
+      assem.costOfWireLaborers = lb.costOfWireLaborers(wageType, (assem.wireLaborers));
 }
 module.exports.materialsAndCostsBlackPaper = function(assem, dict) {
-      assem.blackPaperRolls = blackPaperRolls(dict.blackPaperType, assem.SF)
-      assem.costOfBlackPaperRolls = costOfBlackPaperRolls(dict.blackPaperType, assem.blackPaperRolls)
+      assem.blackPaperRolls = lb.blackPaperRolls(dict.blackPaperType, assem.SF);
+      assem.costOfBlackPaperRolls = lb.costOfBlackPaperRolls(dict.blackPaperType, assem.blackPaperRolls);
       //duct tape rolls for black paper will be calculated in the same way as duct tape rolls for ramboard
-      assem.ductTapeRollsForBlackPaper = ductTapeRollsForRamBoard(assem.SF)
-      assem.costOfDuctTapeRollsForBlackPaper = costOfDuctTapeRolls(assem.ductTapeRollsForBlackPaper)
+      assem.ductTapeRollsForBlackPaper = lb.ductTapeRollsForRamBoard(assem.SF);
+      assem.costOfDuctTapeRollsForBlackPaper = lb.costOfDuctTapeRolls(assem.ductTapeRollsForBlackPaper);
 }
 module.exports.materialsAndCostsBlackPaperMoistStop = function(assem, dict) {
-      assem.blackPaperRollsMoistStop = blackPaperRollsMoistStop("Default", assem.SF)
-      assem.costOfBlackPaperRollsMoistStop = costOfBlackPaperRolls("1-Ply (10 Min Single Layer)", assem.blackPaperRollsMoistStop)
+      assem.blackPaperRollsMoistStop = lb.blackPaperRollsMoistStop("Default", assem.SF);
+      assem.costOfBlackPaperRollsMoistStop = lb.costOfBlackPaperRolls("1-Ply (10 Min Single Layer)", assem.blackPaperRollsMoistStop);
 }
 module.exports.materialsAndCostsSprayGlue = function(assem) {
-      assem.cansOfSprayGlue = cansOfSprayGlue(assem.SF)
-      assem.costOfCansOfSprayGlue = costOfCansOfSprayGlue(assem.cansOfSprayGlue)
+      assem.cansOfSprayGlue = lb.cansOfSprayGlue(assem.SF);
+      assem.costOfCansOfSprayGlue = lb.costOfCansOfSprayGlue(assem.cansOfSprayGlue);
 }
 module.exports.materialsAndCostsDuctTapeRollsWhenNoSM = function(assem) {
-      assem.ductTapeRollsWhenNoSM = ductTapeRollsWhenNoSM(assem.SF)
-      assem.costOfDuctTapeRollsWhenNoSM = costOfDuctTapeRolls(assem.ductTapeRollsWhenNoSM)
+      assem.ductTapeRollsWhenNoSM = lb.ductTapeRollsWhenNoSM(assem.SF);
+      assem.costOfDuctTapeRollsWhenNoSM = lb.costOfDuctTapeRolls(assem.ductTapeRollsWhenNoSM);
 }
 module.exports.materialsAndCostsSealer = function(gypOrConc, assem, dict) {
-      assem.sealerGallons = sealerGallons(gypOrConc, dict.sealerType, dict.SF)
-      assem.costOfSealerGallons = costOfSealerGallons(gypOrConc, dict.sealerType, dict.SF)
+      assem.sealerGallons = lb.sealerGallons(gypOrConc, dict.sealerType, dict.SF);
+      assem.costOfSealerGallons = lb.costOfSealerGallons(gypOrConc, dict.sealerType, dict.SF);
 }
 module.exports.materialsAndCostsRamboard = function(assem) {
-      assem.ramBoardRolls = ramBoardRolls(assem.SF)
-      assem.costOfRamBoardRolls = costOfRamBoardRolls(assem.ramBoardRolls)
-      assem.ductTapeRollsForRamBoard = ductTapeRollsForRamBoard(assem.SF)
-      assem.costOfDuctTapeRollsForRamBoard = costOfDuctTapeRolls(assem.ductTapeRollsForRamBoard)
+      assem.ramBoardRolls = lb.ramBoardRolls(assem.SF);
+      assem.costOfRamBoardRolls = lb.costOfRamBoardRolls(assem.ramBoardRolls);
+      assem.ductTapeRollsForRamBoard = lb.ductTapeRollsForRamBoard(assem.SF);
+      assem.costOfDuctTapeRollsForRamBoard = lb.costOfDuctTapeRolls(assem.ductTapeRollsForRamBoard);
 }

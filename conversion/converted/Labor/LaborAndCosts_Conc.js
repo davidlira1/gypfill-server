@@ -1,30 +1,32 @@
+const lb = require('../library.js');
+
 module.exports.laborAndCostsConc = function(assem, drivingTimeHrs, wageType, miles, saturdayConc, numOfFloors, overrideConcBarrelMix) {
       var dict;
-      assem.labor = {}
+      assem.labor = {};
       if (assem.concYds <= 2.37 && overrideConcBarrelMix === "No" && assem.section !== "Stairs") {
             //MAXIMIZER LABOR
             assem.labor.concMobilizations = 1;
-            assem.labor.concLaborers = maximizerLaborers(assem.concYds, assem.addMobils);
-            dict = costOfMaximizerLaborers(wageType, assem.labor.concLaborers.totalCrew.Total, miles, saturdayConc);
+            assem.labor.concLaborers = lb.maximizerLaborers(assem.concYds, assem.addMobils);
+            dict = lb.costOfMaximizerLaborers(wageType, assem.labor.concLaborers.totalCrew.Total, miles, saturdayConc);
             assem.labor.costOfConcLaborers = dict.cost;
             assem.labor.costOfConcLaborersOption = dict.costOption;
-            assem.labor.costOfOverTimeConcLabor = costOfOvertimeConcLaborers(wageType, drivingTimeHrs, assem.labor.concMobilizations);
+            assem.labor.costOfOverTimeConcLabor = lb.costOfOvertimeConcLaborers(wageType, drivingTimeHrs, assem.labor.concMobilizations);
       } else {
             //PUMP LABOR
             //1. DETERMINE COUNT (WHETHER IT//S BALCONY OR STAIR COUNT)
-            var count= assem.section === "Stairs" || assem.section === "Stair Landings" ? assem.stairCount : 0;
+            var count = assem.section === "Stairs" || assem.section === "Stair Landings" ? assem.stairCount : 0;
 
-            assem.labor.concMobilizations = concMobilizations(assem.section, assem.SF, count);
-            assem.labor.concLaborers = concLaborers(assem.section, assem.concType, assem.SF, assem.stairNosing, numOfFloors, assem.labor.concMobilizations, assem.addMobils);
-            dict = costOfConcLaborers(assem.labor.concLaborers.totalCrew.Total, wageType, miles, saturdayConc);
+            assem.labor.concMobilizations = lb.concMobilizations(assem.section, assem.SF, count);
+            assem.labor.concLaborers = lb.concLaborers(assem.section, assem.concType, assem.SF, assem.stairNosing, numOfFloors, assem.labor.concMobilizations, assem.addMobils);
+            dict = lb.costOfConcLaborers(assem.labor.concLaborers.totalCrew.Total, wageType, miles, saturdayConc);
             assem.labor.costOfConcLaborers = dict.cost;
             assem.labor.costOfConcLaborersOption = dict.costOption;
-            assem.labor.costOfOverTimeConcLabor = costOfOvertimeConcLaborers(wageType, drivingTimeHrs, assem.labor.concMobilizations + assem.addMobils);
+            assem.labor.costOfOverTimeConcLabor = lb.costOfOvertimeConcLaborers(wageType, drivingTimeHrs, assem.labor.concMobilizations + assem.addMobils);
 
             //WIRE LABORERS
             if (assem.wireType !== "") {
-                  assem.labor.wireLaborers = wireLaborers(assem.wireType, assem.SF);
-                  assem.labor.costOfWireLaborers = costOfWireLaborers(wageType, assem.labor.wireLaborers);
+                  assem.labor.wireLaborers = lb.wireLaborers(assem.wireType, assem.SF);
+                  assem.labor.costOfWireLaborers = lb.costOfWireLaborers(wageType, assem.labor.wireLaborers);
             }
                       
             //BLACK PAPER LABORERS
@@ -44,7 +46,7 @@ module.exports.laborAndCostsConc = function(assem, drivingTimeHrs, wageType, mil
             }             
       }
       
-      dict = getValues("Prices_AfterMileThreshold", {"Description": "Threshold"}, ["Miles", "Price/Day"]);
+      dict = lb.getValues("Prices_AfterMileThreshold", {"Description": "Threshold"}, ["Miles", "Price/Day"]);
       if (miles > dict.Miles) {
             assem.costAfterMilesThreshold = ((assem.labor.concLaborers.totalCrew.Total) - (assem.labor.concMobilizations)) * dict["Price/Day"]
       }

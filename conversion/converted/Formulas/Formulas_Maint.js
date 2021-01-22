@@ -1,17 +1,19 @@
+const lb = require('../library.js');
+
 module.exports.trucksMaintCost = function(gypOrConc, miles, mobilizations, overnight) {
       //1. GET MAINTENANCE COST PER DAY (BASED ON THE YEARLY TRUCK BREAK COST)
-      var dict = getValues("Maint_Trucks", {"Truck": "Yearly"}, ["Maint Cost/Day"]);
+      var dict = lb.getValues("Maint_Trucks", {"Truck": "Yearly"}, ["Maint Cost/Day"]);
       var maintCostPerDay = dict["Maint Cost/Day"];
       if (overnight === true) {
             maintCostPerDay = maintCostPerDay * 2;
       }
       
       //2. GET MAINTENANCE COST PER MILE
-      dict = getValues("Maint_Trucks",{"Truck": "Total"}, ["Maint Cost/Mile"]);
+      dict = lb.getValues("Maint_Trucks",{"Truck": "Total"}, ["Maint Cost/Mile"]);
       var maintCostPerMile = dict["Maint Cost/Mile"];
       
       //3. CALCULATE FOR ROUND TRIP
-      trucksMaintCost = maintCostPerDay + (miles * 2 * maintCostPerMile);
+      var trucksMaintCost = maintCostPerDay + (miles * 2 * maintCostPerMile);
       
       //4. MULTIPLY BY AMOUNT OF MOBILIZATIONS
       trucksMaintCost *= mobilizations;
@@ -20,16 +22,16 @@ module.exports.trucksMaintCost = function(gypOrConc, miles, mobilizations, overn
             //MULTIPLY BY 2 DRIVERS
             trucksMaintCost*= 2;
       }
-      return trucksMaintCost
+      return trucksMaintCost;
 }
 module.exports.machinesMaintCost = function(gypOrConc, hours, machines, mobilizations) {
     var machinesMaintCost = {};
 
     if (gypOrConc === "Gyp") {
-      machinesMaintCost.pump = machineMaintCost("gypPump", hours, machines[0], mobilizations);
-      machinesMaintCost.bobcat = machineMaintCost("bobcat", hours, machines[1], mobilizations);
+      machinesMaintCost.pump = lb.machineMaintCost("gypPump", hours, machines[0], mobilizations);
+      machinesMaintCost.bobcat = lb.machineMaintCost("bobcat", hours, machines[1], mobilizations);
     } else {
-      machinesMaintCost.pump = machineMaintCost("concPump", hours, machines[0], mobilizations);
+      machinesMaintCost.pump = lb.machineMaintCost("concPump", hours, machines[0], mobilizations);
     }
     return machinesMaintCost;
 }
@@ -43,7 +45,7 @@ module.exports.machineMaintCost = function(machineType, hours, machine, mobiliza
         tableName = "Equip_Conc_Pumps"
     }
     
-    var dict = getValues(tableName, {"Model-Num": machine}, ["Total Maint / Hr", "Maint Cost/Day"]);
+    var dict = lb.getValues(tableName, {"Model-Num": machine}, ["Total Maint / Hr", "Maint Cost/Day"]);
     machineMaintCost = dict["Maint Cost/Day"] * mobilizations;
     machineMaintCost+= Math.ceil(hours * dict["Total Maint / Hr"]);
     return machineMaintCost;

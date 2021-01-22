@@ -28,10 +28,10 @@ module.exports.getValues = (tableName, obj, resultHeaders) => {
             for(var i = 0; i < resultHeaders.length; i++) {
                 results[resultHeaders[i]] = table[resultHeaders[i]][row];
             }
+            break;
         }
     
     }
-
     return results;
 }
 

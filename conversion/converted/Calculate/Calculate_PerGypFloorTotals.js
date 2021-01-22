@@ -20,8 +20,6 @@ module.exports.calculatePerGypFloorTotals = function(estimate) {
                   totalsPerGypFloor[Floor].costOfTons+= gypAssemblies[gypAssem].floors[Floor].costOfTons;
             }
       }
-      
       return totalsPerGypFloor;
-      
 }
 

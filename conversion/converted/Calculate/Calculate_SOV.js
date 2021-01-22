@@ -1,21 +1,18 @@
 module.exports.calculateSOV = function(projData, estimateVersion) {
       var sov = {};
-      var estimate = projData.estimates("estimate" + estimateVersion);
-      var structureType = projData.projectinfo.projectType;
+      var estimate = projData.estimates["estimate" + estimateVersion];
+      var structureType = projData.projectInfo.projectType;
       var gypFloors = {};
       //==========================================================================================
       //1. CHECK IF GYP EXISTS
       var costTotalGypScope = estimate.totals.gypCostTotal;
-      var gypExists = true;
-      if (costTotalGypScope === 0) {
-            gypExists = false;
-      }
+      var gypExists = costTotalGypScope === 0 ? false : true;
+
       //2. CHECK IF CONC EXISTS
       var costTotalConcScope = estimate.totals.concCostTotal;
-      var concExists = true;
-      if (costTotalConcScope === 0) {
-            concExists = false;
-      }
+      var concExists = costTotalConcScope === 0 ? false : true;
+
+      //
       var costTotalGrand = estimate.totals.grandCostTotal;
       //==========================================================================================
       if (gypExists === false && concExists === false) {

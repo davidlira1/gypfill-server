@@ -1,13 +1,15 @@
+const lb = require('../library.js');
+
 module.exports.maximizerBags = function(yds) {
     return Math.ceil(yds * 27);
 }
 module.exports.costOfMaximizerBags = function(bags) {
-      var dict = getValues("Prices_ConcBag", {"Type": "Maximizer"}, ["Price/Bag"]);
+      var dict = lb.getValues("Prices_ConcBag", {"Type": "Maximizer"}, ["Price/Bag"]);
       return bags * dict["Price/Bag"];
 }
 module.exports.maximizerLaborers = function(yds, addMobils) {
       var ml = {}
-      var dict = getValuesBasedOnNum("Labor_ConcBag", yds, ["CuYds", "Laborers", "Finishers"]);
+      var dict = lb.lb.getValuesBasedOnNum("Labor_ConcBag", yds, ["CuYds", "Laborers", "Finishers"]);
       var sets = Math.ceil(yds / 2.37);
       ml.sets = sets;
       ml.totalCrew = {}
@@ -18,7 +20,7 @@ module.exports.maximizerLaborers = function(yds, addMobils) {
 }
 module.exports.costOfMaximizerLaborers = function(wageType, laborers, miles, saturday) {
       var costOfMaximizerLaborers = {};
-      var dict = getValues("Wage_" + wageType + "_Conc", {"Laborer": "Average"}, ["Price/Day", "Price/Hr [OT]"]);
+      var dict = lb.getValues("Wage_" + wageType + "_Conc", {"Laborer": "Average"}, ["Price/Day", "Price/Hr [OT]"]);
   
       //2. CALCULATE COST OF LABORERS;
       if (saturday === "No" || saturday === "Yes - Option") {

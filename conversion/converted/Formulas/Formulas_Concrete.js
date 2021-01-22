@@ -1,3 +1,5 @@
+const lb = require('../library.js');
+
 module.exports.concYds = function(SF, thick) {
       return Number((SF * (thick / 12) / 27).toFixed(2));
 }
@@ -5,16 +7,16 @@ module.exports.costOfConcYds = function(concType, psi, yds, zipCode, saturday) {
       costOfConcYds = {};
       
       //1. DETERMINE IF ZIP CODE IS AN EXPENSIVE ONE
-      var dict = getValues("Conc_FarZipCodes", {"Zip Code": zipCode}, ["Zip Code"]);
+      var dict = lb.getValues("Conc_FarZipCodes", {"Zip Code": zipCode}, ["Zip Code"]);
 
-      var location = !("Zip Code" in dict) ?  "Far From Plant" : "Santa Monica";
+      var location = dict["Zip Code"] ?  "Santa Monica" : "Far From Plant";
 
       //2. GET PRICE 1 CONCRETE YD
-      dict = getValues("Prices_ConcYD", {"Concrete Type": concType, "PSI": psi}, [location]);
+      dict = lb.getValues("Prices_ConcYD", {"Concrete Type": concType, "PSI": psi}, [location]);
       var costPerYd = dict[location];
       
       //3. CALCULATE PRICE OF CONCRETE YARDS
-      dict = getValues("Prices_Fees", {"Fee": "Saturay Cost Per Yd"}, ["Cost"]);
+      dict = lb.getValues("Prices_Fees", {"Fee": "Saturay Cost Per Yd"}, ["Cost"]);
       if (saturday === "No" || saturday === "Yes - Option") {
             costOfConcYds.cost = yds * costPerYd;
       } else {
@@ -34,11 +36,11 @@ module.exports.concShortLoad = function(yds) {
 }
 module.exports.costOfConcShortLoad = function(yds) {
       if (yds <= 8.75 && yds !== 0) {
-          var dict = getValues("Prices_ConcShortLoad", {"Description": "Base"}, ["Yds", "Price"]);
+          var dict = lb.getValues("Prices_ConcShortLoad", {"Description": "Base"}, ["Yds", "Price"]);
           var baseAmount = dict.Yds;
           
           var basePrice = dict.Price;
-          dict = getValues("Prices_ConcShortLoad", {"Description": "Every .25 Yd Less"}, ["Price"]);
+          dict = lb.getValues("Prices_ConcShortLoad", {"Description": "Every .25 Yd Less"}, ["Price"]);
           var everyQuarterLess = dict.Price;
       
           return basePrice + (((baseAmount - yds) * 4) * everyQuarterLess)
@@ -48,44 +50,41 @@ module.exports.costOfConcShortLoad = function(yds) {
 }
 module.exports.concTrucks = function(yds, slope, city) {
     var key = city === "Beverly Hills" ? "Beverly Hills" : slope;
-    var dict = getValues("Conc_TruckLoad", {"Description": key}, ["Truck Load"]);
+    var dict = lb.getValues("Conc_TruckLoad", {"Description": key}, ["Truck Load"]);
     return {
           truckLoad: dict["Truck Load"],
           trucks: Math.ceil(yds / dict["Truck Load"])
     }
 }
 module.exports.costOfEnvironmental = function(trucks) {
-    var dict = getValues("Prices_Fees", {"Fee": "Environmental"}, ["Cost"]);
-    var environmentalFee = dict.Cost;
-    return trucks * environmentalFee;
+    var dict = lb.getValues("Prices_Fees", {"Fee": "Environmental"}, ["Cost"]);
+    return trucks * dict.Cost;
 }
 module.exports.costOfEnergy = function(trucks) {
-    var dict = getValues("Prices_Fees", {"Fee": "Energy"}, ["Cost"]);
-    var energyFee = dict.Cost;
-    return trucks * energyFee;
+    var dict = lb.getValues("Prices_Fees", {"Fee": "Energy"}, ["Cost"]);
+    return trucks * dict.Cost;
 }
 module.exports.costOfWashOut = function(trucks) {
-    var dict = getValues("Prices_Fees", {"Fee": "Washout"}, ["Cost"]);
-    var washoutFee = dict.Cost;
-    return trucks * washoutFee;
+    var dict = lb.getValues("Prices_Fees", {"Fee": "Washout"}, ["Cost"]);
+    return trucks * dict.Cost;
 }
 module.exports.costOfDownTime = function(wageType, yds, section, numOfTrucks) {
     var rowName = wageType === "NonPrevailing" ? "Add Time/Min" : "Add Time/Min[Prev]";
 
-    var dict = getValues("Prices_Fees", {"Fee": rowName}, ["Cost"]);
-    var dict2 = getValues("Conc_DownTime", {"Section": section}, ("Mins/Truck"));
+    var dict = lb.getValues("Prices_Fees", {"Fee": rowName}, ["Cost"]);
+    var dict2 = lb.getValues("Conc_DownTime", {"Section": section}, ["Mins/Truck"]);
     
     return numOfTrucks * dict2["Mins/Truck"] * dict.Cost;
 }
 module.exports.costOfTracker = function() {
-      var dict = getValues("Prices_Fees", {"Fee": "Tracker [Prevailing]"}, ["Cost"]);
+      var dict = lb.getValues("Prices_Fees", {"Fee": "Tracker [Prevailing]"}, ["Cost"]);
       return dict.Cost;
 }
 module.exports.concMobilizations = function(section, SF, count) {
-      if (section === "Stairs" || sections === "Stair Landings") {
-            return count
+      if (section === "Stairs" || section === "Stair Landings") {
+            return count;
       } else {
-            var dict = getValues("Conc_MaxPerDay", {"Section": section}, ["Max/Day"]);
+            var dict = lb.getValues("Conc_MaxPerDay", {"Section": section}, ["Max/Day"]);
             return Math.ceil(SF / dict["Max/Day"]);
       }
 }
@@ -98,14 +97,14 @@ module.exports.concLaborers = function(section, concType, SF, nosing, numOfFloor
       };
 
       //GET the Max/Day for the section
-      var dict = getValues("Conc_MaxPerDay", {"Section": section}, ["Max/Day"]);
+      var dict = lb.getValues("Conc_MaxPerDay", {"Section": section}, ["Max/Day"]);
       
       var renamedConcType = concType.split(" ")[0];
     
       if (renamedConcType === "Hydrolite") {
-          renamedConcType = "Lightweight"
+          renamedConcType = "Lightweight";
       } else if (renamedConcType === "Pea") {
-          renamedConcType = "Peagravel"
+          renamedConcType = "Peagravel";
       }
     
       if (section === "Stairs" || section === "Stair Landings") {
@@ -116,7 +115,7 @@ module.exports.concLaborers = function(section, concType, SF, nosing, numOfFloor
       
       var concWork = section + " " + renamedConcType
       if (section === "Stairs & Mid Landings") {
-            cl.crew = getValues("Labor_Concrete", {"Type Of Concrete Work": concWork, "SF": numOfFloors}, ["Prep Guy", "Pumper", "Hose Carrier", "Pourers", "Finishers", "Cleaners", "Laborers", "Total"]);
+            cl.crew = lb.getValues("Labor_Concrete", {"Type Of Concrete Work": concWork, "SF": numOfFloors}, ["Prep Guy", "Pumper", "Hose Carrier", "Pourers", "Finishers", "Cleaners", "Laborers", "Total"]);
             if (nosing === "Yes") {
                   cl.crew.Finishers = cl.crew.Finishers + 1;
                   cl.crew.Total = cl.crew.Total + 1;
@@ -129,14 +128,14 @@ module.exports.concLaborers = function(section, concType, SF, nosing, numOfFloor
       } else {
             //if the count is less than the section, then get the crew for that size
             if (SF < dict["Max/Day"]) {
-                  cl.crew = getValuesConcLabor("Labor_Concrete", ("Type Of Concrete Work"), [concWork], ("Prep Guy", "Pumper", "Hose Carrier", "Pourers", "Finishers", "Cleaners", "Laborers", "Total"), SF)
+                  cl.crew = lb.getValuesConcLabor("Labor_Concrete", ("Type Of Concrete Work"), [concWork], ("Prep Guy", "Pumper", "Hose Carrier", "Pourers", "Finishers", "Cleaners", "Laborers", "Total"), SF)
                   
                   cl.totalCrew = cl.crew
             } else {
                   //GET THE CREW SIZE FOR THE MAX AMOUNT
-                  cl.crew = getValuesConcLabor("Labor_Concrete", ("Type Of Concrete Work"), [concWork], ("Prep Guy", "Pumper", "Hose Carrier", "Pourers", "Finishers", "Cleaners", "Laborers", "Total"), dict["Max/Day"])
+                  cl.crew = lb.getValuesConcLabor("Labor_Concrete", ("Type Of Concrete Work"), [concWork], ("Prep Guy", "Pumper", "Hose Carrier", "Pourers", "Finishers", "Cleaners", "Laborers", "Total"), dict["Max/Day"])
                   //GET THE CREW SIZE FOR THE REMAINDER
-                  cl.remCrew = getValuesConcLabor("Labor_Concrete", ("Type Of Concrete Work"), [concWork], ("Prep Guy", "Pumper", "Hose Carrier", "Pourers", "Finishers", "Cleaners", "Laborers", "Total"), SF % dict["Max/Day"])
+                  cl.remCrew = lb.getValuesConcLabor("Labor_Concrete", ("Type Of Concrete Work"), [concWork], ("Prep Guy", "Pumper", "Hose Carrier", "Pourers", "Finishers", "Cleaners", "Laborers", "Total"), SF % dict["Max/Day"])
                   
                   for(var key in cl.crew) {
                         cl.totalCrew[key] = (cl.crew[key] * (mobilizations - 1)) + cl.remCrew[key];
@@ -156,7 +155,7 @@ module.exports.costOfConcLaborers = function(laborers, wageType, miles, saturday
       costOfConcLaborers = {}
       
       //1. GET WAGE PRICES
-      var dict = getValues("Wage_" + wageType + "_Conc", {"Laborer": "Average"}, ["Price/Day", "Price/Hr [OT]"]);
+      var dict = lb.getValues("Wage_" + wageType + "_Conc", {"Laborer": "Average"}, ["Price/Day", "Price/Hr [OT]"]);
       
       //2. CALCULATE COST OF LABORERS
       if (saturday === "No" || saturday === "Yes - Option") {
@@ -175,7 +174,7 @@ module.exports.costOfConcLaborers = function(laborers, wageType, miles, saturday
 }
 module.exports.costOfOvertimeConcLaborers = function(wageType, drivingTime, mobilizations) {
       //THIS SEEMS TO BE FOR ONE DRIVER
-      var dict = getValues("Wage_" + wageType + "_Conc", {"Laborer": "Average"}, ["Price/Hr [OT]", "Price/Hr [DT]"]);
+      var dict = lb.getValues("Wage_" + wageType + "_Conc", {"Laborer": "Average"}, ["Price/Hr [OT]", "Price/Hr [DT]"]);
       var wageOT = dict["Price/Hr [OT]"];
       var wageDT = dict["Price/Hr [DT]"];
       var costOfOvertimeConcLaborers;
