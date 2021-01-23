@@ -152,3 +152,12 @@ module.exports.doubleToFraction = function(number) {
                   return `10"`;
       }
 }
+module.exports.sum = function(numbers) {
+      return numbers.reduce((allocator, number) => {
+            if(number === undefined) return allocator;
+            return allocator + number;
+      }, 0);
+}
+module.exports.rndDec = function(number) {
+      return Number(number.toFixed(2));
+}

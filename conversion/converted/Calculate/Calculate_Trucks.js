@@ -19,12 +19,12 @@ module.exports.calculateTrucks = function(estimate, gypExists, concExists, overn
                   estimate.trucks.soundMatMaintenanceCost = lb.trucksMaintCost("", estimate.distance["Van Nuys"], estimate.gyp.labor.mobilizationsSoundMat, overnight);
             }
             //==========================================================================================
-            estimate.totals.gypCostTrucksFuelMaint = estimate.trucks.gypDrivingFuelCost +
-                                                     estimate.trucks.prePoursDrivingFuelCost +
-                                                     estimate.trucks.soundMatDrivingFuelCost +
-                                                     estimate.trucks.gypMaintenanceCost +
-                                                     estimate.trucks.prePoursMaintenanceCost +
-                                                     estimate.trucks.soundMatMaintenanceCost
+            estimate.totals.gypCostTrucksFuelMaint = lb.sum([estimate.trucks.gypDrivingFuelCost,
+                                                             estimate.trucks.prePoursDrivingFuelCost,
+                                                             estimate.trucks.soundMatDrivingFuelCost,
+                                                             estimate.trucks.gypMaintenanceCost,
+                                                             estimate.trucks.prePoursMaintenanceCost,
+                                                             estimate.trucks.soundMatMaintenanceCost]);
       }
 }
 module.exports.calculateTrucksConc = function(assem, miles) {

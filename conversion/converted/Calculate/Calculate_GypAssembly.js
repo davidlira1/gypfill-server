@@ -12,13 +12,15 @@ module.exports.calculateGypAssembly = function(inputs, assem, mixDesign, wageTyp
       lb.laborAndCostsGyp(inputs, assem, wageType, sameDay, overnight, miles, inputs.gyp.labor.mobilizations, inputs.gyp.labor.mobilizationsSoundMat, projectType);
       
       //4. CALCULATE TOTAL COST
-      assem.gypAssemCost = assem.costOfPrimerGallons + assem.costOfCMDPrimerGallons +
-                           assem.costOfPerFoamRolls +
-                           assem.costOfStapleBoxes +
-                           assem.costOfCansOfSprayGlue +
-                           assem.costOfDuctTapeRollsWhenNoSM +
-                           assem.costOfGypBags + assem.costOfTons + assem.costOfGypLabor +
-                           assem.costOfSoundMat + assem.costOfSoundMatLabor + assem.costOfDuctTapeRolls +
-                           assem.costOfWireUnits + assem.costOfPinBoxes + assem.costOfWasherBoxes + assem.costOfWireLaborers +
-                           assem.costOfBlackPaperRolls + assem.costOfBlackPaperLaborers + assem.costOfDuctTapeRollsForBlackPaper
+      assem.gypAssemCost = lb.sum([
+                                    assem.costOfPrimerGallons, assem.costOfCMDPrimerGallons,
+                                    assem.costOfPerFoamRolls,
+                                    assem.costOfStapleBoxes,
+                                    assem.costOfCansOfSprayGlue,
+                                    assem.costOfDuctTapeRollsWhenNoSM,
+                                    assem.costOfGypBags, assem.costOfTons, assem.costOfGypLabor,
+                                    assem.costOfSoundMat, assem.costOfSoundMatLabor, assem.costOfDuctTapeRolls,
+                                    assem.costOfWireUnits, assem.costOfPinBoxes, assem.costOfWasherBoxes, assem.costOfWireLaborers,
+                                    assem.costOfBlackPaperRolls, assem.costOfBlackPaperLaborers, assem.costOfDuctTapeRollsForBlackPaper
+                                  ]);
 }

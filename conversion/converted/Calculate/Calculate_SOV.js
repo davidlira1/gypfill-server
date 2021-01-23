@@ -1,3 +1,5 @@
+const lb = require('../library.js');
+
 module.exports.calculateSOV = function(projData, estimateVersion) {
       var sov = {};
       var estimate = projData.estimates["estimate" + estimateVersion];
@@ -5,11 +7,11 @@ module.exports.calculateSOV = function(projData, estimateVersion) {
       var gypFloors = {};
       //==========================================================================================
       //1. CHECK IF GYP EXISTS
-      var costTotalGypScope = estimate.totals.gypCostTotal;
+      var costTotalGypScope = estimate.totals.gypCostTotal || 0;
       var gypExists = costTotalGypScope === 0 ? false : true;
 
       //2. CHECK IF CONC EXISTS
-      var costTotalConcScope = estimate.totals.concCostTotal;
+      var costTotalConcScope = estimate.totals.concCostTotal || 0;
       var concExists = costTotalConcScope === 0 ? false : true;
 
       //
@@ -28,7 +30,7 @@ module.exports.calculateSOV = function(projData, estimateVersion) {
       }
       var sovNum = 1;
       //==========================================================================================
-      //2. EITHER HOUSE OR ANYTHinG ELSE
+      //2. EITHER HOUSE OR ANYTHING ELSE
       if (structureType === "House") {
             //HOUSE
             
@@ -43,11 +45,11 @@ module.exports.calculateSOV = function(projData, estimateVersion) {
                   }
                   sovNum++;
                   
-                  //2.inTERIOR SCOPE
+                  //2.INTERIOR SCOPE
                   var percentinteriorScope = percentGypScopeOfGrandTotal - percentUponSigning;
-                  var costOfinteriorScope = costTotalGrand * (percentinteriorScope / 100);
+                  var costOfinteriorScope = Math.ceil(costTotalGrand * (percentinteriorScope / 100));
                   sov["sov" + sovNum] = {
-                      description: "Upon Completion Of interior Scope",
+                      description: "Upon Completion Of Interior Scope",
                       payment: costOfinteriorScope,
                       percent: percentinteriorScope,
                       type: "gyp"
@@ -57,7 +59,7 @@ module.exports.calculateSOV = function(projData, estimateVersion) {
             
             if (concExists === true) {
                   //3.EXTERIOR SCOPE
-                  var costOfExteriorScope = costTotalGrand * (percentConcScopeOfGrandTotal / 100)
+                  var costOfExteriorScope = Math.ceil(costTotalGrand * (percentConcScopeOfGrandTotal / 100));
                   sov["sov" + sovNum] = {
                         description: "Upon Completion Of Exterior Scope",
                         payment: costOfExteriorScope,
@@ -66,9 +68,9 @@ module.exports.calculateSOV = function(projData, estimateVersion) {
                   }
                   sovNum++;
             }
-      } else if (structureType === "Building" || structureType === "Unit") {
+      } else if (structureType === "Building") {
             //==========================================================================================
-            //BUILDinG OR MULTI-BUILDinG OR UNIT
+            //BUILDING OR MULTI-BUILDING OR UNIT
             //==========================================================================================
             if (gypExists) {
                   //1.IF THERE ARE PRE POUR TUBS
@@ -87,7 +89,7 @@ module.exports.calculateSOV = function(projData, estimateVersion) {
                   for(var gypAssembly in estimate.structures.structure1.gypAssemblies) {
                         for(var Floor in estimate.structures.structure1.gypAssemblies[gypAssembly].floors) {
                               //ADD UNIQUE FLOOR TO DICTIONARY
-                              if (gypFloors.Exists[Floor] === false) {
+                              if (!gypFloors[Floor]) {
                                     gypFloors[Floor] = Floor;
                               }
                         }
@@ -96,31 +98,31 @@ module.exports.calculateSOV = function(projData, estimateVersion) {
                   //3. NUMBER OF FLOORS
                   var numOfFloors;
                   if (gypFloors.floorR) {
-                        numOfFloors = gypFloors.count - 1;
+                        numOfFloors = Object.keys(gypFloors).length - 1;
                   } else {
-                        numOfFloors = gypFloors.count;
+                        numOfFloors = Object.keys(gypFloors).length;
                   }
                   
                   //4. PAYMENT for (var FLOOR
                   var percentForEachGypFloor = (percentGypScopeOfGrandTotal - percentPrePours) / numOfFloors;
-                  var paymentForEachGypFloor = costTotalGrand * (percentForEachGypFloor / 100);
+                  var paymentForEachGypFloor = Math.ceil(costTotalGrand * (percentForEachGypFloor / 100));
                   
-                  //5. inPUT THE FLOORS FOR GYP
+                  //5. INPUT THE FLOORS FOR GYP
                   var floorNum;
                   for(var Floor in gypFloors) {
                         if (Floor !== "floorR") {
                               sov["sov" + sovNum] = {}
                               if (Floor === "floorB") {
-                                    sov("sov" + sovNum).description = "Upon Completion Of Basement Floor";
-                                    sov("sov" + sovNum).floor = "B";
+                                    sov["sov" + sovNum].description = "Upon Completion Of Basement Floor";
+                                    sov["sov" + sovNum].floor = "B";
                               } else {
-                                    floorNum = Right(Floor, 1)
-                                    sov("sov" + sovNum).description = "Upon Completion Of " + numberToOrdinal(floorNum) + " Floor interior";
-                                    sov("sov" + sovNum).floor = floorNum;
+                                    floorNum = Number(Floor[Floor.length - 1]);
+                                    sov["sov" + sovNum].description = "Upon Completion Of " + lb.numberToOrdinal(floorNum) + " Floor interior";
+                                    sov["sov" + sovNum].floor = floorNum;
                               }
-                              sov("sov" + sovNum).payment = paymentForEachGypFloor;
-                              sov("sov" + sovNum).percent = percentForEachGypFloor;
-                              sov("sov" + sovNum).type = "gyp";
+                              sov["sov" + sovNum].payment = paymentForEachGypFloor;
+                              sov["sov" + sovNum].percent = percentForEachGypFloor;
+                              sov["sov" + sovNum].type = "gyp";
                               sovNum++;
                         }
                   }
@@ -152,14 +154,14 @@ module.exports.calculateSOV = function(projData, estimateVersion) {
             
 
       } else {
-            calculateSOV = calculateSOVMulti(estimate, costTotalGrand, costTotalGypScope, percentGypScopeOfGrandTotal, costTotalConcScope, percentConcScopeOfGrandTotal, gypExists, concExists);
+            calculateSOV = lb.calculateSOVMulti(estimate, costTotalGrand, costTotalGypScope, percentGypScopeOfGrandTotal, costTotalConcScope, percentConcScopeOfGrandTotal, gypExists, concExists);
             return;
       }
             
       //8. ADJUSTMENT
       //GET THE SUM OF ALL BUT THE FIRST ROW
-      var sum;
-      for(var i = 2; i <= sov.count; i++) {
+      var sum = 0;
+      for(var i = 2; i <= Object.keys(sov).length; i++) {
             sum = sum + sov["sov" + i].payment;
       }
             
@@ -223,7 +225,7 @@ module.exports.calculateSOVMulti = function(estimate, costTotalGrand, costTotalG
                         gypAssemsStructureTotal = gypAssemsStructureTotal + estimate.structures[structure].gypAssemblies[gypAssembly].gypAssemCost
                         for (var Floor in estimate.structures[structure].gypAssemblies[gypAssembly].floors) {
                               //ADD UNIQUE FLOOR TO DICTIONARY
-                              if (gypFloors.Exists[Floor] === false) {
+                              if (!gypFloors[Floor]) {
                                     gypFloors[Floor] = Floor;
                               }
                         }
@@ -232,9 +234,9 @@ module.exports.calculateSOVMulti = function(estimate, costTotalGrand, costTotalG
                   //3. NUMBER OF FLOORS
                   var numOfFloors
                   if (gypFloors.floorR) {
-                        numOfFloors = gypFloors.count - 1;
+                        numOfFloors = Object.keys(gypFloors).length - 1;
                   } else {
-                        numOfFloors = gypFloors.count;
+                        numOfFloors = Object.keys(gypFloors).length;
                   }
                   
                   //4. PAYMENT for (var FLOOR
@@ -247,7 +249,7 @@ module.exports.calculateSOVMulti = function(estimate, costTotalGrand, costTotalG
                   var floorNum;
                   for (var Floor in gypFloors) {
                         if (Floor !== "floorR") {
-                              dict[structure]["sov" + sovNum] = {}
+                              dict[structure]["sov" + sovNum] = {};
                               if (Floor === "floorB") {
                                     dict[structure]["sov" + sovNum].description = "Upon Completion Of Basement Floor";
                                     dict[structure]["sov" + sovNum].floor = "B";

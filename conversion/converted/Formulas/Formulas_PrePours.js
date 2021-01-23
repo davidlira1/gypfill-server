@@ -18,7 +18,7 @@ module.exports.prePourLaborCrew = function(numOfTubs, mobilizations) {
 }
 module.exports.costOfPrePoursLabor = function(wageType, laborers, miles) {
       var dict = lb.getValues("Wage_" + wageType + "_Gyp", {"Laborer": "Average"}, ["Price/Day"])
-      return laborers * dict["Price/Day"];
+      return Math.ceil(laborers * dict["Price/Day"]);
 }
 module.exports.costOfOverTimePrePours = function(wageType, drivingTime, mobilizations) {
       var dict = lb.getValues("Wage_" + wageType + "_Gyp", {"Laborer": "Average"}, ["Price/Hr (OT)", "Price/Hr (DT)"]);
@@ -33,5 +33,5 @@ module.exports.costOfOverTimePrePours = function(wageType, drivingTime, mobiliza
             cost = drivingTime * wageOT;
       }
       
-      return cost * mobilizations;
+      return Math.ceil(cost * mobilizations);
 }

@@ -2,6 +2,7 @@ const lb = require('../library.js');
 
 module.exports.trucksMaintCost = function(gypOrConc, miles, mobilizations, overnight) {
       //1. GET MAINTENANCE COST PER DAY (BASED ON THE YEARLY TRUCK BREAK COST)
+      if(!mobilizations) return 0;
       var dict = lb.getValues("Maint_Trucks", {"Truck": "Yearly"}, ["Maint Cost/Day"]);
       var maintCostPerDay = dict["Maint Cost/Day"];
       if (overnight === true) {
@@ -22,7 +23,7 @@ module.exports.trucksMaintCost = function(gypOrConc, miles, mobilizations, overn
             //MULTIPLY BY 2 DRIVERS
             trucksMaintCost*= 2;
       }
-      return trucksMaintCost;
+      return Math.ceil(trucksMaintCost);
 }
 module.exports.machinesMaintCost = function(gypOrConc, hours, machines, mobilizations) {
     var machinesMaintCost = {};

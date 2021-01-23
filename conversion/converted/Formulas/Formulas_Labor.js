@@ -6,7 +6,7 @@ module.exports.gypLabor = function(wageType, structureType, SF, SFsm, gypThick, 
       var tableName;
       
       //1. SET METHOD. CHANGED LATER IF VERY SMALL POUR
-      labor.method = "Pump"
+      labor.method = "Pump";
       
       //2. CALCULATE EXTRA LABORERS (DEPENDS OF DIFFICULTY LEVEL)
       dict = lb.getValues("Gyp_DifficultyLevel", {"Level": difficultyLevel}, ["Extra Laborers"]);
@@ -28,7 +28,7 @@ module.exports.gypLabor = function(wageType, structureType, SF, SFsm, gypThick, 
             labor.costOfGypLaborOption = dict.costOption; //related to saturday as an option
             //Flagmen (will be optional)
             dict = lb.costOfGypLabor(wageType, labor.laborers.crew.Flagmen, labor.mobilizations, saturday);
-            labor.costOfGypFlagmenLabor = dict.cost
+            labor.costOfGypFlagmenLabor = dict.cost;
             //StringLine (will be optional)
             dict = lb.costOfGypLabor(wageType, labor.laborers.crew["String Line"], labor.mobilizations, saturday);
             labor.costOfGypStringLineLabor = dict.cost;
@@ -38,7 +38,7 @@ module.exports.gypLabor = function(wageType, structureType, SF, SFsm, gypThick, 
             
             dict = lb.getValuesBasedOnNum(tableName, gypSqFt, ["Laborers", "String Line", "Flagmen", "Foam/Primer", "Pumper", "Bobcat", "Baggers", "Screeder", "Hose Pourer", "Hose Puller"]);
             
-            labor.mobilizations = lb.gypMobilizations(SF, "Normal")
+            labor.mobilizations = lb.gypMobilizations(SF, "Normal");
             labor.laborers.Laborers = dict.Laborers + labor.laborers["Extra Laborers"];
             labor.laborers.crew = dict;
             delete labor.laborers.crew.Laborers;
@@ -87,12 +87,8 @@ module.exports.gypLabor = function(wageType, structureType, SF, SFsm, gypThick, 
                   if (gypType === "CMD") {
                         labor.costOfAfterMilesThreshold = labor.costOfAfterMilesThreshold + ((labor.laborers.Laborers - 2) * labor.mobilizationsFlutes * dict["Price/Day"]);
                   }
-      } else {
-          labor.costOfAfterMilesThreshold = 0;
-      }
-          
+      }      
 }
-
 module.exports.gypMobilizations = function(SF, gypType) {
       var dict = lb.getValues("Mobils_Gyp", {"Type": gypType}, ["SF/Day"]);
       return Math.ceil(SF / dict["SF/Day"]);
@@ -161,13 +157,13 @@ module.exports.overTimeGypLabor = function(wageType, mobilizations, numOfLaborer
             //__________________________________________________________________________________________
             //4. CALCULATE OVERTIME HOURS FOR DRIVING
             if (totalGypTimeWOutDriving > 7.5) {
-                  overTimeHrsDriving = drivingTime
+                  overTimeHrsDriving = drivingTime;
                   //IF OVERNIGHT IS TRUE, THEN IT//S FINE
                   costOfOverTimeGypLaborDrivers = lb.costOfOverTimeGypLaborHelper(wageType, overTimeHrsWOutDriving + overTimeHrsDriving, 2) - costOfOverTimeGypLaborHelper(wageType, overTimeHrsWOutDriving, 2);
             } else {
                   //IF REACHES HERE, CREW RECEIVED NO OVERTIME
                   if ((7.5 - totalGypTimeWOutDriving - drivingTime) < 0) {
-                        overTimeHrsDriving = (7.5 - totalGypTimeWOutDriving - drivingTime) * -1
+                        overTimeHrsDriving = (7.5 - totalGypTimeWOutDriving - drivingTime) * -1;
                         if (overnight === true) {
                               overTimeHrsDriving = (overTimeHrsDriving - (drivingTime / 2)) + drivingTime / 2;
                         }
@@ -209,14 +205,14 @@ module.exports.overTimeGypLabor = function(wageType, mobilizations, numOfLaborer
                               //__________________________________________________________________________________________
                               //5. CALCULATE OVERTIME HOURS FOR DRIVING
                               if (totalGypTimeWOutDriving > 7.5) {
-                                    overTimeHrsDriving = drivingTime
+                                    overTimeHrsDriving = drivingTime;
                                     costOfOverTimeGypLaborDrivers = costOfOverTimeGypLaborDrivers + lb.costOfOverTimeGypLaborHelper(wageType, overTimeHrsWOutDriving + overTimeHrsDriving, 2) - lb.costOfOverTimeGypLaborHelper(wageType, overTimeHrsWOutDriving, 2)
                               } else {
                                     //IF REACHES HERE, CREW RECEIVED NO OVERTIME
                                     if ((7.5 - totalGypTimeWOutDriving - drivingTime) < 0) {
                                           overTimeHrsDriving = (7.5 - totalGypTimeWOutDriving - drivingTime) * -1
                                           if (overnight === true) {
-                                                overTimeHrsDriving = (overTimeHrsDriving - (drivingTime / 2)) + drivingTime / 2
+                                                overTimeHrsDriving = (overTimeHrsDriving - (drivingTime / 2)) + drivingTime / 2;
                                           }
                                           costOfOverTimeGypLaborDrivers = costOfOverTimeGypLaborDrivers + lb.costOfOverTimeGypLaborHelper(wageType, overTimeHrsDriving, 2)
                                     } else {
@@ -255,14 +251,14 @@ module.exports.overTimeGypLabor = function(wageType, mobilizations, numOfLaborer
                    //__________________________________________________________________________________________
                   //4. CALCULATE OVERTIME HOURS FOR DRIVING
                   if (totalGypTimeWOutDriving > 7.5) {
-                        overTimeHrsDriving = drivingTime
+                        overTimeHrsDriving = drivingTime;
                         costOfOverTimeGypLaborDrivers = lb.costOfOverTimeGypLaborHelper(wageType, overTimeHrsWOutDriving + overTimeHrsDriving, 2) - costOfOverTimeGypLaborHelper(wageType, overTimeHrsWOutDriving, 2)
                   } else {
                         //IF REACHES HERE, CREW RECEIVED NO OVERTIME
                         if ((7.5 - totalGypTimeWOutDriving - drivingTime) < 0) {
-                              overTimeHrsDriving = (7.5 - totalGypTimeWOutDriving - drivingTime) * -1
+                              overTimeHrsDriving = (7.5 - totalGypTimeWOutDriving - drivingTime) * -1;
                               if (overnight === true) {
-                                    overTimeHrsDriving = (overTimeHrsDriving - (drivingTime / 2)) + drivingTime / 2
+                                    overTimeHrsDriving = (overTimeHrsDriving - (drivingTime / 2)) + drivingTime / 2;
                               }
                               costOfOverTimeGypLaborDrivers = lb.costOfOverTimeGypLaborHelper(wageType, overTimeHrsDriving, 2)
                         } else {
@@ -287,7 +283,7 @@ module.exports.overTimeGypLabor = function(wageType, mobilizations, numOfLaborer
       overTimeGypLabor.costOfOverTimeGypLaborCrew = costOfOverTimeGypLaborCrew;
       
       //3. PLACE OVERTIME HOURS WITH DRIVING IN DICTIONARY
-      overTimeGypLabor.overTimeHrsDriving = overTimeHrsDriving;
+      overTimeGypLabor.overTimeHrsDriving = lb.rndDec(overTimeHrsDriving);
             
       //4. PLACE COST OF OVERTIME HOURS WITH DRIVING IN DICTIONARY
       overTimeGypLabor.costOfOverTimeGypLaborDrivers = costOfOverTimeGypLaborDrivers;
@@ -304,7 +300,7 @@ module.exports.costOfOverTimeGypLaborHelper = function(wageType, overTimeHrs, nu
                   cost = (overTimeHrs * lb.overTimeRate("Gyp", wageType, 1) * numOfLaborers)
             }
       }
-      return cost;
+      return Math.ceil(cost);
 }
 module.exports.costOfOverTimeSoundMatLabor = function(wageType, mobilizations, drivingTime, overnight) {
       //number of sound mat mobilizations is equal to gyp mobilizations
@@ -320,7 +316,7 @@ module.exports.costOfOverTimeSoundMatLabor = function(wageType, mobilizations, d
             cost = lb.overTimeRate("SM", wageType, drivingTime)
       }
       
-      return cost * mobilizations;
+      return Math.ceil(cost * mobilizations);
 }
 module.exports.overTimeRate = function(material, wageType, overTimeHrs) {
       var typeOfOverTime;

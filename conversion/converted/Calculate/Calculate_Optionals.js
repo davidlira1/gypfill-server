@@ -12,15 +12,15 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
       var estimate = projData.estimates["estimate" + estimateVersion];
       
       //GYPCRETE
-      if (estimate.structures.structure1.gypAssemblies.count > 0) {
+      if (Object.keys(estimate.structures.structure1.gypAssemblies).length > 0) {
             //1. ESTABLISH MARGin
             margin = estimate.totals.gypMargin;
             
-            //STRinG LinE
+            //STRING LINE
             if (estimate.gyp.slgs === "Yes - Option") {
                   calculateOptionals["option" + opt] = {
                         option: "Survey floor and install SLGS(String-Line Grid System) to control and enhance the floor leveling application",
-                        cost: lb.costAfterMargin(estimate.totals.costOfStringLineinstallation, margin)
+                        cost: lb.costAfterMargin(estimate.totals.costOfStringLineInstallation, margin)
                   };
                   opt++;
             }
@@ -60,13 +60,13 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
                   }
                   calculateOptionals["option" + opt] = {
                         option: optionalStr,
-                        cost: lb.costAfterMargin(estimate.totals.prePoursCostMaterialAndLabor + estimate.totals.prePoursCostTravel + estimate.totals.prePoursCostAfterMilesThreshold, margin)
+                        cost: lb.costAfterMargin(lb.sum([estimate.totals.prePoursCostMaterialAndLabor, estimate.totals.prePoursCostTravel, estimate.totals.prePoursCostAfterMilesThreshold]), margin)
                   }
                   opt++;
             }
 
             //ADU REGULATION
-            if (projData.projectinfo.projectType === "Building" && estimate.totals.ADURegCostMaterialAndLabor !== 0 && estimate.structures.structure1.aduRegulation.contractOrOption === "Optional") {
+            if (projData.projectInfo.projectType === "Building" && estimate.totals.ADURegCostMaterialAndLabor !== 0 && estimate.structures.structure1.aduRegulation.contractOrOption === "Optional") {
                   calculateOptionals["option" + opt] = {
                         option: "install string lines at all kitchen cabinet areas to achieve ADU height regulation",
                         cost: lb.costAfterMargin(estimate.totals.ADURegCostMaterialAndLabor, margin)
@@ -75,7 +75,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
             }
             
             //GYP SATURDAY OPTION
-            if (estimate.totals.gypCostSaturdayOption !== 0) {
+            if (estimate.saturday.gyp === "Yes - Option") {
                   calculateOptionals["option" + opt] = {
                         option: "Pour gypcrete on Saturday",
                         cost: lb.costAfterMargin(estimate.totals.gypCostSaturdayOption, margin)
@@ -119,8 +119,8 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
                   for (var optAssemKey in gypAssem.options) {
                         optAssem = gypAssem.options[optAssemKey];
                         
-                        //1. PASS THE OBJECTS TO THE FUNCTION AND GET STRinG
-                        optionalDict = compareRegToOptGyp(gypAssem, optAssem, margin);
+                        //1. PASS THE OBJECTS TO THE FUNCTION AND GET STRING
+                        optionalDict = lb.compareRegToOptGyp(gypAssem, optAssem, margin);
                         if (optionalDict.option !== "option is not different") {
                               calculateOptionals["option" + opt] = optionalDict;
                               opt++;
@@ -134,7 +134,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
       //5. LOOP THRU CONC ASSEMBLIES
       
       //5. CONC SATURDAY OPTION
-      if (estimate.totals.concCostSaturdayOption !== 0) {
+      if (estimate.saturday.conc === "Yes - Option") {
             calculateOptionals["option" + opt] = {
                   option: "Pour concrete on Saturday",
                   cost: lb.costAfterMargin(estimate.totals.concCostSaturdayOption, margin)
@@ -148,7 +148,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
             
             //2. IF CONC ASSEMBLY IS AN OPTION
             if (concAssem.contractOrOption === "Optional") {
-                  optionalStr = exteriorScopeStr(concAssem);
+                  optionalStr = lb.exteriorScopeStr(concAssem);
                   calculateOptionals["option" + opt] = {
                         option: optionalStr,
                         cost: concAssem.costTotal
@@ -161,7 +161,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
                   optAssem = concAssem.options[optAssemKey];
                         
                   //1. PASS THE OBJECTS TO THE FUNCTION AND GET STRinG
-                  optionalDict = compareRegToOptConc(concAssem, optAssem, concAssem.margin);
+                  optionalDict = lb.compareRegToOptConc(concAssem, optAssem, concAssem.margin);
                   if (optionalDict.option !== "option is not different") {
                         calculateOptionals["option" + opt] = optionalDict;
                         opt++;
@@ -173,7 +173,7 @@ module.exports.calculateOptionals = function(projData, estimateVersion) {
 }
 module.exports.compareRegToOptGyp = function(regAssem, optAssem, margin) {
       var compareRegToOptGyp = {};
-      var totalCost = (optAssem.difference / (100 - margin)) * 100;
+      var totalCost = Math.ceil((optAssem.difference / (100 - margin)) * 100);
       var optionalStr;
       var addOrDeduct;
       var arrSM1;
@@ -211,17 +211,17 @@ module.exports.compareRegToOptGyp = function(regAssem, optAssem, margin) {
             //AND SOUND MAT TYPES ARE ALSO DIFFERENT
             if (regAssem.soundMatType !== optAssem.soundMatType) {
                   if (regAssem.soundMatType !== "") {
-                        arrSM1 = Split(regAssem.soundMatType)
-                        sm1 = arrSM1[0] + " Mat" + "(" + arrSM1[1] + "-" + arrSM1[2] + "\xAE" + ")"
+                        arrSM1 = regAssem.soundMatType.split(' ');
+                        sm1 = arrSM1[0] + " Mat" + "(" + arrSM1[1] + "-" + arrSM1[2] + "\xAE" + ")";
                   }
                   
                   if (optAssem.soundMatType !== "") {
-                        arrSM2 = Split(optAssem.soundMatType)
-                        sm2 = arrSM2[0] + " Mat" + "(" + arrSM2[1] + "-" + arrSM2[2] + "\xAE" + ")"
+                        arrSM2 = optAssem.soundMatType.split(' ');
+                        sm2 = arrSM2[0] + " Mat" + "(" + arrSM2[1] + "-" + arrSM2[2] + "\xAE" + ")";
                   }
 
                   if (optAssem.difference > 0) {
-                        addOrDeduct = "ADD"
+                        addOrDeduct = "ADD";
                         if (regAssem.soundMatType === "") {
                               optionalStr = "Upgrade from " + lb.doubleToFraction(regAssem.gypThick) + " Gypsum Concrete to " + lb.doubleToFraction(optAssem.gypThick) + " Gypsum Concrete over " + sm2;
                         } else {
@@ -229,7 +229,7 @@ module.exports.compareRegToOptGyp = function(regAssem, optAssem, margin) {
                         }
                         
                   } else {
-                        addOrDeduct = "DEDUCT"
+                        addOrDeduct = "DEDUCT";
                         if (optAssem.soundMatType === "") {
                               optionalStr = "Downgrade from " + lb.doubleToFraction(regAssem.gypThick) + " Gypsum Concrete over " + sm1 + " to " + lb.doubleToFraction(optAssem.gypThick) + " Gypsum Concrete";
                         } else {
@@ -467,7 +467,7 @@ module.exports.exteriorScopeStr = function(concAssem) {
             mobilizationStr = concAssem.labor.concMobilizations + concAssem.addMobils + " mobilizations"
       }
       
-      exteriorScopeStr = exteriorScopeStr + " at " + LCase(concAssem.section) + " - " + mobilizationStr
+      exteriorScopeStr = exteriorScopeStr + " at " + concAssem.section.toLowerCase() + " - " + mobilizationStr
       
       return exteriorScopeStr;
 }

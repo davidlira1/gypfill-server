@@ -2,6 +2,8 @@ const lb = require('../library.js');
 
 module.exports.drivingFuelsCost = function(material, miles, mobilizations) {
       //WE DRIVE FOR EACH MOBILIZATION, ROUND TRIP
+      if(!mobilizations) return 0;
+      
       if (miles !== "Not Available") {
             //1. CALCULATE COST FOR ONE WAY
             //here we hardcoded the truck type
@@ -18,7 +20,7 @@ module.exports.drivingFuelsCost = function(material, miles, mobilizations) {
                   drivingFuelsCost = drivingFuelsCost * 2;
             }
       } else {
-            drivingFuelsCost = "Not Available"
+            drivingFuelsCost = 0;
       }
       return drivingFuelsCost;
 }
@@ -77,5 +79,5 @@ module.exports.machineFuelCost = function(machineType, machine, hrs) {
       var fuelCostPerGal = dict["Price/Gallon"];
       
       //7. CALCULATE MACHINE FUEL COST
-      return gallons * fuelCostPerGal;
+      return Math.ceil(gallons * fuelCostPerGal);
 }

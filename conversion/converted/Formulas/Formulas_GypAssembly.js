@@ -47,14 +47,14 @@ module.exports.costOfTons = function(tons, saturday) {
       var d = {};
       //COST
       if (saturday === "No" || saturday === "Yes - Option") {
-            d.cost = (tons * dict["Price/Ton"]) + (dict["Freight Cost"] * numOfTrucks);
+            d.cost = Math.ceil((tons * dict["Price/Ton"]) + (dict["Freight Cost"] * numOfTrucks));
       } else if (saturday === "Yes") {
-            d.cost = ((tons * dict["Price/Ton"]) + (dict["Freight Cost"] * numOfTrucks)) * (1 + dict["Saturday Extra"]);
+            d.cost = Math.ceil(((tons * dict["Price/Ton"]) + (dict["Freight Cost"] * numOfTrucks)) * (1 + dict["Saturday Extra"]));
       }
       
       //OPTION COST
       if (saturday === "Yes - Option") {
-            d.costOption = d.cost * dict["Saturday Extra"];
+            d.costOption = Math.ceil(d.cost * dict["Saturday Extra"]);
       } else {
             d.costOption = 0;
       }

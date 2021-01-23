@@ -7,7 +7,7 @@ module.exports.projData =
         "city": "Long Beach",
         "state": "CA",
         "zipCode": "90813",
-        "projectType": "Building",
+        "projectType": "House",
         "wageType": "NonPrevailing",
         "status": "Takeoff",
         "receivedDate": "2021-01-19T08:00:00.000Z",
@@ -34,7 +34,7 @@ module.exports.projData =
     "estimates": {
         "estimate0": {
             "saturday": {
-                "gyp": "No",
+                "gyp": "Yes - Option",
                 "conc": "No"
             },
             "trucks": {
@@ -49,70 +49,75 @@ module.exports.projData =
                     "laborers": {
                     },
                     "addMobils": {
-                        "mobils": 0,
+                        "mobils": 2,
                         "mobilCost": 3000
                     }
                 },
-                "difficultyLevel": "Normal",
+                "difficultyLevel": "Hard",
                 "mixDesign": 0,
-                "moistStop": "No",
-                "sealer": "No",
+                "moistStop": "Yes - Option",
+                "sealer": "Yes - Option",
                 "sealerType": "Hacker Sealer",
-                "ramboard": "No",
+                "ramboard": "Yes - Option",
                 "perFoamCutting": "Yes - Option",
-                "flagmen": "No",
-                "slgs": "No",
-                "overrideGypBarrelMix": "No",
+                "flagmen": "Yes - Option",
+                "slgs": "Yes - Option",
+                "overrideGypBarrelMix": "Yes",
                 "overrideConcBarrelMix": "No"
             },
             "conc": {
                 "equip": {
                     "pump": "757"
                 },
-                "concPumpCostOption": "Yes"
+                "concPumpCostOption": "No"
             },
             "structures": {
                 "structure1": {
                     "gypAssemblies": {
                         "gypAssem1": {
-                            "SF": 23000,
-                            "section": "Units",
+                            "SF": 5000,
+                            "section": "2nd Floor",
                             "floor": "Plywood",
                             "gypType": "2010+",
                             "gypThick": 1.25,
-                            "soundMatType": "1/4\" SCM 250",
-                            "wireType": "",
-                            "blackPaperType": "",
-                            "floors": {
-                                "floor2": {
-                                    "SF": 12000
-                                },
-                                "floor3": {
-                                    "SF": 11000
-                                }
-                            },
-                            "options": {
-                            }
-                        },
-                        "gypAssem2": {
-                            "SF": 4100,
-                            "section": "Corridors",
-                            "floor": "Plywood",
-                            "gypType": "2010+",
-                            "gypThick": 1.5,
                             "soundMatType": "",
                             "wireType": "",
                             "blackPaperType": "",
                             "primerType": "Hacker Primer",
                             "floors": {
                                 "floor2": {
-                                    "SF": 2000
-                                },
-                                "floor3": {
-                                    "SF": 2100
+                                    "SF": 5000
                                 }
                             },
                             "options": {
+                            }
+                        },
+                        "gypAssem2": {
+                            "SF": 1000,
+                            "section": "3rd Floor",
+                            "floor": "Plywood",
+                            "gypType": "2010+",
+                            "gypThick": 1,
+                            "soundMatType": "",
+                            "wireType": "",
+                            "blackPaperType": "",
+                            "primerType": "Hacker Primer",
+                            "floors": {
+                                "floor3": {
+                                    "SF": 1000
+                                }
+                            },
+                            "options": {
+                                "optionAssem1": {
+                                    "SF": 1000,
+                                    "section": "3rd Floor",
+                                    "floor": "Plywood",
+                                    "gypType": "2010+",
+                                    "gypThick": 0.875,
+                                    "soundMatType": "1/8\" SCM 125",
+                                    "wireType": "",
+                                    "blackPaperType": ""
+                                }
                             }
                         }
                     },
@@ -120,28 +125,10 @@ module.exports.projData =
                     },
                     "building": "1",
                     "prePours": {
-                        "contractOrOption": "Contract",
-                        "tubs": 22,
-                        "floors": {
-                            "floor2": {
-                                "tubs": 12
-                            },
-                            "floor3": {
-                                "tubs": 10
-                            }
-                        }
+                        "tubs": 0
                     },
                     "aduRegulation": {
-                        "contractOrOption": "Optional",
-                        "units": 20,
-                        "floors": {
-                            "floor2": {
-                                "units": 11
-                            },
-                            "floor3": {
-                                "units": 9
-                            }
-                        }
+                        "units": 0
                     }
                 }
             },
@@ -151,8 +138,8 @@ module.exports.projData =
                 "gypMargin": 40,
                 "concMarginMarket": 50,
                 "numOfStructs": 1,
-                "gypSF": 27100,
-                "gypSFWithSoundMat": 23000
+                "gypSF": 6000,
+                "gypSFWithSoundMat": 0
             }
         }
     },
@@ -161,4 +148,12 @@ module.exports.projData =
     "changeOrders": {
     }
 }
+
+
+
+
+
+
+
+
 

@@ -1,0 +1,396 @@
+{
+    "_id": "6005b4d7d214cdcecb774c02",
+    "projectInfo": {
+        "projectName": "3020x Test Aparts",
+        "street": "3020x Test Rd",
+        "city": "Long Beach",
+        "state": "CA",
+        "zipCode": "90813",
+        "projectType": "House",
+        "wageType": "NonPrevailing",
+        "status": "Takeoff",
+        "receivedDate": "2021-01-19T08:00:00.000Z",
+        "phaseOrBuilding": "empty"
+    },
+    "companyInfo": {
+        "companyName": "Agc",
+        "street": "",
+        "city": "",
+        "state": "",
+        "zipCode": "",
+        "phone": ""
+    },
+    "contactInfo": {
+        "contact1": {
+            "contactName": "Adavid1",
+            "phone": "",
+            "email": ""
+        }
+    },
+    "proposalNumber": "undefined",
+    "latestVersion": 0,
+    "approvedVersion": "undefined",
+    "estimates": {
+        "estimate0": {
+            "saturday": {
+                "gyp": "Yes - Option",
+                "conc": "No"
+            },
+            "trucks": {
+                "drivingTime": 1.47,
+                "gypDrivingFuelCost": 64,
+                "prePoursDrivingFuelCost": 0,
+                "soundMatDrivingFuelCost": 0,
+                "gypMaintenanceCost": 39,
+                "prePoursMaintenanceCost": 0,
+                "soundMatMaintenanceCost": 0
+            },
+            "gyp": {
+                "equip": {
+                    "pumpTime": {
+                        "D6528": 3.04,
+                        "Super-80": 3.04,
+                        "Placer": 2.02
+                    },
+                    "pump": "Placer",
+                    "bobcat": "326E",
+                    "machineFuelsCost": {
+                        "pump": 52,
+                        "bobcat": 19
+                    },
+                    "maintenanceCost": {
+                        "pump": 12,
+                        "bobcat": 8
+                    },
+                    "rotoStaterCost": 135
+                },
+                "labor": {
+                    "laborers": {
+                        "Extra Laborers": 2,
+                        "Laborers": 9,
+                        "crew": {
+                            "String Line": 3,
+                            "Flagmen": 1,
+                            "Foam/Primer": "Included",
+                            "Pumper": 1,
+                            "Bobcat": 1,
+                            "Baggers": 2,
+                            "Screeder": 1,
+                            "Hose Pourer": 1,
+                            "Hose Puller": 1
+                        },
+                        "perFoamCuttingLaborers": 1
+                    },
+                    "addMobils": {
+                        "mobils": 2,
+                        "mobilCost": 3000,
+                        "addMobilsCost": 6000,
+                        "enabled": false
+                    },
+                    "method": "Pump",
+                    "mobilizations": 1,
+                    "costOfGypLabor": 2247,
+                    "costOfGypLaborOption": 1124,
+                    "costOfGypFlagmenLabor": 250,
+                    "costOfGypStringLineLabor": 749,
+                    "mobilizationsSoundMat": 0,
+                    "overTimeGypLabor": {
+                        "overTimeHrsWOutDriving": 0,
+                        "costOfOverTimeGypLaborCrew": 0,
+                        "overTimeHrsDriving": 0,
+                        "costOfOverTimeGypLaborDrivers": 0
+                    },
+                    "costOfOverTimeSoundMatLabor": 0
+                },
+                "difficultyLevel": "Hard",
+                "mixDesign": 0,
+                "moistStop": "Yes - Option",
+                "sealer": "Yes - Option",
+                "sealerType": "Hacker Sealer",
+                "ramboard": "Yes - Option",
+                "perFoamCutting": "Yes - Option",
+                "flagmen": "Yes - Option",
+                "slgs": "Yes - Option",
+                "overrideGypBarrelMix": "Yes",
+                "overrideConcBarrelMix": "No",
+                "size": "Normal",
+                "sameDay": "No",
+                "time": {
+                    "setupTime": 1,
+                    "cleanupTime": 1,
+                    "lunchTime": 1
+                }
+            },
+            "conc": {
+                "equip": {
+                    "pump": "757"
+                },
+                "concPumpCostOption": "No"
+            },
+            "structures": {
+                "structure1": {
+                    "gypAssemblies": {
+                        "gypAssem1": {
+                            "SF": 5000,
+                            "section": "2nd Floor",
+                            "floor": "Plywood",
+                            "gypType": "2010+",
+                            "gypThick": 1.25,
+                            "soundMatType": "",
+                            "wireType": "",
+                            "blackPaperType": "",
+                            "primerType": "Hacker Primer",
+                            "floors": {
+                                "floor2": {
+                                    "SF": 5000,
+                                    "perFoamRollType": "Neway 2.4 1/8\"",
+                                    "perFoamRolls": 4,
+                                    "costOfPerFoamRolls": 30,
+                                    "stapleBoxes": 2,
+                                    "costOfStapleBoxes": 9,
+                                    "cansOfSprayGlue": 2,
+                                    "costOfCansOfSprayGlue": 29,
+                                    "ductTapeRollsWhenNoSM": 3,
+                                    "costOfDuctTapeRollsWhenNoSM": 15,
+                                    "gypBags": 209,
+                                    "costOfGypBags": 3144,
+                                    "tons": 20,
+                                    "costOfTons": 660,
+                                    "costOfTonsOption": 99,
+                                    "primerGallons": 3,
+                                    "costOfPrimerGallons": 43
+                                }
+                            },
+                            "options": {},
+                            "PSI": "2000-3200",
+                            "perFoamRollType": "Neway 2.4 1/8\"",
+                            "perFoamRolls": 4,
+                            "costOfPerFoamRolls": 30,
+                            "stapleBoxes": 2,
+                            "costOfStapleBoxes": 9,
+                            "cansOfSprayGlue": 2,
+                            "costOfCansOfSprayGlue": 29,
+                            "ductTapeRollsWhenNoSM": 3,
+                            "costOfDuctTapeRollsWhenNoSM": 15,
+                            "gypBags": 209,
+                            "costOfGypBags": 3144,
+                            "tons": 20,
+                            "costOfTons": 660,
+                            "costOfTonsOption": 99,
+                            "primerGallons": 3,
+                            "costOfPrimerGallons": 43,
+                            "costOfGypLabor": 1873,
+                            "gypAssemCost": 5803
+                        },
+                        "gypAssem2": {
+                            "SF": 1000,
+                            "section": "3rd Floor",
+                            "floor": "Plywood",
+                            "gypType": "2010+",
+                            "gypThick": 1,
+                            "soundMatType": "",
+                            "wireType": "",
+                            "blackPaperType": "",
+                            "primerType": "Hacker Primer",
+                            "floors": {
+                                "floor3": {
+                                    "SF": 1000,
+                                    "perFoamRollType": "Neway 2.4 1/8\"",
+                                    "perFoamRolls": 1,
+                                    "costOfPerFoamRolls": 8,
+                                    "stapleBoxes": 1,
+                                    "costOfStapleBoxes": 5,
+                                    "cansOfSprayGlue": 1,
+                                    "costOfCansOfSprayGlue": 15,
+                                    "ductTapeRollsWhenNoSM": 1,
+                                    "costOfDuctTapeRollsWhenNoSM": 5,
+                                    "gypBags": 34,
+                                    "costOfGypBags": 512,
+                                    "tons": 4,
+                                    "costOfTons": 356,
+                                    "costOfTonsOption": 54,
+                                    "primerGallons": 1,
+                                    "costOfPrimerGallons": 9
+                                }
+                            },
+                            "options": {
+                                "optionAssem1": {
+                                    "SF": 1000,
+                                    "section": "3rd Floor",
+                                    "floor": "Plywood",
+                                    "gypType": "2010+",
+                                    "gypThick": 0.875,
+                                    "soundMatType": "1/8\" SCM 125",
+                                    "wireType": "",
+                                    "blackPaperType": "",
+                                    "PSI": "2000-3200",
+                                    "perFoamRollType": "Neway 2.4 1/8\"",
+                                    "perFoamRolls": 1,
+                                    "costOfPerFoamRolls": 8,
+                                    "stapleBoxes": 1,
+                                    "costOfStapleBoxes": 5,
+                                    "gypBags": 30,
+                                    "costOfGypBags": 452,
+                                    "tons": 3,
+                                    "costOfTons": 337,
+                                    "costOfTonsOption": 51,
+                                    "soundMatRolls": 3,
+                                    "costOfSoundMat": 495,
+                                    "ductTapeRolls": 2,
+                                    "costOfDuctTapeRolls": 10,
+                                    "costOfGypLabor": 375,
+                                    "soundMatLaborers": 0,
+                                    "costOfSoundMatLabor": 0,
+                                    "gypAssemCost": 1682,
+                                    "difference": 397
+                                }
+                            },
+                            "PSI": "2000-3200",
+                            "perFoamRollType": "Neway 2.4 1/8\"",
+                            "perFoamRolls": 1,
+                            "costOfPerFoamRolls": 8,
+                            "stapleBoxes": 1,
+                            "costOfStapleBoxes": 5,
+                            "cansOfSprayGlue": 1,
+                            "costOfCansOfSprayGlue": 15,
+                            "ductTapeRollsWhenNoSM": 1,
+                            "costOfDuctTapeRollsWhenNoSM": 5,
+                            "gypBags": 34,
+                            "costOfGypBags": 512,
+                            "tons": 4,
+                            "costOfTons": 356,
+                            "costOfTonsOption": 54,
+                            "primerGallons": 1,
+                            "costOfPrimerGallons": 9,
+                            "costOfGypLabor": 375,
+                            "gypAssemCost": 1285
+                        }
+                    },
+                    "concAssemblies": {},
+                    "building": "1",
+                    "prePours": {
+                        "tubs": 0
+                    },
+                    "aduRegulation": {
+                        "units": 0
+                    }
+                }
+            },
+            "totals": {
+                "gypMarginMarket": 40,
+                "gypMarginInter": 40,
+                "gypMargin": 40,
+                "concMarginMarket": 50,
+                "numOfStructs": 1,
+                "gypSF": 6000,
+                "gypSFWithSoundMat": 0,
+                "gypCostAfterMilesThreshold": 0,
+                "gypCostAddMobilsProduction": 3994,
+                "gypCostAddMobilsTotal": 6000,
+                "gypCostSaturdayOption": 1277,
+                "gypBags": 243,
+                "gypTons": 24,
+                "gypCostAssemsMaterialAndLabor": 7088,
+                "gypCostPerDiem": 0,
+                "gypCostPerFoamCutting": 241,
+                "stringLineRolls": 2,
+                "costOfStringLineRolls": 25,
+                "costOfStringLineInstallation": 774,
+                "blackPaperRollsMoistStop": 4,
+                "costOfBlackPaperRollsMoistStop": 34,
+                "moistStopLaborers": 1,
+                "costOfMoistStopLaborers": 201,
+                "costOfMoistStop": 235,
+                "sealerGallons": 4,
+                "costOfSealerGallons": 71,
+                "ramBoardRolls": 19,
+                "costOfRamBoardRolls": 1935,
+                "ductTapeRollsForRamBoard": 12,
+                "costOfDuctTapeRollsForRamBoard": 57,
+                "ramBoardLaborers": 3,
+                "costOfRamBoardLaborers": 723,
+                "costOfRamBoard": 2715,
+                "gypCostTrucksFuelMaint": 103,
+                "gypCostEquip": 226,
+                "gypAssemsCostTravel": 103,
+                "soundMatCostTravel": 0,
+                "prePoursCostTravel": 0,
+                "gypCostTravel": 103,
+                "gypCostProduction": 7417,
+                "gypCostTotalMarket": 12362,
+                "gypCostTotalInter": 12362,
+                "gypCostTotal": 12362,
+                "grandCostTotal": 12362
+            },
+            "distance": {
+                "Van Nuys": 40.3,
+                "Irvine": 0,
+                "San Diego": 0
+            },
+            "totalsPerGypFloor": {
+                "floor2": {
+                    "costOfGypBags": 3144,
+                    "costOfTons": 660
+                },
+                "floor3": {
+                    "costOfGypBags": 512,
+                    "costOfTons": 356
+                }
+            },
+            "optionals": {
+                "option1": {
+                    "option": "Survey floor and install SLGS(String-Line Grid System) to control and enhance the floor leveling application",
+                    "cost": 1290
+                },
+                "option2": {
+                    "option": "Provide flagman to control street traffic",
+                    "cost": 417
+                },
+                "option3": {
+                    "option": "Return to cut and remove excess perimeter foam",
+                    "cost": 402
+                },
+                "option4": {
+                    "option": "Additional day for production pour",
+                    "cost": 3000
+                },
+                "option5": {
+                    "option": "Pour gypcrete on Saturday",
+                    "cost": 2129
+                },
+                "option6": {
+                    "option": "install moist stop at all floor to wall transitions receiving Gypsum Concrete",
+                    "cost": 392
+                },
+                "option7": {
+                    "option": "Apply 6,000 SF of Hacker sealer at all newly poured areas",
+                    "cost": 119
+                },
+                "option8": {
+                    "option": "install 6,000 SF of ramboard at all newly poured areas",
+                    "cost": 4525
+                },
+                "option9": {
+                    "option": "Upgrade from 1\" Gypsum Concrete to 7/8\" Gypsum Concrete over 1/8\" Mat(SCM-125®) at 3rd floor",
+                    "cost": 662
+                }
+            },
+            "scheduleOfValues": {
+                "sov1": {
+                    "description": "Upon Start Of Work",
+                    "payment": 6181,
+                    "percent": 50,
+                    "type": "gyp"
+                },
+                "sov2": {
+                    "description": "Upon Completion Of interior Scope",
+                    "payment": 6181,
+                    "percent": 50,
+                    "type": "gyp"
+                }
+            }
+        }
+    },
+    "RFIs": {},
+    "changeOrders": {}
+}

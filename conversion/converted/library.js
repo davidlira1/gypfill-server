@@ -123,6 +123,8 @@ module.exports.costAfterMargin = require('./Helpers/helpers.js').costAfterMargin
 module.exports.costAfterMarginNoRound = require('./Helpers/helpers.js').costAfterMarginNoRound;
 module.exports.numberToOrdinal = require('./Helpers/helpers.js').numberToOrdinal;
 module.exports.doubleToFraction = require('./Helpers/helpers.js').doubleToFraction;
+module.exports.sum = require('./Helpers/helpers.js').sum;
+module.exports.rndDec = require('./Helpers/helpers.js').rndDec;
 module.exports.laborAndCostsConc = require('./Labor/LaborAndCosts_Conc.js').laborAndCostsConc;
 module.exports.laborAndCostsGyp = require('./Labor/LaborAndCosts_Gyp.js').laborAndCostsGyp;
 module.exports.materialsAndCostsConc = require('./MaterialsAndCosts/MaterialsAndCosts_Conc.js').materialsAndCostsConc;
@@ -130,7 +132,6 @@ module.exports.materialsAndCostsGyp = require('./MaterialsAndCosts/MaterialsAndC
 module.exports.getFormulaTables = require('./formulaTables.js').getFormulaTables;
 module.exports.getValues = require('./formulaTables.js').getValues;
 module.exports.getValuesBasedOnNum = require('./formulaTables.js').getValuesBasedOnNum;
-
 
 // const fs = require('fs');
 

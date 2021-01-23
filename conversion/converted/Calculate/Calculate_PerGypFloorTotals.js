@@ -1,3 +1,5 @@
+const lb = require('../library.js');
+
 module.exports.calculatePerGypFloorTotals = function(estimate) {
       //1. SETTinG THE DICTIONARY
       var totalsPerGypFloor = {};
@@ -14,10 +16,10 @@ module.exports.calculatePerGypFloorTotals = function(estimate) {
                   }
                   
                   //2. ADD THE COST OF GYP BAGS AT THIS ASSEMBLY AT THIS FLOOR
-                  totalsPerGypFloor[Floor].costOfGypBags+= gypAssemblies[gypAssem].floors[Floor].costOfGypBags;
+                  totalsPerGypFloor[Floor].costOfGypBags = lb.sum([totalsPerGypFloor[Floor].costOfGypBags, gypAssemblies[gypAssem].floors[Floor].costOfGypBags]);
                   
                   //3. ADD THE COST OF TONS  AT THIS ASSEMBLY AT THIS FLOOR
-                  totalsPerGypFloor[Floor].costOfTons+= gypAssemblies[gypAssem].floors[Floor].costOfTons;
+                  totalsPerGypFloor[Floor].costOfTons = lb.sum([totalsPerGypFloor[Floor].costOfTons ,gypAssemblies[gypAssem].floors[Floor].costOfTons]);
             }
       }
       return totalsPerGypFloor;

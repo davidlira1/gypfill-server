@@ -3,7 +3,7 @@ const lb = require('../library.js');
 module.exports.drivingTime = function(miles) {
     //ROUND TRIP TIME
     //AT 55mph
-    return (miles / 55) * 2;
+    return Number(((miles / 55) * 2).toFixed(2));
 }
 module.exports.setupTime = function(structureType) {
     var key = structureType === "House" ? "House Setup Time" : "Building Setup Time";
@@ -21,13 +21,13 @@ module.exports.cleanupTime = function() {
 }
 module.exports.pumpTime = function(bags) {
     var dict = lb.getValues("Equip_Gyp_Pumps", {"Model-Num": "D6528"}, ["Bags/Hr"]);
-    var blastcreteHrs = bags / dict["Bags/Hr"];
+    var blastcreteHrs = lb.rndDec(bags / dict["Bags/Hr"]);
     
     dict = lb.getValues("Equip_Gyp_Pumps", {"Model-Num": "Super-80"}, ["Bags/Hr"]);
-    var super80Hrs = bags / dict["Bags/Hr"];
+    var super80Hrs = lb.rndDec(bags / dict["Bags/Hr"]);
     
     dict = lb.getValues("Equip_Gyp_Pumps", {"Model-Num": "Placer"}, ["Bags/Hr"]);
-    var placerHrs = bags / dict["Bags/Hr"];
+    var placerHrs = lb.rndDec(bags / dict["Bags/Hr"]);
     
     return {
         "D6528": blastcreteHrs,
